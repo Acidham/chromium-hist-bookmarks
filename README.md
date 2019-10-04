@@ -6,6 +6,7 @@ Supported Chromium Browsers:
 
 * Chromium
 * Chromium Dev
+* Google Chrome
 * Brave (Chromium)
 * Vivaldi
 
