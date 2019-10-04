@@ -6,8 +6,13 @@ import os
 from Alfred import Items as Items
 from Alfred import Tools as Tools
 
-CHROM_BOOKMARKS = '/Library/Application Support/Chromium/Default/Bookmarks'
-CHROM_DEV_BOOKMARKS = '/Library/Application Support/Chromium-dev/Default/Bookmarks'
+BOOKMARKS = [
+    '/Library/Application Support/Chromium/Default/Bookmarks',
+    '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
+    '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/Bookmarks',
+    '/Library/Application Support/Google/Chrome/Default/Bookmarks',
+    '/Library/Application Support/Vivaldi/Default/Bookmarks'
+]
 
 
 def get_all_urls(the_json):
@@ -30,14 +35,14 @@ def get_all_urls(the_json):
     return sorted(urls, key=lambda k: k['name'], reverse=False)
 
 
-def path_to_bookmarks():
+def paths_to_bookmarks():
     user_dir = os.path.expanduser('~')
-    bm = user_dir + CHROM_BOOKMARKS
-    bm_dev = user_dir + CHROM_DEV_BOOKMARKS
-    if os.path.isfile(bm):
-        return bm
-    elif os.path.isfile(bm_dev):
-        return bm_dev
+    bms = [user_dir + p for p in BOOKMARKS]
+    valid_bms = list()
+    for b in bms:
+        if os.path.isfile(b):
+            valid_bms.append(b)
+    return valid_bms
 
 
 def get_json_from_file(file):
@@ -46,35 +51,36 @@ def get_json_from_file(file):
 
 wf = Items()
 query = Tools.getArgv(1) if Tools.getArgv(1) is not None else str()
-bookmarks_file = path_to_bookmarks()
+bms = paths_to_bookmarks()
 
-if bookmarks_file is not None:
-    bm_json = get_json_from_file(bookmarks_file)
-    bookmarks = get_all_urls(bm_json)
-    for bm in bookmarks:
-        name = bm.get('name')
-        url = bm.get('url')
-        if query == str() or query.lower() in name.lower():
-            wf.setItem(
-                title=name,
-                subtitle=url,
-                arg=url,
-                quicklookurl=url
-            )
-            wf.addItem()
-
-    if wf.getItemsLengths() == 0:
-        wf.setItem(
-            title='No Bookmark found!',
-            subtitle='Search \"%s\" in Google...' % query,
-            arg='https://www.google.com/search?q=%s' % query
-        )
-        wf.addItem()
+if len(bms) > 0:
+    for bookmarks_file in bms:
+        bm_json = get_json_from_file(bookmarks_file)
+        bookmarks = get_all_urls(bm_json)
+        for bm in bookmarks:
+            name = bm.get('name')
+            url = bm.get('url')
+            if query == str() or query.lower() in name.lower():
+                wf.setItem(
+                    title=name,
+                    subtitle=url,
+                    arg=url,
+                    quicklookurl=url
+                )
+                wf.addItem()
 else:
     wf.setItem(
         title="Bookmark File not found!",
-        subtitle='Ensure Chromium is installed',
+        subtitle='Ensure a Chromium Browser is installed',
         valid=False
+    )
+    wf.addItem()
+
+if wf.getItemsLengths() == 0:
+    wf.setItem(
+        title='No Bookmark found!',
+        subtitle='Search \"%s\" in Google...' % query,
+        arg='https://www.google.com/search?q=%s' % query
     )
     wf.addItem()
 

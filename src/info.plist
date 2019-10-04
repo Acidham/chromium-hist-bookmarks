@@ -346,7 +346,13 @@ fi</string>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Search in Chromium History and Bookmarks (Chromium)</string>
+	<string>Search in Chromium History and Bookmarks.
+
+Supported Browsers: 
+- Chromium
+- Chromium Dev
+- Brave (Chromium)
+- Vivaldi</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -399,7 +405,7 @@ fi</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.8.7</string>
+	<string>0.9</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

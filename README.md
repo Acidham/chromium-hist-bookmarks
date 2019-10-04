@@ -2,7 +2,12 @@
 
 ## Required
 
-Chromium
+Supported Chromium Browsers:
+
+* Chromium
+* Chromium Dev
+* Brave (Chromium)
+* Vivaldi
 
 ## Usage
 
