@@ -1,13 +1,15 @@
 #!/usr/bin/python
 
+import os
+import shutil
+import sqlite3
+
 from Alfred import Items as Items
 from Alfred import Tools as Tools
-import sqlite3
-import shutil
-import os
 
-BRAVE_HISTORY = '/Library/Application Support/BraveSoftware/Brave-Browser/Default/History'
-BRAVE_DEV_HISTORY = '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History'
+BRAVE_HISTORY = '/Library/Application Support/Chromium/Default/History'
+BRAVE_DEV_HISTORY = '/Library/Application Support/Chromium-dev/Default/History'
+
 
 def removeDuplicates(li):
     prev = str()
@@ -20,7 +22,7 @@ def removeDuplicates(li):
     return newList
 
 
-def filterResults(li,term):
+def filterResults(li, term):
     if term != '':
         newList = list()
         for i in li:
@@ -69,7 +71,7 @@ os.remove(history_db)
 # Remove duplicate Entries
 results = removeDuplicates(results)
 # Search entered into Alfred
-results = filterResults(results,search_term)
+results = filterResults(results, search_term)
 # Sort based on visits
 results = Tools.sortListTuple(results, 2)
 
@@ -80,7 +82,7 @@ if len(results) > 0:
         visits = i[2]
         wf.setItem(
             title=title,
-            subtitle="(Visits: %s) %s" % (str(visits),url),
+            subtitle="(Visits: %s) %s" % (str(visits), url),
             arg=url,
             quicklookurl=url
         )
