@@ -353,7 +353,8 @@ Supported Browsers:
 - Chromium Dev
 - Google Chrome
 - Brave (Chromium)
-- Vivaldi</string>
+- Vivaldi
+- Opera</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -406,7 +407,7 @@ Supported Browsers:
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.9</string>
+	<string>0.9.5</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

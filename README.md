@@ -1,4 +1,4 @@
-# Alfred Chromium History and Bookmark Search
+# Chromium History and Bookmark Search for Alfred
 
 ## Required
 
@@ -9,6 +9,7 @@ Supported Chromium Browsers:
 * Google Chrome
 * Brave (Chromium)
 * Vivaldi
+* Opera
 
 ## Usage
 

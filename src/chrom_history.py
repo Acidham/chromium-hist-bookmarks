@@ -7,12 +7,14 @@ import sqlite3
 from Alfred import Items as Items
 from Alfred import Tools as Tools
 
+# Hitory file relative to HOME
 HISTORIES = [
     '/Library/Application Support/Chromium/Default/History',
     '/Library/Application Support/BraveSoftware/Brave-Browser/Default/History',
     '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History',
     '/Library/Application Support/Google/Chrome/Default/History',
-    '/Library/Application Support/Vivaldi/Default/History'
+    '/Library/Application Support/Vivaldi/Default/History',
+    '/Library/Application Support/com.operasoftware.Opera/History'
 ]
 
 

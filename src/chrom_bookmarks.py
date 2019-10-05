@@ -6,12 +6,14 @@ import os
 from Alfred import Items as Items
 from Alfred import Tools as Tools
 
+# Bookmark file path relative to HOME
 BOOKMARKS = [
     '/Library/Application Support/Chromium/Default/Bookmarks',
     '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
     '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/Bookmarks',
     '/Library/Application Support/Google/Chrome/Default/Bookmarks',
-    '/Library/Application Support/Vivaldi/Default/Bookmarks'
+    '/Library/Application Support/Vivaldi/Default/Bookmarks',
+    '/Library/Application Support/com.operasoftware.Opera/Bookmarks'
 ]
 
 
