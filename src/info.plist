@@ -350,9 +350,8 @@ fi</string>
 
 Supported Browsers: 
 - Chromium
-- Chromium Dev
 - Google Chrome
-- Brave (Chromium)
+- Brave and Brave Dev(Chromium)
 - Vivaldi
 - Opera</string>
 	<key>uidata</key>
