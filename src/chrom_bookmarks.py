@@ -18,6 +18,15 @@ BOOKMARKS = [
 
 
 def get_all_urls(the_json):
+    """
+    Extract all URLs and title from Bookmark files
+
+    Args:
+        the_json (str): All Bookmarks read from file
+
+    Returns:
+        list: Bookmarks url and title
+    """
     def extract_data(data):
         if type(data) == dict and data.get('type') == 'url':
             urls.append({'name': data['name'], 'url': data['url']})
@@ -32,12 +41,19 @@ def get_all_urls(the_json):
         if isinstance(o, dict):
             for k, i in o.items():
                 extract_data(i)
+
     urls = list()
     get_container(the_json)
     return sorted(urls, key=lambda k: k['name'], reverse=False)
 
 
 def paths_to_bookmarks():
+    """
+    Get all valid bookmarks pahts from BOOKMARKS
+
+    Returns:
+        list: valid bookmark paths
+    """
     user_dir = os.path.expanduser('~')
     bms = [user_dir + p for p in BOOKMARKS]
     valid_bms = list()
@@ -48,6 +64,15 @@ def paths_to_bookmarks():
 
 
 def get_json_from_file(file):
+    """
+    Get Bookmark JSON
+
+    Args:
+        file (str): File path to valid bookmark file
+
+    Returns:
+        str: JSON of Bookmarks
+    """
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
