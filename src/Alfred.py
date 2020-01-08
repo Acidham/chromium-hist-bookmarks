@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 import json
+import os
 import sys
 import time
-import os
+
+
 """
 Alfred Script Filter generator class
 Version: 0.95
@@ -80,7 +83,7 @@ class Items:
         """
         self.setKv("icon", self.__define_icon(m_path, m_type))
 
-    def __define_icon(self,path,m_type=""):
+    def __define_icon(self, path, m_type=""):
         """
         Private method to create icon set
         :param path: str
@@ -103,17 +106,17 @@ class Items:
         :param icon_path: str
         :param icon_type: str
         """
-        valid_keys = {"alt","cmd","shift","ctrl"}
+        valid_keys = {"alt", "cmd", "shift", "ctrl"}
         if key not in valid_keys:
             raise ValueError("Key must be in: %s" % valid_keys)
         mod = {}
-        mod.update({"arg":arg})
-        mod.update({"subtitle":subtitle})
-        mod.update({"valid":valid})
+        mod.update({"arg": arg})
+        mod.update({"subtitle": subtitle})
+        mod.update({"valid": valid})
         if icon_path != "":
-            the_icon = self.__define_icon(icon_path,icon_type)
-            mod.update({"icon":the_icon})
-        self.mods.update({key:mod})
+            the_icon = self.__define_icon(icon_path, icon_type)
+            mod.update({"icon": the_icon})
+        self.mods.update({key: mod})
 
     def addModsToItems(self):
         """
@@ -178,7 +181,7 @@ class Tools:
         return time.strftime('%d.%m.%Y', time.gmtime(float_time/1000))
 
     @staticmethod
-    def sortListDict(list_dict,key,reverse=True):
+    def sortListDict(list_dict, key, reverse=True):
         """
         Sort List with Dictionary based on given key in Dict
         :param list_dict: list(dict())
@@ -188,7 +191,7 @@ class Tools:
         return sorted(list_dict, key=lambda k: k[key], reverse=reverse)
 
     @staticmethod
-    def sortListTuple(list_tuple, el,reverse=True):
+    def sortListTuple(list_tuple, el, reverse=True):
         """
         Sort List with Tubles based on a given element in Tuple
         :param list_tuple: list(tuple())
@@ -203,4 +206,7 @@ class Tools:
         os.system("""
                   osascript -e 'display notification "{}" with title "{}"'
                   """.format(text, title))
-
+    
+    @staticmethod
+    def log(message):
+        sys.stderr.write('{0}\n'.format(message))

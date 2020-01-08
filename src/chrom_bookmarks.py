@@ -29,9 +29,9 @@ def get_all_urls(the_json):
     """
     def extract_data(data):
         if type(data) == dict and data.get('type') == 'url':
-            urls.append({'name': data['name'], 'url': data['url']})
+            urls.append({'name': data.get('name'), 'url': data.get('url')})
         if type(data) == dict and data.get('type') == 'folder':
-            the_children = data['children']
+            the_children = data.get('children')
             get_container(the_children)
 
     def get_container(o):

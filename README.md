@@ -2,13 +2,14 @@
 
 ## Required
 
-Supported Chromium Browsers:
+Supported Chromium&Geko Browsers:
 
 * Chromium
 * Google Chrome
 * Brave and Brave Dev (Chromium)
 * Vivaldi
 * Opera
+* Firefox
 
 ## Usage
 

@@ -1,8 +1,10 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import os
 import shutil
 import sqlite3
+import sys
 
 from Alfred import Items as Items
 from Alfred import Tools as Tools
@@ -16,6 +18,8 @@ HISTORIES = [
     '/Library/Application Support/Vivaldi/Default/History',
     '/Library/Application Support/com.operasoftware.Opera/History'
 ]
+
+FIRE_HISTORIE = '/Library/Application Support/Firefox/Profiles'
 
 
 def removeDuplicates(li):
@@ -32,7 +36,7 @@ def removeDuplicates(li):
     newList = list()
     for i in li:
         cur = i[1]
-        if prev.lower() != cur.lower():
+        if cur and prev.lower() != cur.lower():
             newList.append(i)
             prev = cur
     return newList
@@ -46,7 +50,7 @@ def filterResults(li, term):
         li (list): List of all History entries
         term (str): Search terms with or without '&'
 
-    Returns:    
+    Returns:
         list: entries matche term
     """
     if term != '':
@@ -62,9 +66,9 @@ def filterResults(li, term):
     return newList[:50]
 
 
-def path_to_histories():
+def path_to_chrome_histories():
     """
-    Get valid pathes to history from BOOKMARKS variable
+    Get valid pathes to chrome history from BOOKMARKS variable
 
     Returns:
         list: available paths of history files
@@ -75,12 +79,35 @@ def path_to_histories():
     for h in hists:
         if os.path.isfile(h):
             valid_hists.append(h)
+            Tools.log("{0} found".format(h))
+        else:
+            Tools.log("{0} NOT found".format(h))
     return valid_hists
 
 
-def load_all_histories(chrome_locked_db):
+def path_to_fire_history():
     """
-    Load History files into list
+    Get valid pathes to firefox history from BOOKMARKS variable
+
+    Returns:
+        list: available paths of history files
+    """
+    user_dir = os.path.expanduser('~')
+    f_home = user_dir + FIRE_HISTORIE
+    f_home_dirs = ['{0}/{1}'.format(f_home, o) for o in os.listdir(f_home)]
+    valid_hist = None
+    for f in f_home_dirs:
+        if os.path.isdir(f):
+            f_sub_dirs = ['{0}/{1}'.format(f, o) for o in os.listdir(f)]
+            for fs in f_sub_dirs:
+                if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':
+                    valid_hist = fs
+    return valid_hist
+
+
+def load_chrome_histories(chrome_locked_db):
+    """
+    Load Chrome History files into list
 
     Args:
         chrome_locked_db (list): Contains valid history paths
@@ -93,33 +120,62 @@ def load_all_histories(chrome_locked_db):
     for db in chrome_locked_db:
         try:
             shutil.copy2(db, '/tmp')
+            with sqlite3.connect(history_db) as c:
+                cursor = c.cursor()
+                select_statement = """
+                SELECT DISTINCT urls.url, urls.title, urls.visit_count
+                FROM urls, visits
+                WHERE urls.id = visits.url AND 
+                urls.title IS NOT NULL 
+                AND urls.title != '';"""
+                cursor.execute(select_statement)
+                r = cursor.fetchall()
+                results.extend(r)
+            os.remove(history_db)
         except IOError:
-            wf.setItem(
-                title="No Chromium Browser History found!",
-                subtitle="You may use an older version of a Chromium Browser",
-                valid=False
-            )
-            wf.addItem()
-            wf.write()
-            exit()
+            pass
+    return results
 
-        with sqlite3.connect(history_db) as c:
+
+def load_fire_history(fire_locked_db):
+    """
+    Load Firefox History files into list
+
+    Args:
+        fire_locked_db (list): Contains valid history paths
+
+    Returns:
+        list: hitory entries unfiltered
+    """
+    fire_history_db = '/tmp/places.sqlite'
+    results = list()
+    try:
+        shutil.copy2(fire_locked_db, '/tmp')
+        with sqlite3.connect(fire_history_db) as c:
             cursor = c.cursor()
-            select_statement = "SELECT DISTINCT urls.url, urls.title, urls.visit_count " \
-                "FROM urls, visits " \
-                "WHERE urls.id = visits.url AND urls.title IS NOT NULL AND urls.title != '';"
+            select_statement = """
+            select DISTINCT url,title,visit_count 
+            FROM moz_places JOIN moz_historyvisits 
+            WHERE title is not NULL and title != '';"""
             cursor.execute(select_statement)
             r = cursor.fetchall()
             results.extend(r)
-            os.remove(history_db)
+        os.remove(fire_history_db)
+    except:
+        pass
     return results
 
 
 wf = Items()
 
 search_term = Tools.getArgv(1) if Tools.getArgv(1) is not None else ''
-chrome_locked_db = path_to_histories()
-hist_all = load_all_histories(chrome_locked_db)
+# sys.stderr.write(search_term.encode('utf-8'))
+chrome_locked_db = path_to_chrome_histories()
+fire_locked_db = path_to_fire_history()
+
+hist_all = load_chrome_histories(chrome_locked_db)
+fire_hist = load_fire_history(fire_locked_db)
+hist_all = hist_all + fire_hist
 
 # Remove duplicate Entries
 results = removeDuplicates(hist_all)
@@ -131,11 +187,11 @@ results = Tools.sortListTuple(results, 2)
 if len(results) > 0:
     for i in results:
         url = i[0]
-        title = i[1]
+        title = i[1].encode('utf-8')
         visits = i[2]
         wf.setItem(
             title=title,
-            subtitle="(Visits: %s) %s" % (str(visits), url),
+            subtitle="(Visits: {0}) {1}".format(str(visits), url),
             arg=url,
             quicklookurl=url
         )
@@ -144,7 +200,7 @@ else:
     wf.setItem(
         title="Nothing found in History!",
         subtitle="Search with Google?",
-        arg='https://www.google.com/search?q=%s' % search_term
+        arg='https://www.google.com/search?q={0}'.format(search_term.encode('utf-8'))
     )
     wf.addItem()
 wf.write()
