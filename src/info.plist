@@ -95,7 +95,7 @@
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>Chromium Bookmarks and History</string>
+	<string>Chromium&amp;Firefox Bookmarks and History</string>
 	<key>objects</key>
 	<array>
 		<dict>
@@ -153,7 +153,7 @@
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
-				<string>Search Chromium Bookmarks</string>
+				<string>Search Chromium&amp;Firefox Bookmarks</string>
 				<key>type</key>
 				<integer>8</integer>
 				<key>withspace</key>
@@ -307,7 +307,7 @@ fi</string>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
@@ -419,7 +419,7 @@ Search Bookmarks with keyword: bm</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.9.9</string>
+	<string>1.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

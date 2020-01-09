@@ -161,8 +161,10 @@ class Tools:
         :param i: index of argument value int()
         :return: argv str or None
         """
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
         try:
-            return sys.argv[i]
+            return sys.argv[i].encode('utf-8')
         except IndexError:
             pass
 
@@ -206,7 +208,7 @@ class Tools:
         os.system("""
                   osascript -e 'display notification "{}" with title "{}"'
                   """.format(text, title))
-    
+
     @staticmethod
     def log(message):
         sys.stderr.write('{0}\n'.format(message))

@@ -5,6 +5,7 @@ import os
 import shutil
 import sqlite3
 import sys
+from unicodedata import normalize
 
 from Alfred import Items as Items
 from Alfred import Tools as Tools
@@ -42,30 +43,6 @@ def removeDuplicates(li):
     return newList
 
 
-def filterResults(li, term):
-    """
-    Search/Filter results based on search term
-
-    Args:
-        li (list): List of all History entries
-        term (str): Search terms with or without '&'
-
-    Returns:
-        list: entries matche term
-    """
-    if term != '':
-        terms = term.split('&')
-        for t in terms:
-            newList = list()
-            for i in li:
-                if (t.lower() in i[1].lower()) or (t.lower() in i[0].lower()):
-                    newList.append(i)
-            li = newList
-    else:
-        newList = li
-    return newList[:50]
-
-
 def path_to_chrome_histories():
     """
     Get valid pathes to chrome history from BOOKMARKS variable
@@ -83,6 +60,23 @@ def path_to_chrome_histories():
         else:
             Tools.log("{0} NOT found".format(h))
     return valid_hists
+
+
+def match(search_term, results):
+    search_terms = search_term.split('&') if '&' in search_term else search_term.split(' ')
+
+    for s in search_terms:
+        n_list = list()
+        s = normalize('NFD', s.decode('utf-8'))
+        for r in results:
+            t = normalize('NFD', r[1].decode('utf-8'))
+            # sys.stderr.write('Title: '+t+'\n')
+            s = normalize('NFD', s.decode('utf-8'))
+            # sys.stderr.write("url: " + s + '\n')
+            if s.lower() in t.lower():
+                n_list.append(r)
+        results = n_list
+    return results[:50]
 
 
 def path_to_fire_history():
@@ -180,7 +174,8 @@ hist_all = hist_all + fire_hist
 # Remove duplicate Entries
 results = removeDuplicates(hist_all)
 # Search entered into Alfred
-results = filterResults(results, search_term)
+#results = filterResults(results, search_term)
+results = match(search_term, results) if len(search_term) > 0 else results[:50]
 # Sort based on visits
 results = Tools.sortListTuple(results, 2)
 
@@ -196,7 +191,8 @@ if len(results) > 0:
             quicklookurl=url
         )
         wf.addItem()
-else:
+a = wf.getItemsLengths()
+if wf.getItemsLengths() == 0:
     wf.setItem(
         title="Nothing found in History!",
         subtitle="Search with Google?",

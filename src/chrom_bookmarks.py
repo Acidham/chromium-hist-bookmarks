@@ -2,6 +2,10 @@
 import codecs
 import json
 import os
+import shutil
+import sqlite3
+import sys
+from unicodedata import normalize
 
 from Alfred import Items as Items
 from Alfred import Tools as Tools
@@ -16,6 +20,8 @@ BOOKMARKS = [
     '/Library/Application Support/com.operasoftware.Opera/Bookmarks'
 ]
 
+FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
+
 
 def get_all_urls(the_json):
     """
@@ -25,7 +31,7 @@ def get_all_urls(the_json):
         the_json (str): All Bookmarks read from file
 
     Returns:
-        list: Bookmarks url and title
+        list(tuble): List of tublle with Bookmarks url and title 
     """
     def extract_data(data):
         if type(data) == dict and data.get('type') == 'url':
@@ -44,7 +50,9 @@ def get_all_urls(the_json):
 
     urls = list()
     get_container(the_json)
-    return sorted(urls, key=lambda k: k['name'], reverse=False)
+    s_list_dict = sorted(urls, key=lambda k: k['name'], reverse=False)
+    ret_list = [(l.get('name'), l.get('url')) for l in s_list_dict]
+    return ret_list
 
 
 def paths_to_bookmarks():
@@ -63,12 +71,62 @@ def paths_to_bookmarks():
     return valid_bms
 
 
+def path_to_fire_bookmarks():
+    """
+    Get valid pathes to firefox history from BOOKMARKS variable
+
+    Returns:
+        list: available paths of history files
+    """
+    user_dir = os.path.expanduser('~')
+    f_home = user_dir + FIRE_BOOKMARKS
+    f_home_dirs = ['{0}/{1}'.format(f_home, o) for o in os.listdir(f_home)]
+    valid_hist = None
+    for f in f_home_dirs:
+        if os.path.isdir(f):
+            f_sub_dirs = ['{0}/{1}'.format(f, o) for o in os.listdir(f)]
+            for fs in f_sub_dirs:
+                if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':
+                    valid_hist = fs
+    return valid_hist
+
+
+def load_fire_bookmarks(fire_locked_db):
+    """
+    Load Firefox History files into list
+
+    Args:
+        fire_locked_db (list): Contains valid history paths
+
+    Returns:
+        list: hitory entries unfiltered
+    """
+    fire_history_db = '/tmp/places.sqlite'
+    results = list()
+    try:
+        shutil.copy2(fire_locked_db, '/tmp')
+        with sqlite3.connect(fire_history_db) as c:
+            cursor = c.cursor()
+            select_statement = """
+            SELECT b.title, h.url
+            FROM moz_places h, moz_bookmarks b
+            WHERE h.id = b.fk
+            """
+            cursor.execute(select_statement)
+            r = cursor.fetchall()
+            results.extend(r)
+        os.remove(fire_history_db)
+    except:
+        pass
+    return [r for r in results if r[0] is not None] if len(results) > 0 else list()
+
+
 def get_json_from_file(file):
     """
     Get Bookmark JSON
 
     Args:
-        file (str): File path to valid bookmark file
+        file(str): File path to valid bookmark file
 
     Returns:
         str: JSON of Bookmarks
@@ -76,37 +134,60 @@ def get_json_from_file(file):
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
+def match(search_term, results):
+    search_terms = search_term.split('&') if '&' in search_term else search_term.split(' ')
+
+    for s in search_terms:
+        n_list = list()
+        s = normalize('NFD', s.decode('utf-8'))
+        for r in results:
+            t = normalize('NFD', r[0].decode('utf-8'))
+            # sys.stderr.write('Title: '+t+'\n')
+            s = normalize('NFD', s.decode('utf-8'))
+            # sys.stderr.write("url: " + s + '\n')
+            if s.lower() in t.lower():
+                n_list.append(r)
+        results = n_list
+    return results
+
+
 wf = Items()
 query = Tools.getArgv(1) if Tools.getArgv(1) is not None else str()
 bms = paths_to_bookmarks()
+fire_path = path_to_fire_bookmarks()
+
+if fire_path:
+    fire_bms = load_fire_bookmarks(fire_path)
+    matches = match(query, fire_bms) if query != str() else fire_bms
+    for ft, furl in matches:
+        wf.setItem(
+            title=ft,
+            subtitle=furl,
+            arg=furl,
+            quicklook=furl
+        )
+        wf.addItem()
 
 if len(bms) > 0:
     for bookmarks_file in bms:
         bm_json = get_json_from_file(bookmarks_file)
         bookmarks = get_all_urls(bm_json)
-        for bm in bookmarks:
-            name = bm.get('name')
-            url = bm.get('url')
-            if query == str() or query.lower() in name.lower():
-                wf.setItem(
-                    title=name,
-                    subtitle=url,
-                    arg=url,
-                    quicklookurl=url
-                )
-                wf.addItem()
-else:
-    wf.setItem(
-        title="Bookmark File not found!",
-        subtitle='Ensure a Chromium Browser is installed',
-        valid=False
-    )
-    wf.addItem()
+        matches = match(query, bookmarks)
+        for m in matches:
+            name = m[0]
+            url = m[1]
+            wf.setItem(
+                title=name,
+                subtitle=url,
+                arg=url,
+                quicklookurl=url
+            )
+            wf.addItem()
 
 if wf.getItemsLengths() == 0:
     wf.setItem(
         title='No Bookmark found!',
-        subtitle='Search \"%s\" in Google...' % query,
+        subtitle='Search \"{0}\" in Google...'.format(query),
         arg='https://www.google.com/search?q=%s' % query
     )
     wf.addItem()
