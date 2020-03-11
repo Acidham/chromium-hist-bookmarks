@@ -4,7 +4,6 @@
 import os
 import shutil
 import sqlite3
-import sys
 from unicodedata import normalize
 
 from Alfred import Items as Items
@@ -119,9 +118,9 @@ def load_chrome_histories(chrome_locked_db):
                 select_statement = """
                 SELECT DISTINCT urls.url, urls.title, urls.visit_count
                 FROM urls, visits
-                WHERE urls.id = visits.url AND 
-                urls.title IS NOT NULL 
-                AND urls.title != '';"""
+                WHERE urls.id = visits.url AND
+                urls.title IS NOT NULL
+                AND urls.title != '' order by last_visit_time DESC limit 100;"""
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
@@ -148,9 +147,9 @@ def load_fire_history(fire_locked_db):
         with sqlite3.connect(fire_history_db) as c:
             cursor = c.cursor()
             select_statement = """
-            select DISTINCT url,title,visit_count 
-            FROM moz_places JOIN moz_historyvisits 
-            WHERE title is not NULL and title != '';"""
+            select DISTINCT url,title,visit_count
+            FROM moz_places JOIN moz_historyvisits
+            WHERE title is not NULL and title != '' order by last_visit_date DESC limit 100;"""
             cursor.execute(select_statement)
             r = cursor.fetchall()
             results.extend(r)
@@ -174,7 +173,7 @@ hist_all = hist_all + fire_hist
 # Remove duplicate Entries
 results = removeDuplicates(hist_all)
 # Search entered into Alfred
-#results = filterResults(results, search_term)
+# results = filterResults(results, search_term)
 results = match(search_term, results) if len(search_term) > 0 else results[:50]
 # Sort based on visits
 results = Tools.sortListTuple(results, 2)

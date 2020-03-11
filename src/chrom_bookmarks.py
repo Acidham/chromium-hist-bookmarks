@@ -188,7 +188,7 @@ if wf.getItemsLengths() == 0:
     wf.setItem(
         title='No Bookmark found!',
         subtitle='Search \"{0}\" in Google...'.format(query),
-        arg='https://www.google.com/search?q=%s' % query
+        arg='https://www.google.com/search?q={0}'.format(query)
     )
     wf.addItem()
 

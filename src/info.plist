@@ -311,7 +311,7 @@ fi</string>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
-				<string>hist</string>
+				<string>bh</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -372,7 +372,7 @@ Search Bookmarks with keyword: bm</string>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>375</integer>
+			<integer>370</integer>
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
@@ -383,35 +383,35 @@ Search Bookmarks with keyword: bm</string>
 			<key>note</key>
 			<string>OneUpdater</string>
 			<key>xpos</key>
-			<integer>375</integer>
+			<integer>370</integer>
 			<key>ypos</key>
 			<integer>320</integer>
 		</dict>
 		<key>6B99D187-E195-432C-A079-D4A99D9A9B0D</key>
 		<dict>
 			<key>xpos</key>
-			<integer>575</integer>
+			<integer>570</integer>
 			<key>ypos</key>
 			<integer>180</integer>
 		</dict>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>375</integer>
+			<integer>370</integer>
 			<key>ypos</key>
 			<integer>180</integer>
 		</dict>
 		<key>A1F782AE-40F5-47BE-BA57-F230607162D5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>75</integer>
+			<integer>70</integer>
 			<key>ypos</key>
 			<integer>320</integer>
 		</dict>
 		<key>E420908F-C5F5-44DD-AB95-0B375998DC6F</key>
 		<dict>
 			<key>xpos</key>
-			<integer>75</integer>
+			<integer>70</integer>
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
@@ -419,7 +419,7 @@ Search Bookmarks with keyword: bm</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
