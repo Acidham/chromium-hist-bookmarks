@@ -68,7 +68,7 @@ def match(search_term, results):
         n_list = list()
         s = normalize('NFD', s.decode('utf-8'))
         for r in results:
-            t = normalize('NFD', r[1].decode('utf-8'))
+            t = normalize('NFD', r[1].decode('utf-8')) + " " + normalize('NFD', r[0].decode('utf-8'))
             # sys.stderr.write('Title: '+t+'\n')
             s = normalize('NFD', s.decode('utf-8'))
             # sys.stderr.write("url: " + s + '\n')
