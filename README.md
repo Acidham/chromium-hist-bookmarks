@@ -24,3 +24,4 @@ Supported Chromium&Geko Browsers:
 
 * `bm`query
 * *SHIFT* for quicklook URL
+
