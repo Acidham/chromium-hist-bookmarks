@@ -180,7 +180,7 @@ class Tools:
 
     @staticmethod
     def getDateEpoch(float_time):
-        return time.strftime('%d.%m.%Y', time.gmtime(float_time/1000))
+        return time.strftime('%d.%m.%Y', time.gmtime(float_time / 1000))
 
     @staticmethod
     def sortListDict(list_dict, key, reverse=True):

@@ -69,9 +69,7 @@ def match(search_term, results):
         s = normalize('NFD', s.decode('utf-8'))
         for r in results:
             t = normalize('NFD', r[1].decode('utf-8')) + " " + normalize('NFD', r[0].decode('utf-8'))
-            # sys.stderr.write('Title: '+t+'\n')
             s = normalize('NFD', s.decode('utf-8'))
-            # sys.stderr.write("url: " + s + '\n')
             if s.lower() in t.lower():
                 n_list.append(r)
         results = n_list
@@ -162,7 +160,6 @@ def load_fire_history(fire_locked_db):
 wf = Items()
 
 search_term = Tools.getArgv(1) if Tools.getArgv(1) is not None else ''
-# sys.stderr.write(search_term.encode('utf-8'))
 chrome_locked_db = path_to_chrome_histories()
 fire_locked_db = path_to_fire_history()
 
