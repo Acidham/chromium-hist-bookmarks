@@ -18,7 +18,7 @@ Supported Chromium&Geko Browsers:
 * `hist` query
     * Type `&` in between of the search terms to search for multiple entries e.g.: 
          `Car&Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
-* *SHIFT* for quicklook URL
+* *SHIFT* for Quicklook URL
 
 ### Bookmark Search
 
