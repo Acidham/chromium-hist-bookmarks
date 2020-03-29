@@ -4,6 +4,7 @@
 import os
 import shutil
 import sqlite3
+import sys
 from unicodedata import normalize
 
 from Alfred import Items as Items
@@ -61,19 +62,15 @@ def path_to_chrome_histories():
     return valid_hists
 
 
-def match(search_term, results):
-    search_terms = search_term.split('&') if '&' in search_term else search_term.split(' ')
-
-    for s in search_terms:
-        n_list = list()
-        s = normalize('NFD', s.decode('utf-8'))
-        for r in results:
-            t = normalize('NFD', r[1].decode('utf-8')) + " " + normalize('NFD', r[0].decode('utf-8'))
-            s = normalize('NFD', s.decode('utf-8'))
-            if s.lower() in t.lower():
-                n_list.append(r)
-        results = n_list
-    return results[:50]
+def get_sql(field, search):
+    search_terms = search.split('&') if '&' in search else search.split(' ')
+    search_terms = [normalize('NFC', s.decode('utf-8')) for s in search_terms]
+    search_terms = [u'LOWER({0}) LIKE LOWER("%{1}%")'.format(field, s) for s in search_terms]
+    if "&" in search:
+        sql = u" AND ".join(search_terms)
+    else:
+        sql = u" OR ".join(search_terms)
+    return sql
 
 
 def path_to_fire_history():
@@ -96,7 +93,7 @@ def path_to_fire_history():
     return valid_hist
 
 
-def load_chrome_histories(chrome_locked_db):
+def search_chrome_histories(chrome_locked_db, query):
     """
     Load Chrome History files into list
 
@@ -117,18 +114,19 @@ def load_chrome_histories(chrome_locked_db):
                 SELECT DISTINCT urls.url, urls.title, urls.visit_count
                 FROM urls, visits
                 WHERE urls.id = visits.url AND
-                urls.title IS NOT NULL
-                AND urls.title != '' order by last_visit_time DESC limit 100;"""
+                urls.title IS NOT NULL AND
+                {0} AND
+                urls.title != '' order by last_visit_time DESC;""".format(get_sql("urls.title", query))
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
             os.remove(history_db)
-        except IOError:
+        except sqlite3.Error:
             pass
     return results
 
 
-def load_fire_history(fire_locked_db):
+def search_fire_history(fire_locked_db, query):
     """
     Load Firefox History files into list
 
@@ -142,36 +140,41 @@ def load_fire_history(fire_locked_db):
     results = list()
     try:
         shutil.copy2(fire_locked_db, '/tmp')
+
         with sqlite3.connect(fire_history_db) as c:
             cursor = c.cursor()
-            select_statement = """
+            select_statement = u"""
             select DISTINCT url,title,visit_count
             FROM moz_places JOIN moz_historyvisits
-            WHERE title is not NULL and title != '' order by last_visit_date DESC limit 100;"""
+            WHERE {0} AND
+            title != '' order by last_visit_date DESC;""".format(get_sql("title", query))
             cursor.execute(select_statement)
             r = cursor.fetchall()
             results.extend(r)
         os.remove(fire_history_db)
-    except:
+    except sqlite3.Error:
         pass
     return results
 
 
 wf = Items()
 
-search_term = Tools.getArgv(1) if Tools.getArgv(1) is not None else ''
+search_term = Tools.getArgv(1)
 chrome_locked_db = path_to_chrome_histories()
 fire_locked_db = path_to_fire_history()
 
-hist_all = load_chrome_histories(chrome_locked_db)
-fire_hist = load_fire_history(fire_locked_db)
-hist_all = hist_all + fire_hist
+if search_term is not None:
+    hist_all = search_chrome_histories(chrome_locked_db, search_term)
+    fire_hist = search_fire_history(fire_locked_db, search_term)
+    hist_all = hist_all + fire_hist
+else:
+    sys.exit(0)
+
 
 # Remove duplicate Entries
 results = removeDuplicates(hist_all)
 # Search entered into Alfred
-# results = filterResults(results, search_term)
-results = match(search_term, results) if len(search_term) > 0 else results[:50]
+results = results[:30]
 # Sort based on visits
 results = Tools.sortListTuple(results, 2)
 

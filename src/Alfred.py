@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import json
 import os
@@ -161,12 +162,17 @@ class Tools:
         :param i: index of argument value int()
         :return: argv str or None
         """
+
         reload(sys)
         sys.setdefaultencoding('utf-8')
+        # return normalize('NFD', u'{}'.format(sys.argv[i].encode('utf-8')))
+        # return u'{}'.format(sys.argv[i])
         try:
             return sys.argv[i].encode('utf-8')
         except IndexError:
             pass
+
+        # return sys.argv[i].encode(sys.stdin.encoding or locale.getpreferredencoding(True))
 
     @staticmethod
     def getDateStr(float_time, format='%d.%m.%Y'):
