@@ -23,6 +23,23 @@ BOOKMARKS = [
 FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
 
 
+def removeDuplicates(li):
+    """
+    Removes Duplicates from history file
+
+    Args:
+        li (list): list of history entries
+
+    Returns:
+        list: filtered history entries
+    """
+    newList = list()
+    for i in li:
+        if i not in newList:
+            newList.append(i)
+    return newList
+
+
 def get_all_urls(the_json):
     """
     Extract all URLs and title from Bookmark files
@@ -31,7 +48,7 @@ def get_all_urls(the_json):
         the_json (str): All Bookmarks read from file
 
     Returns:
-        list(tuble): List of tublle with Bookmarks url and title 
+        list(tuble): List of tublle with Bookmarks url and title
     """
     def extract_data(data):
         if type(data) == dict and data.get('type') == 'url':
@@ -116,9 +133,9 @@ def load_fire_bookmarks(fire_locked_db):
             r = cursor.fetchall()
             results.extend(r)
         os.remove(fire_history_db)
-    except:
+    except sqlite3.Error:
         pass
-    return [r for r in results if r[0] is not None] if len(results) > 0 else list()
+    return [ret for ret in results if r[0] is not None] if len(results) > 0 else list()
 
 
 def get_json_from_file(file):
@@ -158,6 +175,7 @@ fire_path = path_to_fire_bookmarks()
 
 if fire_path:
     fire_bms = load_fire_bookmarks(fire_path)
+    fire_bms = removeDuplicates(fire_bms)
     matches = match(query, fire_bms) if query != str() else fire_bms
     for ft, furl in matches:
         wf.setItem(
