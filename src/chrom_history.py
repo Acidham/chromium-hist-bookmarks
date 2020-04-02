@@ -82,14 +82,18 @@ def path_to_fire_history():
     """
     user_dir = os.path.expanduser('~')
     f_home = user_dir + FIRE_HISTORIE
-    f_home_dirs = ['{0}/{1}'.format(f_home, o) for o in os.listdir(f_home)]
-    valid_hist = None
-    for f in f_home_dirs:
-        if os.path.isdir(f):
-            f_sub_dirs = ['{0}/{1}'.format(f, o) for o in os.listdir(f)]
-            for fs in f_sub_dirs:
-                if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':
-                    valid_hist = fs
+    valid_hist = list()
+    if os.path.isdir(f_home):
+        Tools.log('{0} found'.format(f_home))
+        f_home_dirs = ['{0}/{1}'.format(f_home, o) for o in os.listdir(f_home)]
+        for f in f_home_dirs:
+            if os.path.isdir(f):
+                f_sub_dirs = ['{0}/{1}'.format(f, o) for o in os.listdir(f)]
+                for fs in f_sub_dirs:
+                    if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':
+                        valid_hist = fs
+    else:
+        Tools.log("{0} NOT found".format(f_home))
     return valid_hist
 
 
@@ -115,8 +119,9 @@ def search_chrome_histories(chrome_locked_db, query):
                 FROM urls, visits
                 WHERE urls.id = visits.url AND
                 urls.title IS NOT NULL AND
-                {0} AND
-                urls.title != '' order by last_visit_time DESC;""".format(get_sql("urls.title", query))
+                ({0}) OR
+                ({1}) AND
+                urls.title != '' order by last_visit_time DESC;""".format(get_sql("urls.title", query), get_sql("urls.url", query))
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
@@ -138,22 +143,24 @@ def search_fire_history(fire_locked_db, query):
     """
     fire_history_db = '/tmp/places.sqlite'
     results = list()
-    try:
-        shutil.copy2(fire_locked_db, '/tmp')
+    if len(fire_locked_db) > 0:
+        try:
+            shutil.copy2(fire_locked_db, '/tmp')
 
-        with sqlite3.connect(fire_history_db) as c:
-            cursor = c.cursor()
-            select_statement = u"""
-            select DISTINCT url,title,visit_count
-            FROM moz_places JOIN moz_historyvisits
-            WHERE {0} AND
-            title != '' order by last_visit_date DESC;""".format(get_sql("title", query))
-            cursor.execute(select_statement)
-            r = cursor.fetchall()
-            results.extend(r)
-        os.remove(fire_history_db)
-    except sqlite3.Error:
-        pass
+            with sqlite3.connect(fire_history_db) as c:
+                cursor = c.cursor()
+                select_statement = u"""
+                select DISTINCT url,title,visit_count
+                FROM moz_places JOIN moz_historyvisits
+                WHERE ({0}) OR
+                ({1}) AND
+                title != '' order by last_visit_date DESC;""".format(get_sql("title", query), get_sql("url", query))
+                cursor.execute(select_statement)
+                r = cursor.fetchall()
+                results.extend(r)
+            os.remove(fire_history_db)
+        except sqlite3.Error:
+            pass
     return results
 
 
