@@ -121,7 +121,7 @@ def search_chrome_histories(chrome_locked_db, query):
                 urls.title IS NOT NULL AND
                 ({0}) OR
                 ({1}) AND
-                urls.title != '' order by last_visit_time DESC;""".format(get_sql("urls.title", query), get_sql("urls.url", query))
+                urls.title != '' order by last_visit_time DESC LIMIT 1000;""".format(get_sql("urls.title", query), get_sql("urls.url", query))
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
@@ -154,7 +154,7 @@ def search_fire_history(fire_locked_db, query):
                 FROM moz_places JOIN moz_historyvisits
                 WHERE ({0}) OR
                 ({1}) AND
-                title != '' order by last_visit_date DESC;""".format(get_sql("title", query), get_sql("url", query))
+                title != '' order by last_visit_date DESC LIMIT 1000;""".format(get_sql("title", query), get_sql("url", query))
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
