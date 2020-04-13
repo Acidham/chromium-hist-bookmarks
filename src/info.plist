@@ -93,7 +93,7 @@
 	<key>description</key>
 	<string>Search URL in Brave History</string>
 	<key>disabled</key>
-	<false/>
+	<true/>
 	<key>name</key>
 	<string>Chromium&amp;Firefox Bookmarks and History</string>
 	<key>objects</key>
@@ -419,7 +419,7 @@ Search Bookmarks with keyword: bm</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.2.3</string>
+	<string>1.2.4</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
