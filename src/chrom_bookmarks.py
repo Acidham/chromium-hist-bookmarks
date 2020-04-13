@@ -97,6 +97,8 @@ def path_to_fire_bookmarks():
     """
     user_dir = os.path.expanduser('~')
     f_home = user_dir + FIRE_BOOKMARKS
+    if not os.path.isdir(f_home):
+        return None
     f_home_dirs = ['{0}/{1}'.format(f_home, o) for o in os.listdir(f_home)]
     valid_hist = None
     for f in f_home_dirs:
