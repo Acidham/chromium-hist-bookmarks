@@ -93,7 +93,7 @@
 	<key>description</key>
 	<string>Search URL in Brave History</string>
 	<key>disabled</key>
-	<true/>
+	<false/>
 	<key>name</key>
 	<string>Chromium&amp;Firefox Bookmarks and History</string>
 	<key>objects</key>
@@ -131,7 +131,7 @@
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
-				<integer>0</integer>
+				<integer>102</integer>
 				<key>keyword</key>
 				<string>bm</string>
 				<key>queuedelaycustom</key>
@@ -145,7 +145,10 @@
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string></string>
+				<string>export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+
+python3.8 chrom_bookmarks.py $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -155,7 +158,7 @@
 				<key>title</key>
 				<string>Search Chromium&amp;Firefox Bookmarks</string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -309,7 +312,7 @@ fi</string>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
-				<integer>0</integer>
+				<integer>102</integer>
 				<key>keyword</key>
 				<string>bh</string>
 				<key>queuedelaycustom</key>
@@ -323,7 +326,13 @@ fi</string>
 				<key>runningsubtext</key>
 				<string>Searching, please wait...</string>
 				<key>script</key>
-				<string></string>
+				<string>export PYENV_ROOT=$HOME/.pyenv
+export PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+
+python3.8 chrom_history.py $1
+
+
+</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -333,7 +342,7 @@ fi</string>
 				<key>title</key>
 				<string>Chromium History</string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -347,6 +356,8 @@ fi</string>
 	</array>
 	<key>readme</key>
 	<string>Search in Chromium&amp;Geko History and Bookmarks.
+
+Requires Python 3!
 
 Supported Browsers: 
 - Chromium
@@ -419,7 +430,7 @@ Search Bookmarks with keyword: bm</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.2.4</string>
+	<string>2.0.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

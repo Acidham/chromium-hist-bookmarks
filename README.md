@@ -2,14 +2,15 @@
 
 ## Required
 
-Supported Chromium&Geko Browsers:
+* **Python 3**
 
-* Chromium
-* Google Chrome
-* Brave and Brave Dev (Chromium)
-* Vivaldi
-* Opera
-* Firefox
+* Supported Chromium&Geko Browsers:
+  * Chromium
+  * Google Chrome
+  * Brave and Brave Dev (Chromium)
+  * Vivaldi
+  * Opera
+  * Firefox
 
 ## Usage
 

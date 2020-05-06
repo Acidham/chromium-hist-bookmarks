@@ -1,14 +1,16 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import codecs
 import json
 import os
 import shutil
 import sqlite3
 import sys
+from typing import Union
 from unicodedata import normalize
 
-from Alfred import Items as Items
-from Alfred import Tools as Tools
+from Alfred3 import Items as Items
+from Alfred3 import Tools as Tools
 
 # Bookmark file path relative to HOME
 BOOKMARKS = [
@@ -23,7 +25,7 @@ BOOKMARKS = [
 FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
 
 
-def removeDuplicates(li):
+def removeDuplicates(li: list) -> list:
     """
     Removes Duplicates from history file
 
@@ -40,7 +42,7 @@ def removeDuplicates(li):
     return newList
 
 
-def get_all_urls(the_json):
+def get_all_urls(the_json: str) -> list:
     """
     Extract all URLs and title from Bookmark files
 
@@ -50,14 +52,14 @@ def get_all_urls(the_json):
     Returns:
         list(tuble): List of tublle with Bookmarks url and title
     """
-    def extract_data(data):
-        if type(data) == dict and data.get('type') == 'url':
+    def extract_data(data: dict):
+        if isinstance(data, dict) and data.get('type') == 'url':
             urls.append({'name': data.get('name'), 'url': data.get('url')})
-        if type(data) == dict and data.get('type') == 'folder':
+        if isinstance(data, dict) and data.get('type') == 'folder':
             the_children = data.get('children')
             get_container(the_children)
 
-    def get_container(o):
+    def get_container(o: Union[list, dict]):
         if isinstance(o, list):
             for i in o:
                 extract_data(i)
@@ -72,7 +74,7 @@ def get_all_urls(the_json):
     return ret_list
 
 
-def paths_to_bookmarks():
+def paths_to_bookmarks() -> list:
     """
     Get all valid bookmarks pahts from BOOKMARKS
 
@@ -80,7 +82,7 @@ def paths_to_bookmarks():
         list: valid bookmark paths
     """
     user_dir = os.path.expanduser('~')
-    bms = [user_dir + p for p in BOOKMARKS]
+    bms = [f"{user_dir}{p}" for p in BOOKMARKS]
     valid_bms = list()
     for b in bms:
         if os.path.isfile(b):
@@ -88,7 +90,7 @@ def paths_to_bookmarks():
     return valid_bms
 
 
-def path_to_fire_bookmarks():
+def path_to_fire_bookmarks() -> str:
     """
     Get valid pathes to firefox history from BOOKMARKS variable
 
@@ -96,21 +98,21 @@ def path_to_fire_bookmarks():
         list: available paths of history files
     """
     user_dir = os.path.expanduser('~')
-    f_home = user_dir + FIRE_BOOKMARKS
+    f_home = f"{user_dir}{FIRE_BOOKMARKS}"
     if not os.path.isdir(f_home):
         return None
-    f_home_dirs = ['{0}/{1}'.format(f_home, o) for o in os.listdir(f_home)]
+    f_home_dirs = [f'{f_home}/{o}' for o in os.listdir(f_home)]
     valid_hist = None
     for f in f_home_dirs:
         if os.path.isdir(f):
-            f_sub_dirs = ['{0}/{1}'.format(f, o) for o in os.listdir(f)]
+            f_sub_dirs = [f'{f}/{o}' for o in os.listdir(f)]
             for fs in f_sub_dirs:
                 if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':
                     valid_hist = fs
     return valid_hist
 
 
-def load_fire_bookmarks(fire_locked_db):
+def load_fire_bookmarks(fire_locked_db: str) -> list:
     """
     Load Firefox History files into list
 
@@ -140,7 +142,7 @@ def load_fire_bookmarks(fire_locked_db):
     return [ret for ret in results if r[0] is not None] if len(results) > 0 else list()
 
 
-def get_json_from_file(file):
+def get_json_from_file(file: str) -> json:
     """
     Get Bookmark JSON
 
@@ -153,22 +155,25 @@ def get_json_from_file(file):
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
-def match(search_term, results):
+def match(search_term: str, results: list) -> list:
     search_terms = search_term.split('&') if '&' in search_term else search_term.split(' ')
-
     for s in search_terms:
         n_list = list()
-        s = normalize('NFD', s.decode('utf-8'))
+        s = normalize('NFC', s)
         for r in results:
-            t = normalize('NFD', r[0].decode('utf-8'))
+            t = normalize('NFC', r[0])
             # sys.stderr.write('Title: '+t+'\n')
-            s = normalize('NFD', s.decode('utf-8'))
+            s = normalize('NFC', s)
             # sys.stderr.write("url: " + s + '\n')
             if s.lower() in t.lower():
                 n_list.append(r)
-        results = n_list
-    return results
+    return n_list
 
+
+Tools.log("PYTHON VERSION:", sys.version)
+if sys.version_info < (3, 8):
+    print('Python version 3.8.0 or higher required!')
+    sys.exit(0)
 
 wf = Items()
 query = Tools.getArgv(1) if Tools.getArgv(1) is not None else str()
@@ -207,9 +212,8 @@ if len(bms) > 0:
 if wf.getItemsLengths() == 0:
     wf.setItem(
         title='No Bookmark found!',
-        subtitle='Search \"{0}\" in Google...'.format(query),
-        arg='https://www.google.com/search?q={0}'.format(query)
+        subtitle=f'Search "{query}" in Google...',
+        arg=f'https://www.google.com/search?q={query}'
     )
     wf.addItem()
-
 wf.write()
