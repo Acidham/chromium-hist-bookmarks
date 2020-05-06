@@ -24,7 +24,7 @@ FIRE_HISTORIE = "/Library/Application Support/Firefox/Profiles"
 
 Tools.log("PYTHON VERSION:", sys.version)
 if sys.version_info < (3, 7):
-    print('Python version 3.8.0 or higher required!')
+    print('Python version 3.7.0 or higher required!')
     sys.exit(0)
 
 
