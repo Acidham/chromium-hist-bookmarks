@@ -158,7 +158,7 @@ python3.8 chrom_bookmarks.py $1</string>
 				<key>title</key>
 				<string>Search Chromium&amp;Firefox Bookmarks</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>8</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -342,7 +342,7 @@ python3.8 chrom_history.py $1
 				<key>title</key>
 				<string>Chromium History</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>8</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -430,7 +430,7 @@ Search Bookmarks with keyword: bm</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.0.0</string>
+	<string>2.0.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
