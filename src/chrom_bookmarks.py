@@ -161,9 +161,9 @@ def match(search_term: str, results: list) -> list:
         n_list = list()
         s = normalize('NFC', s)
         for r in results:
-            t = normalize('NFC', r[0])
+            t = normalize('NFC', r[0]) if r[0] is not None else ''
             # sys.stderr.write('Title: '+t+'\n')
-            s = normalize('NFC', s)
+            s = normalize('NFC', s) if s is not None else ''
             # sys.stderr.write("url: " + s + '\n')
             if s.lower() in t.lower():
                 n_list.append(r)
