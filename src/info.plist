@@ -310,7 +310,7 @@ fi</string>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
@@ -377,7 +377,16 @@ Type `&amp;` in between of the search terms to search for multiple entries e.g.:
 
 Bookmarks
 =========
-Search Bookmarks with keyword: bm</string>
+
+Search Bookmarks with keyword: bm
+
+Setup
+=====
+
+The Workflow uses only History&amp;Bookmarks files when browser is installed. In addition the Workflow environment variables allows to limit which browser history&amp;bookmarks will be searched.
+
+True=Included in search
+False=Ecluded from search</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -427,10 +436,27 @@ Search Bookmarks with keyword: bm</string>
 			<integer>50</integer>
 		</dict>
 	</dict>
+	<key>variables</key>
+	<dict>
+		<key>brave</key>
+		<string>True</string>
+		<key>brave_dev</key>
+		<string>False</string>
+		<key>chrome</key>
+		<string>True</string>
+		<key>chromium</key>
+		<string>False</string>
+		<key>firefox</key>
+		<string>True</string>
+		<key>opera</key>
+		<string>True</string>
+		<key>vivaldi</key>
+		<string>True</string>
+	</dict>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.0.4</string>
+	<string>2.1.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

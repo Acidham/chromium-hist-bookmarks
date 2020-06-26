@@ -12,6 +12,13 @@
   * Opera
   * Firefox
 
+## Configuration
+
+The Workflow uses only History&Bookmarks files when browser is installed. In addition the Workflow environment variables allows to limit which browser history&bookmarks will be searched.
+
+* `True` = Included in search
+* `False` = Ecluded from search
+
 ## Usage
 
 ### History Search
@@ -25,3 +32,4 @@
 
 * `bm`query
 * *SHIFT* for quicklook URL
+

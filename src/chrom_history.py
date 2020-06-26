@@ -10,42 +10,53 @@ from unicodedata import normalize
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
 
-# Hitory file relative to HOME
-HISTORIES = [
-    "/Library/Application Support/Chromium/Default/History",
-    "/Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
-    "/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History",
-    "/Library/Application Support/Google/Chrome/Default/History",
-    "/Library/Application Support/Vivaldi/Default/History",
-    "/Library/Application Support/com.operasoftware.Opera/History",
-]
+HISTORY_MAP = {
+    "chromium": "/Library/Application Support/Chromium/Default/History",
+    "brave": "/Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
+    "brave_dev": "/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History",
+    "chrome": "/Library/Application Support/Google/Chrome/Default/History",
+    "vivaldi": "/Library/Application Support/Vivaldi/Default/History",
+    "opera": "/Library/Application Support/com.operasoftware.Opera/History",
+    "firefox": "/Library/Application Support/Firefox/Profiles"
+}
 
-FIRE_HISTORIE = "/Library/Application Support/Firefox/Profiles"
+FIRE_HISTORY = ""
+HISTORIES = list()
+# Get Browser Histories to load per env
+for k in HISTORY_MAP.keys():
+    browser = Tools.getEnv(k)
+    is_set = True if browser == "True" else False
+    if is_set and k == "firefox":
+        FIRE_HISTORY = HISTORY_MAP.get(k)
+    elif is_set:
+        HISTORIES.append(HISTORY_MAP.get(k))
+
+# Limit SQL results for better performance
+SQL_LIMIT = 1000
 
 Tools.log("PYTHON VERSION:", sys.version)
 if sys.version_info < (3, 7):
-    print('Python version 3.7.0 or higher required!')
+    print("Python version 3.7.0 or higher required!")
     sys.exit(0)
 
 
 def removeDuplicates(li: list) -> list:
     """
-    Removes Duplicates from history file
+    Removes Duplicates from bookmark file
 
     Args:
-        li(list): list of history entries
+        li(list): list of bookmark entries
 
     Returns:
-        list: filtered history entries
+        list: filtered bookmark entries
     """
-    prev = str()
-    newList = list()
-    for i in li:
-        cur = i[1]
-        if cur and prev.lower() != cur.lower():
-            newList.append(i)
-            prev = cur
-    return newList
+    visited = set()
+    output = []
+    for a, b, c in li:
+        if a not in visited:
+            visited.add(a)
+            output.append((a, b, c))
+    return output
 
 
 def path_to_chrome_histories() -> list:
@@ -67,34 +78,32 @@ def path_to_chrome_histories() -> list:
     return valid_hists
 
 
-def get_sql(field: str, search: str) -> str:
-    search_terms = search.split("&") if "&" in search else search.split("|")
-    search_terms = [normalize("NFC", s) for s in search_terms]
-    search_terms = [f'LOWER({field}) LIKE LOWER("%{s}%")' for s in search_terms]
+def get_search_terms(search: str) -> tuple:
     if "&" in search:
-        sql = " AND ".join(search_terms)
-    elif "|":
-        sql = " OR ".join(search_terms)
+        search_terms = tuple(search.split("&"))
+    elif "|" in search:
+        search_terms = tuple(search.split("|"))
     else:
-        sql = f"LOWER{field} LIKE LOWER({normalize('NFC', search)})"
-    return sql
+        search_terms = tuple(search.split(" "))
+    search_terms = [normalize("NFC", s) for s in search_terms]
+    return search_terms
 
 
 def path_to_fire_history() -> str:
     """
-    Get valid pathes to firefox history from BOOKMARKS variable
+    Get valid pathes to firefox history from HISTORY variable
 
     Returns:
         str: available paths of history file
     """
     user_dir = os.path.expanduser("~")
-    f_home = f"{user_dir}{FIRE_HISTORIE}"
+    f_home = f"{user_dir}{FIRE_HISTORY}"
     valid_hist = ""
     if os.path.isdir(f_home):
         Tools.log(f"{f_home} found")
         f_home_dirs = [f"{f_home}/{o}" for o in os.listdir(f_home)]
         for f in f_home_dirs:
-            if os.path.isdir(f):
+            if os.path.isdir(f) and f.endswith("default-release"):
                 f_sub_dirs = [f"{f}/{o}" for o in os.listdir(f)]
                 for fs in f_sub_dirs:
                     if os.path.isfile(fs) and os.path.basename(fs) == "places.sqlite":
@@ -127,16 +136,50 @@ def search_chrome_histories(chrome_locked_db: list, query: str) -> list:
                 FROM urls, visits
                 WHERE urls.id = visits.url AND
                 urls.title IS NOT NULL AND
-                ({get_sql("urls.title", query)}) OR
-                ({get_sql("urls.url", query)}) AND
-                urls.title != '' order by last_visit_time DESC LIMIT 500; """
+                urls.title != '' order by last_visit_time DESC; """
+                Tools.log(select_statement)
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
             os.remove(history_db)
         except sqlite3.Error:
             pass
+    results = search_in_tuples(results, query)
     return results
+
+
+def search_in_tuples(tuples: list, search: str) -> list:
+    """
+    Search for serach term in list of tuples
+
+    Args:
+        tuples (list): List contains tuple to search
+        search (str): Search contains & or & or none
+
+    Returns:
+        list: tuple list with result of query srting
+    """
+
+    def is_in_tuple(tple: tuple, st: str) -> bool:
+        match = False
+        for e in tple:
+            if st.lower() in str(e).lower():
+                match = True
+        return match
+
+    search_terms = get_search_terms(search)
+    result = list()
+    for t in tuples:
+        # Search AND
+        if "&" in search and all([is_in_tuple(t, ts) for ts in search_terms]):
+            result.append(t)
+        # Search OR
+        if "|" in search and any([is_in_tuple(t, ts) for ts in search_terms]):
+            result.append(t)
+        # Search Single term
+        if "|" not in search and "&" not in search and any([is_in_tuple(t, ts) for ts in search_terms]):
+            result.append(t)
+    return result
 
 
 def search_fire_history(fire_locked_db: str, query: str) -> list:
@@ -160,56 +203,56 @@ def search_fire_history(fire_locked_db: str, query: str) -> list:
                 select_statement = f"""
                 select DISTINCT url, title, visit_count
                 FROM moz_places JOIN moz_historyvisits
-                WHERE({get_sql("title", query)}) OR
-                ({get_sql("url", query)}) AND
-                title != '' order by last_visit_date DESC LIMIT 500;"""
+                WHERE title != '' order by last_visit_date DESC LIMIT {SQL_LIMIT};"""
                 cursor.execute(select_statement)
                 r = cursor.fetchall()
                 results.extend(r)
             os.remove(fire_history_db)
         except sqlite3.Error:
             pass
+    results = search_in_tuples(results, query)
     return results
 
 
-wf = Items()
+def main():
+    wf = Items()
 
-search_term = Tools.getArgv(1)
-chrome_locked_db = path_to_chrome_histories()
-fire_locked_db = path_to_fire_history()
+    search_term = Tools.getArgv(1)
+    chrome_locked_db = path_to_chrome_histories()
+    fire_locked_db = path_to_fire_history()
 
-if search_term is not None:
-    hist_all = search_chrome_histories(chrome_locked_db, search_term)
-    fire_hist = search_fire_history(fire_locked_db, search_term)
-    hist_all = hist_all + fire_hist
-else:
-    sys.exit(0)
+    if search_term is not None:
+        hist_all = search_chrome_histories(chrome_locked_db, search_term)
+        fire_hist = search_fire_history(fire_locked_db, search_term)
+        hist_all = hist_all + fire_hist
+    else:
+        sys.exit(0)
 
+    # Remove duplicate Entries
+    results = removeDuplicates(hist_all)
+    # Search entered into Alfred
+    results = results[:30]
+    # Sort based on visits
+    results = Tools.sortListTuple(results, 2)
 
-# Remove duplicate Entries
-results = removeDuplicates(hist_all)
-# Search entered into Alfred
-results = results[:30]
-# Sort based on visits
-results = Tools.sortListTuple(results, 2)
-
-if len(results) > 0:
-    for i in results:
-        url = i[0]
-        title = i[1]
-        visits = i[2]
+    if len(results) > 0:
+        for i in results:
+            url = i[0]
+            title = i[1]
+            visits = i[2]
+            wf.setItem(
+                title=title, subtitle=f"(Visits: {visits}) {url}", arg=url, quicklookurl=url
+            )
+            wf.addItem()
+    if wf.getItemsLengths() == 0:
         wf.setItem(
-            title=title,
-            subtitle=f"(Visits: {visits}) {url}",
-            arg=url, quicklookurl=url
+            title="Nothing found in History!",
+            subtitle=f'Search "{search_term}" in Google?',
+            arg=f"https://www.google.com/search?q={search_term}",
         )
         wf.addItem()
-a = wf.getItemsLengths()
-if wf.getItemsLengths() == 0:
-    wf.setItem(
-        title="Nothing found in History!",
-        subtitle=f'Search "{search_term}" in Google?',
-        arg=f"https://www.google.com/search?q={search_term}",
-    )
-    wf.addItem()
-wf.write()
+    wf.write()
+
+
+if __name__ == "__main__":
+    main()

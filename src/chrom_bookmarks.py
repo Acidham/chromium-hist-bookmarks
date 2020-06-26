@@ -27,19 +27,21 @@ FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
 
 def removeDuplicates(li: list) -> list:
     """
-    Removes Duplicates from history file
+    Removes Duplicates from bookmark file
 
     Args:
-        li (list): list of history entries
+        li(list): list of bookmark entries
 
     Returns:
-        list: filtered history entries
+        list: filtered bookmark entries
     """
-    newList = list()
-    for i in li:
-        if i not in newList:
-            newList.append(i)
-    return newList
+    visited = set()
+    output = []
+    for a, b in li:
+        if a not in visited:
+            visited.add(a)
+            output.append((a, b))
+    return output
 
 
 def get_all_urls(the_json: str) -> list:
@@ -104,7 +106,7 @@ def path_to_fire_bookmarks() -> str:
     f_home_dirs = [f'{f_home}/{o}' for o in os.listdir(f_home)]
     valid_hist = None
     for f in f_home_dirs:
-        if os.path.isdir(f):
+        if os.path.isdir(f) and f.endswith('default-release'):
             f_sub_dirs = [f'{f}/{o}' for o in os.listdir(f)]
             for fs in f_sub_dirs:
                 if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':

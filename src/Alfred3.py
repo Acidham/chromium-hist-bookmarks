@@ -369,7 +369,7 @@ class Tools(object):
         """
         environment = os.environ
         env_dict = dict()
-        for k, v in environment.iteritems():
+        for k, v in environment.items():
             env_dict.update({k: v})
         return env_dict
 
