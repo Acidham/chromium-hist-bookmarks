@@ -5,6 +5,8 @@ import os
 import shutil
 import sqlite3
 import sys
+import uuid
+from multiprocessing import Pool
 from unicodedata import normalize
 
 from Alfred3 import Items as Items
@@ -20,19 +22,16 @@ HISTORY_MAP = {
     "firefox": "/Library/Application Support/Firefox/Profiles"
 }
 
-FIRE_HISTORY = ""
 HISTORIES = list()
 # Get Browser Histories to load per env
 for k in HISTORY_MAP.keys():
     browser = Tools.getEnv(k)
     is_set = True if browser == "True" else False
-    if is_set and k == "firefox":
-        FIRE_HISTORY = HISTORY_MAP.get(k)
-    elif is_set:
-        HISTORIES.append(HISTORY_MAP.get(k))
+    HISTORIES.append(HISTORY_MAP.get(k))
 
 # Limit SQL results for better performance
-SQL_LIMIT = 1000
+# will only be applied to Firefox history
+SQL_LIMIT = 100000
 
 Tools.log("PYTHON VERSION:", sys.version)
 if sys.version_info < (3, 7):
@@ -40,28 +39,9 @@ if sys.version_info < (3, 7):
     sys.exit(0)
 
 
-def removeDuplicates(li: list) -> list:
+def history_paths() -> list:
     """
-    Removes Duplicates from bookmark file
-
-    Args:
-        li(list): list of bookmark entries
-
-    Returns:
-        list: filtered bookmark entries
-    """
-    visited = set()
-    output = []
-    for a, b, c in li:
-        if a not in visited:
-            visited.add(a)
-            output.append((a, b, c))
-    return output
-
-
-def path_to_chrome_histories() -> list:
-    """
-    Get valid pathes to chrome history from BOOKMARKS variable
+    Get valid pathes to history from HISTORIES variable
 
     Returns:
         list: available paths of history files
@@ -70,6 +50,8 @@ def path_to_chrome_histories() -> list:
     hists = [f"{user_dir}{h}" for h in HISTORIES]
     valid_hists = list()
     for h in hists:
+        if "Firefox" in h:
+            h = path_to_fire_history(h)
         if os.path.isfile(h):
             valid_hists.append(h)
             Tools.log(f"{h} found")
@@ -78,26 +60,13 @@ def path_to_chrome_histories() -> list:
     return valid_hists
 
 
-def get_search_terms(search: str) -> tuple:
-    if "&" in search:
-        search_terms = tuple(search.split("&"))
-    elif "|" in search:
-        search_terms = tuple(search.split("|"))
-    else:
-        search_terms = tuple(search.split(" "))
-    search_terms = [normalize("NFC", s) for s in search_terms]
-    return search_terms
-
-
-def path_to_fire_history() -> str:
+def path_to_fire_history(f_home: str) -> str:
     """
-    Get valid pathes to firefox history from HISTORY variable
+    Get valid pathes to firefox history
 
     Returns:
         str: available paths of history file
     """
-    user_dir = os.path.expanduser("~")
-    f_home = f"{user_dir}{FIRE_HISTORY}"
     valid_hist = ""
     if os.path.isdir(f_home):
         Tools.log(f"{f_home} found")
@@ -114,38 +83,93 @@ def path_to_fire_history() -> str:
     return valid_hist
 
 
-def search_chrome_histories(chrome_locked_db: list, query: str) -> list:
+def get_histories(dbs: list, query: str) -> list:
     """
-    Load Chrome History files into list
+    Load History files into list with multiprocessing
 
     Args:
-        chrome_locked_db(list): Contains valid history paths
+        dbs(list): Contains valid history paths
 
     Returns:
         list: hitory entries unfiltered
     """
-    history_db = "/tmp/History"
+
     results = list()
-    for db in chrome_locked_db:
-        try:
-            shutil.copy2(db, "/tmp")
-            with sqlite3.connect(history_db) as c:
-                cursor = c.cursor()
+    with Pool(len(dbs)) as p:
+        results = p.map(sql, [db for db in dbs])
+    matches = []
+    for r in results:
+        matches = matches + r
+    results = search_in_tuples(matches, query)
+    return results
+
+
+def sql(db: str) -> list:
+    res = []
+    history_db = f"/tmp/{uuid.uuid1()}"
+    try:
+        shutil.copy2(db, history_db)
+        with sqlite3.connect(history_db) as c:
+            cursor = c.cursor()
+            if "Firefox" in db:
+                select_statement = f"""
+                select DISTINCT url, title, visit_count
+                FROM moz_places JOIN moz_historyvisits
+                WHERE title != '' order by last_visit_date DESC LIMIT {SQL_LIMIT}; """
+            else:
                 select_statement = f"""
                 SELECT DISTINCT urls.url, urls.title, urls.visit_count
                 FROM urls, visits
                 WHERE urls.id = visits.url AND
                 urls.title IS NOT NULL AND
                 urls.title != '' order by last_visit_time DESC; """
-                Tools.log(select_statement)
-                cursor.execute(select_statement)
-                r = cursor.fetchall()
-                results.extend(r)
-            os.remove(history_db)
-        except sqlite3.Error:
-            pass
-    results = search_in_tuples(results, query)
-    return results
+            Tools.log(select_statement)
+            cursor.execute(select_statement)
+            r = cursor.fetchall()
+            res.extend(r)
+        os.remove(history_db)
+    except sqlite3.Error:
+        pass
+    return res
+
+
+def get_search_terms(search: str) -> tuple:
+    """
+    Explode search term string
+
+    Args:
+        search(str): search term(s), can contain & or |
+
+    Returns:
+        tuple: Tuple with search terms
+    """
+    if "&" in search:
+        search_terms = tuple(search.split("&"))
+    elif "|" in search:
+        search_terms = tuple(search.split("|"))
+    else:
+        search_terms = tuple(search.split(" "))
+    search_terms = [normalize("NFC", s) for s in search_terms]
+    return search_terms
+
+
+def removeDuplicates(li: list) -> list:
+    """
+    Removes Duplicates from history file
+
+    Args:
+        li(list): list of history entries
+
+    Returns:
+        list: filtered history entries
+    """
+    visited = set()
+    output = []
+    for a, b, c in li:
+        if b not in visited:
+            visited.add(b)
+            output.append((a, b, c))
+    return output
 
 
 def search_in_tuples(tuples: list, search: str) -> list:
@@ -153,8 +177,8 @@ def search_in_tuples(tuples: list, search: str) -> list:
     Search for serach term in list of tuples
 
     Args:
-        tuples (list): List contains tuple to search
-        search (str): Search contains & or & or none
+        tuples(list): List contains tuple to search
+        search(str): Search contains & or & or none
 
     Returns:
         list: tuple list with result of query srting
@@ -182,54 +206,17 @@ def search_in_tuples(tuples: list, search: str) -> list:
     return result
 
 
-def search_fire_history(fire_locked_db: str, query: str) -> list:
-    """
-    Load Firefox History files into list
-
-    Args:
-        fire_locked_db(list): Contains valid history paths
-
-    Returns:
-        list: hitory entries unfiltered
-    """
-    fire_history_db = "/tmp/places.sqlite"
-    results = list()
-    if fire_locked_db:
-        try:
-            shutil.copy2(fire_locked_db, "/tmp")
-
-            with sqlite3.connect(fire_history_db) as c:
-                cursor = c.cursor()
-                select_statement = f"""
-                select DISTINCT url, title, visit_count
-                FROM moz_places JOIN moz_historyvisits
-                WHERE title != '' order by last_visit_date DESC LIMIT {SQL_LIMIT};"""
-                cursor.execute(select_statement)
-                r = cursor.fetchall()
-                results.extend(r)
-            os.remove(fire_history_db)
-        except sqlite3.Error:
-            pass
-    results = search_in_tuples(results, query)
-    return results
-
-
 def main():
     wf = Items()
 
     search_term = Tools.getArgv(1)
-    chrome_locked_db = path_to_chrome_histories()
-    fire_locked_db = path_to_fire_history()
-
+    locked_history_dbs = history_paths()
     if search_term is not None:
-        hist_all = search_chrome_histories(chrome_locked_db, search_term)
-        fire_hist = search_fire_history(fire_locked_db, search_term)
-        hist_all = hist_all + fire_hist
+        histories = get_histories(locked_history_dbs, search_term)
     else:
         sys.exit(0)
-
     # Remove duplicate Entries
-    results = removeDuplicates(hist_all)
+    results = removeDuplicates(histories)
     # Search entered into Alfred
     results = results[:30]
     # Sort based on visits
