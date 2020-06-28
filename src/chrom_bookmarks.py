@@ -13,16 +13,30 @@ from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
 
 # Bookmark file path relative to HOME
-BOOKMARKS = [
-    '/Library/Application Support/Chromium/Default/Bookmarks',
-    '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
-    '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/Bookmarks',
-    '/Library/Application Support/Google/Chrome/Default/Bookmarks',
-    '/Library/Application Support/Vivaldi/Default/Bookmarks',
-    '/Library/Application Support/com.operasoftware.Opera/Bookmarks'
-]
 
-FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
+BOOKMARS_MAP = {
+    "chrome": '/Library/Application Support/Google/Chrome/Default/Bookmarks',
+    "chromium": '/Library/Application Support/Chromium/Default/Bookmarks',
+    "brave": '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
+    "brave_dev": '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/Bookmarks',
+    "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks',
+    "opera": '/Library/Application Support/com.operasoftware.Opera/Bookmarks',
+    "firefox": '/Library/Application Support/Firefox/Profiles'
+
+}
+
+# FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
+
+FIRE_BOOKMARKS = str()
+BOOKMARKS = list()
+# Get Browser Histories to load per env
+for k in BOOKMARS_MAP.keys():
+    browser = Tools.getEnv(k)
+    is_set = True if browser == "True" else False
+    if k == "firefox" and is_set:
+        FIRE_BOOKMARKS = BOOKMARS_MAP.get(k)
+    elif is_set:
+        BOOKMARKS.append(BOOKMARS_MAP.get(k))
 
 
 def removeDuplicates(li: list) -> list:
