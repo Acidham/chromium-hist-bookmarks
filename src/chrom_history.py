@@ -6,7 +6,7 @@ import shutil
 import sqlite3
 import sys
 import uuid
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
 
 from Alfred3 import Items as Items
@@ -31,7 +31,7 @@ for k in HISTORY_MAP.keys():
 
 # Limit SQL results for better performance
 # will only be applied to Firefox history
-SQL_LIMIT = 100000
+SQL_FIRE_LIMIT = Tools.getEnv("sql_fire_limitx", default=500)
 
 Tools.log("PYTHON VERSION:", sys.version)
 if sys.version_info < (3, 7):
@@ -54,9 +54,9 @@ def history_paths() -> list:
             h = path_to_fire_history(h)
         if os.path.isfile(h):
             valid_hists.append(h)
-            Tools.log(f"{h} found")
+            Tools.log(f"{h} → found")
         else:
-            Tools.log(f"{h} NOT found")
+            Tools.log(f"{h} → NOT found")
     return valid_hists
 
 
@@ -69,7 +69,6 @@ def path_to_fire_history(f_home: str) -> str:
     """
     valid_hist = ""
     if os.path.isdir(f_home):
-        Tools.log(f"{f_home} found")
         f_home_dirs = [f"{f_home}/{o}" for o in os.listdir(f_home)]
         for f in f_home_dirs:
             if os.path.isdir(f) and f.endswith("default-release"):
@@ -79,19 +78,19 @@ def path_to_fire_history(f_home: str) -> str:
                         valid_hist = fs
                         break
     else:
-        Tools.log(f"{f_home} NOT found")
+        Tools.log(f"{f_home} → NOT found")
     return valid_hist
 
 
 def get_histories(dbs: list, query: str) -> list:
     """
-    Load History files into list with multiprocessing
+    Load History files into list
 
     Args:
-        dbs(list): Contains valid history paths
+        dbs(list): list with valid history paths
 
     Returns:
-        list: hitory entries unfiltered
+        list: filters hitory entries
     """
 
     results = list()
@@ -101,6 +100,12 @@ def get_histories(dbs: list, query: str) -> list:
     for r in results:
         matches = matches + r
     results = search_in_tuples(matches, query)
+    # Remove duplicate Entries
+    results = removeDuplicates(results)
+    # Search entered into Alfred
+    results = results[:30]
+    # Sort based on visits
+    results = Tools.sortListTuple(results, 2)
     return results
 
 
@@ -115,7 +120,7 @@ def sql(db: str) -> list:
                 select_statement = f"""
                 select DISTINCT url, title, visit_count
                 FROM moz_places JOIN moz_historyvisits
-                WHERE title != '' order by last_visit_date DESC LIMIT {SQL_LIMIT}; """
+                WHERE title != '' order by last_visit_date DESC LIMIT {SQL_FIRE_LIMIT}; """
             else:
                 select_statement = f"""
                 SELECT DISTINCT urls.url, urls.title, urls.visit_count
@@ -211,17 +216,11 @@ def main():
 
     search_term = Tools.getArgv(1)
     locked_history_dbs = history_paths()
+    results = list()
     if search_term is not None:
-        histories = get_histories(locked_history_dbs, search_term)
+        results = get_histories(locked_history_dbs, search_term)
     else:
         sys.exit(0)
-    # Remove duplicate Entries
-    results = removeDuplicates(histories)
-    # Search entered into Alfred
-    results = results[:30]
-    # Sort based on visits
-    results = Tools.sortListTuple(results, 2)
-
     if len(results) > 0:
         for i in results:
             url = i[0]

@@ -25,8 +25,6 @@ BOOKMARS_MAP = {
 
 }
 
-# FIRE_BOOKMARKS = '/Library/Application Support/Firefox/Profiles'
-
 FIRE_BOOKMARKS = str()
 BOOKMARKS = list()
 # Get Browser Histories to load per env

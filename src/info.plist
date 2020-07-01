@@ -439,7 +439,7 @@ False=Ecluded from search</string>
 	<key>variables</key>
 	<dict>
 		<key>brave</key>
-		<string>True</string>
+		<string>False</string>
 		<key>brave_dev</key>
 		<string>False</string>
 		<key>chrome</key>
@@ -447,16 +447,18 @@ False=Ecluded from search</string>
 		<key>chromium</key>
 		<string>False</string>
 		<key>firefox</key>
-		<string>True</string>
+		<string>Flase</string>
 		<key>opera</key>
 		<string>True</string>
+		<key>sql_fire_limit</key>
+		<string>500</string>
 		<key>vivaldi</key>
 		<string>True</string>
 	</dict>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.1.1</string>
+	<string>2.1.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

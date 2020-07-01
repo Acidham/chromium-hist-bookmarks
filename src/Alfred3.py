@@ -227,19 +227,20 @@ class Tools(object):
         sys.stderr.write(f'{" ".join(message)}\n')
 
     @staticmethod
-    def getEnv(var: str) -> str:
+    def getEnv(var: str, default: str = str()) -> str:
         """
         Reads environment variable
 
         Args:
 
             var (string}: Variable name
+            default (string, optional): fallback if None
 
         Returns:
 
             (str): Env value or string if not available
         """
-        return os.getenv(var) if os.getenv(var) is not None else str()
+        return os.getenv(var) if os.getenv(var) is not None else default
 
     @staticmethod
     def getArgv(i: int) -> str:
