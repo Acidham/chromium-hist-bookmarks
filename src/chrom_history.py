@@ -23,11 +23,11 @@ HISTORY_MAP = {
 }
 
 HISTORIES = list()
-# Get Browser Histories to load per env
+# Get Browser Histories to load per env (true/false)
 for k in HISTORY_MAP.keys():
-    browser = Tools.getEnv(k)
-    is_set = True if browser == "True" else False
-    HISTORIES.append(HISTORY_MAP.get(k))
+    is_set = Tools.getEnvBool(k)
+    if is_set:
+        HISTORIES.append(HISTORY_MAP.get(k))
 
 # Limit SQL results for better performance
 # will only be applied to Firefox history
@@ -94,34 +94,41 @@ def get_histories(dbs: list, query: str) -> list:
     """
 
     results = list()
-    with Pool(len(dbs)) as p:
+    with Pool(len(dbs)) as p:  # Exec in ThreadPool
         results = p.map(sql, [db for db in dbs])
     matches = []
     for r in results:
         matches = matches + r
     results = search_in_tuples(matches, query)
-    # Remove duplicate Entries
-    results = removeDuplicates(results)
-    # Search entered into Alfred
-    results = results[:30]
-    # Sort based on visits
-    results = Tools.sortListTuple(results, 2)
+    results = removeDuplicates(results)  # Remove duplicate Entries
+    results = results[:30]  # Search entered into Alfred
+    results = Tools.sortListTuple(results, 2)  # Sort based on visits
     return results
 
 
 def sql(db: str) -> list:
+    """
+    Executes SQL for Firefox and Chrome depending on History path
+    provided in db: str
+
+    Args:
+        db (str): Path to History file
+
+    Returns:
+        list: result list of dictionaries (Url, Title, VisiCount)
+    """
     res = []
     history_db = f"/tmp/{uuid.uuid1()}"
     try:
         shutil.copy2(db, history_db)
         with sqlite3.connect(history_db) as c:
             cursor = c.cursor()
-            if "Firefox" in db:
+            if "Firefox" in db:  # SQL for Firefox Browser
                 select_statement = f"""
                 select DISTINCT url, title, visit_count
                 FROM moz_places JOIN moz_historyvisits
                 WHERE title != '' order by last_visit_date DESC LIMIT {SQL_FIRE_LIMIT}; """
-            else:
+            else:  # SQL for Chromium Browsers
                 select_statement = f"""
                 SELECT DISTINCT urls.url, urls.title, urls.visit_count
                 FROM urls, visits
@@ -132,9 +139,10 @@ def sql(db: str) -> list:
             cursor.execute(select_statement)
             r = cursor.fetchall()
             res.extend(r)
-        os.remove(history_db)
-    except sqlite3.Error:
-        pass
+        os.remove(history_db)  # Delete History file in /tmp
+    except sqlite3.Error as e:
+        Tools.log(f"SQL Error{e}")
+        sys.exit(1)
     return res
 
 

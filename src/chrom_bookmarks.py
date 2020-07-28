@@ -29,8 +29,7 @@ FIRE_BOOKMARKS = str()
 BOOKMARKS = list()
 # Get Browser Histories to load per env
 for k in BOOKMARS_MAP.keys():
-    browser = Tools.getEnv(k)
-    is_set = True if browser == "True" else False
+    is_set = Tools.getEnvBool(k)
     if k == "firefox" and is_set:
         FIRE_BOOKMARKS = BOOKMARS_MAP.get(k)
     elif is_set:
