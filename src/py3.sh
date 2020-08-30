@@ -1,9 +1,11 @@
 #!/bin/bash 
+#Set to 0 to use the first Python3 version found
 PREFER_LATEST=1
 
 #Array of python3 paths
 PYPATHS=(/usr/bin /usr/local/bin)
 
+#Input arguments
 SCR="${1}"
 QUERY="${2}"
 
@@ -11,17 +13,14 @@ QUERY="${2}"
 SCRPATH="$0"
 SCRIPT_DIR="$(dirname $SCRPATH)"
 
-#in case not running from alfred
+#in case not running from alfred (for debug)
 [ -z "$SCRIPT_DIR" ] && SCRIPT_DIR=.
 
-#Cache file for python binary - we use this to prevent reevaluation on each script run
+#Cache file for python binary - Allowes for faster execution
 PYALIAS=$SCRIPT_DIR/py3
 
-
 CONFIG_PREFIX="Config"
-# RERUN=0
 DEBUG=0
-
 
 pyrun() {
   $py3 "${SCR}" "${QUERY}"
@@ -32,18 +31,8 @@ pyrun() {
 
 handle_py_notfound() {
   #we need this in case of some OS reconfiguration , python3 uninstalled ,etc..
-  
-  if [[ $RERUN -eq 1 ]] 
-  then
-    #Already tried reconfigure, unknown error
-    log_msg "Could not configure python3, please check manualy configure at $PYALIAS"
-    exit 255
-  fi
   log_debug "python3 configuration changed, attemping to reconfigure"
   setup_python_alias
-
-  #attempt rerun
-  # RERUN=1  
 }
 
 verify_not_stub() {
@@ -53,7 +42,7 @@ verify_not_stub() {
 
 getver() {
   PYBIN="${1}"
-  #Extract version info and convert to comparable decimal
+  #Extract py3 version info and convert to comparable decimal
   VER=$($PYBIN -V |  cut -f2 -d" " | sed -E 's/\.([0-9]+)$/\1/')
   echo $VER
   log_debug "Version: $VER"
@@ -62,7 +51,7 @@ getver() {
 make_alias() {
   PYBIN="${1}"
   PYVER="$2"
-  #sanitize
+  #last sanitization
   [ "${PYBIN}" = "" ] && log_msg "Error: invalid python3 path" && exit 255
   echo "export py3='$PYBIN'" > "$PYALIAS"
   log_msg "Python3 was found at $PYBIN." "Version: $PYVER, Please rerun query"
@@ -122,21 +111,19 @@ setup_python_alias() {
   done
   if [ $current_ver = 0.00 ]
   then
-    log_msg "Error: no valid python3 version found"
+    log_msg "Error: no valid python3 version found" "Please locate python version and add to PYPATHS variable"
     exit 255
   fi
   make_alias "$current_py" "$current_ver"
-  . $PYALIAS
+  . "$PYALIAS"
 }
 
 #Main
 if [ -f "$PYALIAS" ]
 then
-  . $PYALIAS 
+  . "$PYALIAS"
   pyrun
   exit 
 else
   setup_python_alias
-  # pyrun
 fi
-
