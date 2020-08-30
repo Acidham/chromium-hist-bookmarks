@@ -9,12 +9,8 @@ PYPATHS=(/usr/bin /usr/local/bin)
 SCR="${1}"
 QUERY="${2}"
 
-
 SCRPATH="$0"
 SCRIPT_DIR="$(dirname $SCRPATH)"
-
-#in case not running from alfred (for debug)
-[ -z "$SCRIPT_DIR" ] && SCRIPT_DIR=.
 
 #Cache file for python binary - Allowes for faster execution
 PYALIAS=$SCRIPT_DIR/py3
