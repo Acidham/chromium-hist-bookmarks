@@ -36,8 +36,9 @@ handle_py_notfound() {
 }
 
 verify_not_stub() {
-  PYBIN="{$1}"
+  PYBIN="${1}"
   $PYBIN -V > /dev/null 2>&1
+  return $?
 }
 
 getver() {
@@ -52,7 +53,8 @@ make_alias() {
   PYBIN="${1}"
   PYVER="$2"
   #last sanitization
-  [ "${PYBIN}" = "" ] && log_msg "Error: invalid python3 path" && exit 255
+  [ -z "${PYBIN}"  ] && log_msg "Error: invalid python3 path" && exit 255
+  [ -z "${PYVER}" ] && PYVER="$(getver "$PYBIN")"
   echo "export py3='$PYBIN'" > "$PYALIAS"
   log_msg "Python3 was found at $PYBIN." "Version: $PYVER, Please rerun query"
 }
@@ -91,8 +93,8 @@ setup_python_alias() {
     if [ -f $p/python3 ]
     then
       #check path does not contain a stub
-      [[ $(verify_not_stub "$p/python3") -ne 0 ]] && continue
-
+      # set -x
+      ! verify_not_stub "$p/python3"  && continue
       #check for latest py3 version
       if [ $PREFER_LATEST -eq 1 ]
       then
@@ -104,8 +106,8 @@ setup_python_alias() {
         fi
       else
         #Just take the first valid python3 found
-        make_alias $p/python3
-        break
+        make_alias "$p/python3"
+        return 0
       fi
     fi
   done
