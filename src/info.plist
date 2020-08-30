@@ -35,21 +35,21 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Copy URL to Clipboard</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
 				<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Copy URL to Clipboard</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -68,21 +68,21 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Copy URL to Clipboard</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
 				<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Copy URL to Clipboard</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -98,25 +98,6 @@
 	<string>Chromium&amp;Firefox Bookmarks and History</string>
 	<key>objects</key>
 	<array>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
@@ -145,10 +126,7 @@
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string>export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
-
-python3.8 chrom_bookmarks.py $1</string>
+				<string>./py3.sh chrom_bookmarks.py "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -158,7 +136,7 @@ python3.8 chrom_bookmarks.py $1</string>
 				<key>title</key>
 				<string>Search Chromium&amp;Firefox Bookmarks</string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -172,42 +150,21 @@ python3.8 chrom_bookmarks.py $1</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
 				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{query} copied to the Clipboard</string>
-				<key>title</key>
-				<string>URL copied to Clipboard</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
+			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
-			<string>6B99D187-E195-432C-A079-D4A99D9A9B0D</string>
+			<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string>{query}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
-			<key>version</key>
-			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -303,6 +260,25 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -328,12 +304,7 @@ fi</string>
 				<key>runningsubtext</key>
 				<string>Searching, please wait...</string>
 				<key>script</key>
-				<string>export PYENV_ROOT=$HOME/.pyenv
-export PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-
-python3.8 chrom_history.py $1
-
-
+				<string>./py3.sh chrom_history.py "$1"
 </string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -344,7 +315,7 @@ python3.8 chrom_history.py $1
 				<key>title</key>
 				<string>Chromium History</string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -354,6 +325,27 @@ python3.8 chrom_history.py $1
 			<string>A1F782AE-40F5-47BE-BA57-F230607162D5</string>
 			<key>version</key>
 			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query} copied to the Clipboard</string>
+				<key>title</key>
+				<string>URL copied to Clipboard</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>6B99D187-E195-432C-A079-D4A99D9A9B0D</string>
+			<key>version</key>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -394,7 +386,7 @@ False=Ecluded from search</string>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>370</integer>
+			<integer>450</integer>
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
@@ -405,37 +397,37 @@ False=Ecluded from search</string>
 			<key>note</key>
 			<string>OneUpdater</string>
 			<key>xpos</key>
-			<integer>370</integer>
+			<integer>650</integer>
 			<key>ypos</key>
-			<integer>320</integer>
+			<integer>170</integer>
 		</dict>
 		<key>6B99D187-E195-432C-A079-D4A99D9A9B0D</key>
 		<dict>
 			<key>xpos</key>
-			<integer>570</integer>
+			<integer>650</integer>
 			<key>ypos</key>
-			<integer>180</integer>
+			<integer>315</integer>
 		</dict>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>370</integer>
+			<integer>455</integer>
 			<key>ypos</key>
-			<integer>180</integer>
+			<integer>315</integer>
 		</dict>
 		<key>A1F782AE-40F5-47BE-BA57-F230607162D5</key>
 		<dict>
 			<key>xpos</key>
 			<integer>70</integer>
 			<key>ypos</key>
-			<integer>320</integer>
+			<integer>315</integer>
 		</dict>
 		<key>E420908F-C5F5-44DD-AB95-0B375998DC6F</key>
 		<dict>
 			<key>xpos</key>
 			<integer>70</integer>
 			<key>ypos</key>
-			<integer>50</integer>
+			<integer>45</integer>
 		</dict>
 	</dict>
 	<key>variables</key>
@@ -460,7 +452,7 @@ False=Ecluded from search</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.1.4</string>
+	<string>2.1.6</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
