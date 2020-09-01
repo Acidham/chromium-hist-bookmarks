@@ -169,18 +169,32 @@ def get_json_from_file(file: str) -> json:
 
 
 def match(search_term: str, results: list) -> list:
-    search_terms = search_term.split('&') if '&' in search_term else search_term.split(' ')
-    for s in search_terms:
-        n_list = list()
-        s = normalize('NFC', s)
-        for r in results:
-            t = normalize('NFC', r[0]) if r[0] is not None else ''
-            # sys.stderr.write('Title: '+t+'\n')
-            s = normalize('NFC', s) if s is not None else ''
-            # sys.stderr.write("url: " + s + '\n')
-            if s.lower() in t.lower():
-                n_list.append(r)
-    return n_list
+    def is_in_tuple(tple: tuple, st: str) -> bool:
+        match = False
+        for e in tple:
+            if st.lower() in str(e).lower():
+                match = True
+        return match
+
+    result_lst = []
+    if '&' in search_term:
+        search_terms = search_term.split('&')
+        search_operator = "&"
+    elif '|' in search_term:
+        search_terms = search_term.split('|')
+        search_operator = "|"
+    else:
+        search_terms = [search_term,]
+        search_operator = ""
+
+    for r in results:
+        if search_operator == "&" and all([is_in_tuple(r, ts) for ts in search_terms]):
+            result_lst.append(r)
+        if search_operator == "|" and any([is_in_tuple(r, ts) for ts in search_terms]):
+            result_lst.append(r)
+        if search_operator != "|" and search_operator != "&" and any([is_in_tuple(r, ts) for ts in search_terms]):
+            result_lst.append(r)
+    return result_lst
 
 
 Tools.log("PYTHON VERSION:", sys.version)
