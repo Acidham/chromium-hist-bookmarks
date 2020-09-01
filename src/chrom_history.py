@@ -161,7 +161,7 @@ def get_search_terms(search: str) -> tuple:
     elif "|" in search:
         search_terms = tuple(search.split("|"))
     else:
-        search_terms = tuple(search.split(" "))
+        search_terms = (search,)
     search_terms = [normalize("NFC", s) for s in search_terms]
     return search_terms
 
