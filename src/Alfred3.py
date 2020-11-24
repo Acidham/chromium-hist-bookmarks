@@ -4,12 +4,12 @@ import json
 import os
 import sys
 import time
-from plistlib import readPlist, writePlist
-
+# from plistlib import readPlist, writePlist
+from plistlib import dump, load
 
 """
 Alfred Script Filter generator class
-Version: 3.2
+Version: 3.3
 Python 3 required!
 """
 
@@ -222,6 +222,12 @@ class Tools(object):
 
         object (obj): Object class
     """
+    @staticmethod
+    def logPyVersion() -> None:
+        """
+        Log Python Version to shell
+        """
+        Tools.log("PYTHON VERSION:", sys.version)
 
     @staticmethod
     def log(*message) -> None:
@@ -434,7 +440,9 @@ class Plist:
 
     def __init__(self):
         # Read info.plist into a standard Python dictionary
-        self.info = readPlist("info.plist")
+        # self.info = readPlist("info.plist")
+        with open("info.plist", "rb") as fp:
+            self.info = load(fp)
 
     def getConfig(self) -> str:
         return self.info["variables"]
@@ -490,7 +498,9 @@ class Plist:
         """
         Save changes to Plist
         """
-        writePlist(self.info, "info.plist")
+        # writePlist(self.info, "info.plist")
+        with open("info.plist", "wb") as fp:
+            dump(self.info, fp)
 
 
 class Keys(object):
