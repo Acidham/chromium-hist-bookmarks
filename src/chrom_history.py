@@ -13,13 +13,14 @@ from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
 
 HISTORY_MAP = {
-    "chromium": "/Library/Application Support/Chromium/Default/History",
     "brave": "/Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
     "brave_dev": "/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History",
+    "chromium": "/Library/Application Support/Chromium/Default/History",
     "chrome": "/Library/Application Support/Google/Chrome/Default/History",
-    "vivaldi": "/Library/Application Support/Vivaldi/Default/History",
+    "firefox": "/Library/Application Support/Firefox/Profiles",
     "opera": "/Library/Application Support/com.operasoftware.Opera/History",
-    "firefox": "/Library/Application Support/Firefox/Profiles"
+    "sidekick": '/Library/Application Support/Sidekick/Default/History',
+    "vivaldi": "/Library/Application Support/Vivaldi/Default/History"
 }
 
 HISTORIES = list()

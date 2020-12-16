@@ -15,14 +15,14 @@ from Alfred3 import Tools as Tools
 # Bookmark file path relative to HOME
 
 BOOKMARS_MAP = {
-    "chrome": '/Library/Application Support/Google/Chrome/Default/Bookmarks',
-    "chromium": '/Library/Application Support/Chromium/Default/Bookmarks',
     "brave": '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
     "brave_dev": '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/Bookmarks',
-    "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks',
+    "chrome": '/Library/Application Support/Google/Chrome/Default/Bookmarks',
+    "chromium": '/Library/Application Support/Chromium/Default/Bookmarks',
+    "firefox": '/Library/Application Support/Firefox/Profiles',
     "opera": '/Library/Application Support/com.operasoftware.Opera/Bookmarks',
-    "firefox": '/Library/Application Support/Firefox/Profiles'
-
+    "sidekick": '/Library/Application Support/Sidekick/Default/Bookmarks',
+    "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks'
 }
 
 FIRE_BOOKMARKS = str()
