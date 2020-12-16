@@ -5,16 +5,16 @@
 * **Python 3**
 
 * Supported Chromium & Gecko Browsers:
-  * Chromium
-  * Google Chrome
   * Brave and Brave Dev (Chromium)
-  * Vivaldi
-  * Opera
+  * Google Chrome and Chromium
   * Firefox
+  * Opera
+  * Sidekick
+  * Vivaldi
 
 ## Configuration
 
-This Workflow uses only history & bookmarks files when the browser is installed. In addition the Workflow environment variables allows limiting which browser histories & bookmarks will be searched.
+This Workflow uses only history & bookmarks files from installed browsers. Additionally, the Workflow's environment variables allow limiting which browsers' histories & bookmarks are searched.
 
 * `True` = Included in search
 * `False` = Excluded from search
