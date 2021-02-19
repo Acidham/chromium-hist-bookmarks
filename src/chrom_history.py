@@ -91,7 +91,7 @@ def get_histories(dbs: list, query: str) -> list:
         dbs(list): list with valid history paths
 
     Returns:
-        list: filters hitory entries
+        list: filters history entries
     """
 
     results = list()

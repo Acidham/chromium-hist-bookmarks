@@ -1,6 +1,6 @@
 #!/bin/bash
 #Set to 0 to use the first Python3 version found
-PREFER_LATEST=1
+PREFER_LATEST=0
 
 #Array of python3 paths
 PYPATHS=(/usr/bin /usr/local/bin)

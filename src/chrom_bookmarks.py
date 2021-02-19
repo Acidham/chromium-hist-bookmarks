@@ -137,6 +137,8 @@ def load_fire_bookmarks(fire_locked_db: str) -> list:
     """
     fire_history_db = '/tmp/places.sqlite'
     results = list()
+    r = list()
+    r.append([None])
     try:
         shutil.copy2(fire_locked_db, '/tmp')
         with sqlite3.connect(fire_history_db) as c:
@@ -152,7 +154,7 @@ def load_fire_bookmarks(fire_locked_db: str) -> list:
         os.remove(fire_history_db)
     except sqlite3.Error:
         pass
-    return [ret for ret in results if r[0] is not None] if len(results) > 0 else list()
+    return [ret for ret in results if len(results) != 0] if len(results) > 0 else list()
 
 
 def get_json_from_file(file: str) -> json:
@@ -184,7 +186,7 @@ def match(search_term: str, results: list) -> list:
         search_terms = search_term.split('|')
         search_operator = "|"
     else:
-        search_terms = [search_term,]
+        search_terms = [search_term, ]
         search_operator = ""
 
     for r in results:

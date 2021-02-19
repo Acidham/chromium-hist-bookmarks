@@ -446,7 +446,7 @@ False=Ecluded from search</string>
 		<key>opera</key>
 		<string>True</string>
 		<key>sidekick</key>
-		<string>False</string>
+		<string>True</string>
 		<key>sql_fire_limit</key>
 		<string>500</string>
 		<key>vivaldi</key>
@@ -455,7 +455,7 @@ False=Ecluded from search</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.2.1</string>
+	<string>2.2.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
