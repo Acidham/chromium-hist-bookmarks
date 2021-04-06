@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import datetime
 import os
 import shutil
 import sqlite3
 import sys
+import time
 import uuid
 from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
@@ -32,7 +34,8 @@ for k in HISTORY_MAP.keys():
 
 # Limit SQL results for better performance
 # will only be applied to Firefox history
-SQL_FIRE_LIMIT = Tools.getEnv("sql_fire_limitx", default=500)
+SQL_FIRE_LIMIT = Tools.getEnv("sql_fire_limit", default=500)
+DATE_FMT = Tools.getEnv("date_format", default='%d. %B %Y')
 
 Tools.log("PYTHON VERSION:", sys.version)
 if sys.version_info < (3, 7):
@@ -126,12 +129,12 @@ def sql(db: str) -> list:
             cursor = c.cursor()
             if "Firefox" in db:  # SQL for Firefox Browser
                 select_statement = f"""
-                select DISTINCT url, title, visit_count
+                select DISTINCT url, title, visit_count, last_visit_date/1000000
                 FROM moz_places JOIN moz_historyvisits
                 WHERE title != '' order by last_visit_date DESC LIMIT {SQL_FIRE_LIMIT}; """
             else:  # SQL for Chromium Browsers
                 select_statement = f"""
-                SELECT DISTINCT urls.url, urls.title, urls.visit_count
+                SELECT DISTINCT urls.url, urls.title, urls.visit_count, (urls.last_visit_time/1000000 + (strftime('%s', '1601-01-01')))
                 FROM urls, visits
                 WHERE urls.id = visits.url AND
                 urls.title IS NOT NULL AND
@@ -179,10 +182,10 @@ def removeDuplicates(li: list) -> list:
     """
     visited = set()
     output = []
-    for a, b, c in li:
+    for a, b, c, d in li:
         if b not in visited:
             visited.add(b)
-            output.append((a, b, c))
+            output.append((a, b, c, d))
     return output
 
 
@@ -220,6 +223,23 @@ def search_in_tuples(tuples: list, search: str) -> list:
     return result
 
 
+def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
+    """
+    Converts Time Stamp into date string
+
+    Args:
+
+        time_ms (int):  time in ms from 01/01/1601
+        fmt (str, optional): Format of the Date string. Defaults to '%d. %B %Y'.
+
+    Returns:
+
+        str: Formatted Date String
+    """
+    t_string = time.strftime(fmt, time.gmtime(time_ms))
+    return t_string
+
+
 def main():
     wf = Items()
 
@@ -235,8 +255,18 @@ def main():
             url = i[0]
             title = i[1]
             visits = i[2]
+            # last_visit = formatChromeTimeStamp(i[3])
+            last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
             wf.setItem(
-                title=title, subtitle=f"(Visits: {visits}) {url}", arg=url, quicklookurl=url
+                title=title,
+                subtitle=f"Last visited: {last_visit} (Visits: {visits})",
+                arg=url,
+                quicklookurl=url
+            )
+            wf.addMod(
+                key='cmd',
+                subtitle=f"{i[0]} → copy to Clipboard",
+                arg='i[0]'
             )
             wf.addItem()
     if wf.getItemsLengths() == 0:
