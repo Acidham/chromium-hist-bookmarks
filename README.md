@@ -21,7 +21,7 @@ This Workflow uses only history & bookmarks files from installed browsers. Addit
 
 ### Date Format
 
-`date_format` defines how the date will be shown for last visit. Visit https://strftime.org/ for reference
+`date_format` defines how the date will be shown for last visit. Visit https://strftime.org/ for reference.
 
 ## Usage
 
