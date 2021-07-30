@@ -100,6 +100,10 @@ def paths_to_bookmarks() -> list:
     for b in bms:
         if os.path.isfile(b):
             valid_bms.append(b)
+            Tools.log(f"{b} → found")
+        else:
+            Tools.log(f"{b} → NOT found")
+
     return valid_bms
 
 

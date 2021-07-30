@@ -444,9 +444,9 @@ Change date_format based on https://strftime.org/</string>
 		<key>chromium</key>
 		<string>False</string>
 		<key>date_format</key>
-		<string>%d. %B %Y</string>
+		<string>%d.%m.%Y</string>
 		<key>firefox</key>
-		<string>False</string>
+		<string>True</string>
 		<key>opera</key>
 		<string>False</string>
 		<key>sidekick</key>
@@ -454,12 +454,12 @@ Change date_format based on https://strftime.org/</string>
 		<key>sql_fire_limit</key>
 		<string>500</string>
 		<key>vivaldi</key>
-		<string>False</string>
+		<string>True</string>
 	</dict>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.3.0</string>
+	<string>2.3.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

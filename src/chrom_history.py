@@ -225,7 +225,7 @@ def search_in_tuples(tuples: list, search: str) -> list:
 
 def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
     """
-    Converts Time Stamp into date string
+    Time Stamp (ms) into formatted date string
 
     Args:
 
@@ -255,18 +255,17 @@ def main():
             url = i[0]
             title = i[1]
             visits = i[2]
-            # last_visit = formatChromeTimeStamp(i[3])
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
             wf.setItem(
                 title=title,
-                subtitle=f"Last visited: {last_visit} (Visits: {visits})",
+                subtitle=f"Last visit: {last_visit} (Visits: {visits})",
                 arg=url,
                 quicklookurl=url
             )
             wf.addMod(
                 key='cmd',
                 subtitle=f"{i[0]} → copy to Clipboard",
-                arg='i[0]'
+                arg=f'{i[0]}'
             )
             wf.addItem()
     if wf.getItemsLengths() == 0:
