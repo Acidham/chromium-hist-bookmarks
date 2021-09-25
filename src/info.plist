@@ -383,7 +383,9 @@ The Workflow uses only History&amp;Bookmarks files when browser is installed. In
 True=Included in search
 False=Ecluded from search
 
-Change date_format based on https://strftime.org/</string>
+Change date_format based on https://strftime.org/
+
+sort_recent: If set to true history entries will be sorted based on last visit otherwise based on number of visits</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -446,20 +448,22 @@ Change date_format based on https://strftime.org/</string>
 		<key>date_format</key>
 		<string>%d.%m.%Y</string>
 		<key>firefox</key>
-		<string>True</string>
+		<string>False</string>
 		<key>opera</key>
 		<string>False</string>
 		<key>sidekick</key>
+		<string>False</string>
+		<key>sort_recent</key>
 		<string>True</string>
 		<key>sql_fire_limit</key>
 		<string>500</string>
 		<key>vivaldi</key>
-		<string>True</string>
+		<string>False</string>
 	</dict>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.3.1</string>
+	<string>2.4.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

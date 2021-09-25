@@ -32,6 +32,10 @@ for k in HISTORY_MAP.keys():
     if is_set:
         HISTORIES.append(HISTORY_MAP.get(k))
 
+# if set to true hiroty entries will be sorted
+# based on recent visitied otherwise number of visits
+sort_recent = Tools.getEnvBool("sort_recent")
+
 # Limit SQL results for better performance
 # will only be applied to Firefox history
 SQL_FIRE_LIMIT = Tools.getEnv("sql_fire_limit", default=500)
@@ -106,7 +110,8 @@ def get_histories(dbs: list, query: str) -> list:
     results = search_in_tuples(matches, query)
     results = removeDuplicates(results)  # Remove duplicate Entries
     results = results[:30]  # Search entered into Alfred
-    results = Tools.sortListTuple(results, 2)  # Sort based on visits
+    sort_by = 3 if sort_recent else 2  # 2=visited; 3=recent
+    results = Tools.sortListTuple(results, sort_by)  # Sort based on visits
     return results
 
 
