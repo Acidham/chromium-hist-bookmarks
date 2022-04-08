@@ -34,6 +34,8 @@ if set to `True` history entries will be sorted based on recent visits otherwise
 * `bh` query
     * Type `&` in between of the search terms to search for multiple entries e.g.:
          `Car&Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
+* `CMD` shows the URL
+* `ALT` to open Domain of the URL instead of the full URL
 * *SHIFT* for Quicklook URL
 
 ### Bookmark Search
