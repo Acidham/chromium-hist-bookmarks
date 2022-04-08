@@ -41,4 +41,4 @@ This Workflow uses only history & bookmarks files from installed browsers. Addit
 ### Bookmark Search
 
 * `bm`query
-* *SHIFT* for quicklook URL
+* `SHIFT` opens page in Quicklook
