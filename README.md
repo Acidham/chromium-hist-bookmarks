@@ -25,7 +25,7 @@ This Workflow uses only history & bookmarks files from installed browsers. Addit
 
 ### Sorting
 
-if set to `True` history entries will be sorted based on recent visits otherwise number of visits
+`sort_recent` if set to `True` history entries will be sorted based on recent visits otherwise number of visits
 
 ## Usage
 
