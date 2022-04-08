@@ -36,7 +36,7 @@ if set to `True` history entries will be sorted based on recent visits otherwise
          `Car&Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
 * `CMD` shows the URL
 * `ALT` opens Domain of the URL instead of the full URL
-* *SHIFT* for Quicklook URL
+* `SHIFT` opens page in Quicklook
 
 ### Bookmark Search
 
