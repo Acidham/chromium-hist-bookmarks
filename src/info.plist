@@ -438,7 +438,7 @@ sort_recent: If set to true history entries will be sorted based on last visit o
 	<key>variables</key>
 	<dict>
 		<key>brave</key>
-		<string>False</string>
+		<string>True</string>
 		<key>brave_dev</key>
 		<string>False</string>
 		<key>chrome</key>
@@ -450,20 +450,20 @@ sort_recent: If set to true history entries will be sorted based on last visit o
 		<key>firefox</key>
 		<string>False</string>
 		<key>opera</key>
-		<string>False</string>
+		<string>True</string>
 		<key>sidekick</key>
-		<string>False</string>
+		<string>True</string>
 		<key>sort_recent</key>
 		<string>True</string>
 		<key>sql_fire_limit</key>
 		<string>500</string>
 		<key>vivaldi</key>
-		<string>False</string>
+		<string>True</string>
 	</dict>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.4.0</string>
+	<string>2.5.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

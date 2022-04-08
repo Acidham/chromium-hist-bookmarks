@@ -10,6 +10,7 @@ import time
 import uuid
 from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
+from urllib.parse import urlparse
 
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
@@ -258,6 +259,7 @@ def main():
     if len(results) > 0:
         for i in results:
             url = i[0]
+            domain = Tools.strJoin(urlparse(i[0]).scheme, "://", urlparse(i[0]).netloc)
             title = i[1]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
@@ -271,6 +273,11 @@ def main():
                 key='cmd',
                 subtitle=f"{i[0]} → copy to Clipboard",
                 arg=f'{i[0]}'
+            )
+            wf.addMod(
+                key='alt',
+                subtitle=f'Open domain: {domain}',
+                arg=domain
             )
             wf.addItem()
     if wf.getItemsLengths() == 0:
