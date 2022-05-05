@@ -176,8 +176,8 @@
 				<key>script</key>
 				<string># THESE VARIABLES MUST BE SET. SEE THE ONEUPDATER README FOR AN EXPLANATION OF EACH.
 readonly remote_info_plist="https://raw.githubusercontent.com/Acidham/chromium-hist-bookmarks/master/src/info.plist"
-readonly workflow_url="https://raw.githubusercontent.com/Acidham/chromium-hist-bookmarks/master/Chromium Bookmarks and History.alfredworkflow"
-readonly download_type='direct'
+readonly workflow_url="Acidham/chromium-hist-bookmarks"
+readonly download_type='github_release'
 readonly frequency_check='4'
 
 # FROM HERE ON, CODE SHOULD BE LEFT UNTOUCHED!
@@ -260,6 +260,27 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query} copied to the Clipboard</string>
+				<key>title</key>
+				<string>URL copied to Clipboard</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>6B99D187-E195-432C-A079-D4A99D9A9B0D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -325,27 +346,6 @@ fi</string>
 			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
 			<key>version</key>
 			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>removeextension</key>
-				<false/>
-				<key>text</key>
-				<string>{query} copied to the Clipboard</string>
-				<key>title</key>
-				<string>URL copied to Clipboard</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>6B99D187-E195-432C-A079-D4A99D9A9B0D</string>
-			<key>version</key>
-			<integer>1</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -463,7 +463,7 @@ sort_recent: If set to true history entries will be sorted based on last visit o
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.5.0</string>
+	<string>2.5.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
