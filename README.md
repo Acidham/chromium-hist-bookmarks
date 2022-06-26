@@ -27,6 +27,12 @@ This Workflow uses only history & bookmarks files from installed browsers. Addit
 
 `sort_recent` if set to `True` history entries will be sorted based on recent visits otherwise number of visits
 
+### Show favicon
+
+`show_favicon`: If set to `True` the  favicon of the webpage will be shown in search results. The feature is only available in history search.
+
+**NOTE:** Show Favicon can delay execution of the workflow!
+
 ## Usage
 
 ### History Search

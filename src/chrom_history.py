@@ -7,6 +7,7 @@ import shutil
 import sqlite3
 import sys
 import time
+import urllib.request
 import uuid
 from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
@@ -32,6 +33,12 @@ for k in HISTORY_MAP.keys():
     is_set = Tools.getEnvBool(k)
     if is_set:
         HISTORIES.append(HISTORY_MAP.get(k))
+
+# Get wf cached directory
+wf_cache_dir = Tools.getCacheDir()
+
+# Show favicon in results or default wf icon
+show_favicon = Tools.getEnvBool("show_favicon")
 
 # if set to true hiroty entries will be sorted
 # based on recent visitied otherwise number of visits
@@ -246,6 +253,30 @@ def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
     return t_string
 
 
+def download_image(netloc) -> str():
+    """
+    Download favicon from domain and save in wf cache directory
+
+    Args:
+        netloc (str): Domain
+
+    Returns:
+        str: path to cached image file in wf cache
+    """
+    url = f"https://www.google.com/s2/favicons?domain={netloc}&sz=128"
+    img = f"{wf_cache_dir}/{netloc}.png"
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    if not(os.path.exists(img)):
+        with open(img, "wb") as f:
+            try:
+                with urllib.request.urlopen(req) as r:
+                    f.write(r.read())
+            except urllib.error.HTTPError as e:
+                img = None
+
+    return img
+
+
 def main():
     wf = Items()
 
@@ -263,12 +294,15 @@ def main():
             title = i[1]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
+            favicon = download_image(urlparse(url).netloc)
             wf.setItem(
                 title=title,
                 subtitle=f"Last visit: {last_visit} (Visits: {visits})",
                 arg=url,
                 quicklookurl=url
             )
+            if show_favicon and favicon:
+                wf.setIcon(favicon, "image")
             wf.addMod(
                 key='cmd',
                 subtitle=f"{i[0]} → copy to Clipboard",
