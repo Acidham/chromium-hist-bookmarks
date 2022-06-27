@@ -253,7 +253,17 @@ def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
     return t_string
 
 
-def download_image(netloc) -> str():
+def cleanup_img_cache(number_of_days, f_path):
+    now = time.time()
+    old = now - number_of_days * 24 * 60 * 60
+   # os.stat_float_times(True)
+    stats = os.stat(f_path)
+    c_time = stats.st_ctime
+    if c_time < old and os.path.isfile(f_path):
+        os.remove(f_path)
+
+
+def get_favicon(netloc: str) -> str():
     """
     Download favicon from domain and save in wf cache directory
 
@@ -263,17 +273,23 @@ def download_image(netloc) -> str():
     Returns:
         str: path to cached image file in wf cache
     """
-    url = f"https://www.google.com/s2/favicons?domain={netloc}&sz=128"
-    img = f"{wf_cache_dir}/{netloc}.png"
-    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    if not(os.path.exists(img)):
-        with open(img, "wb") as f:
-            try:
-                with urllib.request.urlopen(req) as r:
-                    f.write(r.read())
-            except urllib.error.HTTPError as e:
-                img = None
-
+    if len(netloc) > 0:
+        url = f"https://www.google.com/s2/favicons?domain={netloc}&sz=128"
+        img = os.path.join(wf_cache_dir, f"{netloc}.png")
+        if os.path.exists(img):
+            cleanup_img_cache(60, img)
+        if not(os.path.exists(img)):
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with open(img, "wb") as f:
+                try:
+                    with urllib.request.urlopen(req) as r:
+                        f.write(r.read())
+                except urllib.error.HTTPError as e:
+                    img = None
+        if img and os.path.exists(img) and os.path.getsize(img) == 0:
+            img = None
+    else:
+        img = None
     return img
 
 
@@ -290,11 +306,11 @@ def main():
     if len(results) > 0:
         for i in results:
             url = i[0]
-            domain = Tools.strJoin(urlparse(i[0]).scheme, "://", urlparse(i[0]).netloc)
+            domain = Tools.strJoin(urlparse(url).scheme, "://", urlparse(url).netloc)
             title = i[1]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
-            favicon = download_image(urlparse(url).netloc)
+            favicon = get_favicon(urlparse(url).netloc)
             wf.setItem(
                 title=title,
                 subtitle=f"Last visit: {last_visit} (Visits: {visits})",

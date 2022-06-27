@@ -454,7 +454,7 @@ show_favicon: Show favicon in search results. NOTE: Show Favicon can delays exec
 		<key>opera</key>
 		<string>True</string>
 		<key>show_favicon</key>
-		<string>False</string>
+		<string>True</string>
 		<key>sidekick</key>
 		<string>True</string>
 		<key>sort_recent</key>
@@ -467,7 +467,7 @@ show_favicon: Show favicon in search results. NOTE: Show Favicon can delays exec
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.6.0</string>
+	<string>2.6.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
