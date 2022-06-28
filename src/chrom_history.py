@@ -6,6 +6,7 @@ import os
 import shutil
 import sqlite3
 import sys
+import threading
 import time
 import urllib.request
 import uuid
@@ -253,31 +254,33 @@ def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
     return t_string
 
 
-def cleanup_img_cache(number_of_days, f_path):
+def cleanup_img_cache(number_of_days: int, f_path: str) -> None:
+    """
+    Delete cached image after specific amount of days
+
+    Args:
+        number_of_days (int): Numer of days back in history
+        f_path (str): path to file
+    """
     now = time.time()
     old = now - number_of_days * 24 * 60 * 60
-   # os.stat_float_times(True)
     stats = os.stat(f_path)
     c_time = stats.st_ctime
     if c_time < old and os.path.isfile(f_path):
         os.remove(f_path)
 
 
-def get_favicon(netloc: str) -> str():
+def cache_favicon(netloc: str) -> None:
     """
     Download favicon from domain and save in wf cache directory
 
     Args:
-        netloc (str): Domain
-
-    Returns:
-        str: path to cached image file in wf cache
+        netloc (str): Network location e.g. http://www.google.com = www.google.com
     """
     if len(netloc) > 0:
         url = f"https://www.google.com/s2/favicons?domain={netloc}&sz=128"
         img = os.path.join(wf_cache_dir, f"{netloc}.png")
-        if os.path.exists(img):
-            cleanup_img_cache(60, img)
+        os.path.exists(img) and cleanup_img_cache(60, img)
         if not(os.path.exists(img)):
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             with open(img, "wb") as f:
@@ -285,12 +288,38 @@ def get_favicon(netloc: str) -> str():
                     with urllib.request.urlopen(req) as r:
                         f.write(r.read())
                 except urllib.error.HTTPError as e:
-                    img = None
-        if img and os.path.exists(img) and os.path.getsize(img) == 0:
-            img = None
-    else:
-        img = None
+                    os.remove(img)
+
+
+def get_favion_path(netloc):
+    """
+    Returns image file path
+
+    Args:
+        netloc (str): Netloc/Domain of the URL
+
+    Returns:
+        str: Full path to img file
+    """
+    img = os.path.join(wf_cache_dir, f"{netloc}.png")
+    img = img if img and os.path.exists(img) and os.path.getsize(img) > 0 else None
     return img
+
+
+def cache_controller(histories: list) -> None:
+    """
+    Cache Controller to heat up cache and invaldiation
+
+    Args:
+        histories (list): List with history entries
+    """
+    threads = []
+    for i in histories:
+        url = i[0]
+        d = urlparse(url).netloc
+        t = threading.Thread(target=cache_favicon, args=(d,))
+        t.start()
+        threads.append(t)
 
 
 def main():
@@ -304,13 +333,16 @@ def main():
     else:
         sys.exit(0)
     if len(results) > 0:
+        cache_controller(results)
+        time.sleep(0.5)
         for i in results:
             url = i[0]
-            domain = Tools.strJoin(urlparse(url).scheme, "://", urlparse(url).netloc)
+            netloc = urlparse(url).netloc
+            domain = Tools.strJoin(urlparse(url).scheme, "://", netloc)
             title = i[1]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
-            favicon = get_favicon(urlparse(url).netloc)
+            favicon = get_favion_path(netloc)
             wf.setItem(
                 title=title,
                 subtitle=f"Last visit: {last_visit} (Visits: {visits})",
