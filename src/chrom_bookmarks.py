@@ -8,9 +8,11 @@ import sqlite3
 import sys
 from typing import Union
 from unicodedata import normalize
+from urllib.parse import urlparse
 
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
+from Favicon import Icon
 
 # Bookmark file path relative to HOME
 
@@ -24,6 +26,9 @@ BOOKMARS_MAP = {
     "sidekick": '/Library/Application Support/Sidekick/Default/Bookmarks',
     "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks'
 }
+
+# Show favicon in results or default wf icon
+show_favicon = Tools.getEnvBool("show_favicon")
 
 FIRE_BOOKMARKS = str()
 BOOKMARKS = list()
@@ -231,15 +236,19 @@ if len(bms) > 0:
         bm_json = get_json_from_file(bookmarks_file)
         bookmarks = get_all_urls(bm_json)
         matches = match(query, bookmarks)
+        #ico = Icon(matches)
         for m in matches:
             name = m[0]
             url = m[1]
+            #favicon = ico.get_favion_path(url)
             wf.setItem(
                 title=name,
                 subtitle=url,
                 arg=url,
                 quicklookurl=url
             )
+           # if show_favicon and favicon:
+           #     wf.setIcon(favicon, "image")
             wf.addItem()
 
 if wf.getItemsLengths() == 0:
