@@ -91,11 +91,11 @@
 	<key>createdby</key>
 	<string>Acidham</string>
 	<key>description</key>
-	<string>Search URL in Brave History</string>
+	<string>Search in Chromium Histories and Bookmarks</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>Chromium&amp;Firefox Bookmarks and History</string>
+	<string>Chromium Bookmarks and History Search</string>
 	<key>objects</key>
 	<array>
 		<dict>
@@ -124,7 +124,7 @@
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string></string>
+				<string>Searching, please wait...</string>
 				<key>script</key>
 				<string>./py3.sh chrom_bookmarks.py "$1"</string>
 				<key>scriptargtype</key>
@@ -132,9 +132,9 @@
 				<key>scriptfile</key>
 				<string>chrom_bookmarks.py</string>
 				<key>subtext</key>
-				<string></string>
+				<string>Search in Chromium Bookmarks</string>
 				<key>title</key>
-				<string>Search Chromium&amp;Firefox Bookmarks</string>
+				<string>Chromium Bookmarks Search</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -152,6 +152,10 @@
 			<dict>
 				<key>browser</key>
 				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
@@ -313,7 +317,7 @@ fi</string>
 				<key>subtext</key>
 				<string>Search in Chromium History</string>
 				<key>title</key>
-				<string>Chromium History</string>
+				<string>Chromium History Search</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -347,45 +351,36 @@ fi</string>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Search in Chromium&amp;Geko History and Bookmarks.
+	<string># Search in Chromium&amp; History and Bookmarks Search
 
-Requires Python 3!
+## Requires 
 
-Supported Browsers: 
+* Python 3
+* Preferably Alfred 5
+
+## Supported Browsers: 
+
 - Chromium
 - Google Chrome
 - Brave and Brave Dev(Chromium)
 - Vivaldi
 - Opera
-- Firefox
 - Sidekick
 
-History
-=======
+The Workflow uses the history and bookmarks files when browser is installed. 
+Please ensure to choose installed browser in configure workflow. 
 
-Search History with keyword: hist
+## History
+
+
+Search History with keyword: `bh`
 
 Type `&amp;` in between of the search terms to search for multiple entries e.g.: 
  `Car&amp;Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
 
-Bookmarks
-=========
+## Bookmarks
 
-Search Bookmarks with keyword: bm
-
-Setup
-=====
-
-The Workflow uses only History&amp;Bookmarks files when browser is installed. In addition the Workflow environment variables allows to limit which browser history&amp;bookmarks will be searched.
-
-True=Included in search
-False=Ecluded from search
-
-Change date_format based on https://strftime.org/
-
-sort_recent: If set to true history entries will be sorted based on last visit otherwise based on number of visits
-
-show_favicon: Show favicon in search results. NOTE: Show Favicon can delays execution of the workflow!</string>
+Search Bookmarks with keyword: `bm`</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -436,38 +431,230 @@ show_favicon: Show favicon in search results. NOTE: Show Favicon can delays exec
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
-	<array/>
-	<key>variables</key>
-	<dict>
-		<key>brave</key>
-		<string>True</string>
-		<key>brave_dev</key>
-		<string>False</string>
-		<key>chrome</key>
-		<string>True</string>
-		<key>chromium</key>
-		<string>False</string>
-		<key>date_format</key>
-		<string>%d.%m.%Y</string>
-		<key>firefox</key>
-		<string>False</string>
-		<key>opera</key>
-		<string>True</string>
-		<key>show_favicon</key>
-		<string>True</string>
-		<key>sidekick</key>
-		<string>True</string>
-		<key>sort_recent</key>
-		<string>True</string>
-		<key>sql_fire_limit</key>
-		<string>500</string>
-		<key>vivaldi</key>
-		<string>True</string>
-	</dict>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Google Chrome</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Include</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>chrome</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Chromium</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>chromium</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Brave</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>brave</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Brave Developer</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>brave_dev</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Opera</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>opera</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Sidekick</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>sidekick</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Vivaldi</string>
+			</dict>
+			<key>description</key>
+			<string>Browsers to be included into history and bookmark search</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>vivaldi</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>mail.google.com,mail.gmx.com</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>3</integer>
+			</dict>
+			<key>description</key>
+			<string>Comma separated list of domains to be ignored in history search</string>
+			<key>label</key>
+			<string>Excluded Domains</string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>ignored_domains</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Show favicons</string>
+			</dict>
+			<key>description</key>
+			<string>Show favicons in results. NOTE: Displaying favicons slows down search</string>
+			<key>label</key>
+			<string>Favicons</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>show_favicon</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>recent</string>
+						<string>true</string>
+					</array>
+					<array>
+						<string>vistis</string>
+						<string>false</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>history entries will be sorted based on recent visitis OR number of visits</string>
+			<key>label</key>
+			<string>Sort history search results</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>sort_recent</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>%d.%m.%Y</string>
+				<key>placeholder</key>
+				<string>%d.%m.%Y</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<false/>
+			</dict>
+			<key>description</key>
+			<string>Define how dates should be displayed. https://strftime.org/</string>
+			<key>label</key>
+			<string>Date Format</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>date_format</string>
+		</dict>
+	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>2.6.3</string>
+	<string>3.0.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>

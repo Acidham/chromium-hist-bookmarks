@@ -1,14 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
-import datetime
 import os
 import shutil
 import sqlite3
 import sys
-import threading
 import time
-import urllib.request
 import uuid
 from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
@@ -16,47 +12,38 @@ from urllib.parse import urlparse
 
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
-from Favicon import Icon
+from Favicon import Icons
 
 HISTORY_MAP = {
     "brave": "/Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
     "brave_dev": "/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History",
     "chromium": "/Library/Application Support/Chromium/Default/History",
     "chrome": "/Library/Application Support/Google/Chrome/Default/History",
-    "firefox": "/Library/Application Support/Firefox/Profiles",
     "opera": "/Library/Application Support/com.operasoftware.Opera/History",
     "sidekick": '/Library/Application Support/Sidekick/Default/History',
     "vivaldi": "/Library/Application Support/Vivaldi/Default/History"
 }
 
-HISTORIES = list()
 # Get Browser Histories to load per env (true/false)
+HISTORIES = list()
 for k in HISTORY_MAP.keys():
     is_set = Tools.getEnvBool(k)
     if is_set:
         HISTORIES.append(HISTORY_MAP.get(k))
 
-# Get wf cached directory
-# TODO: remove next line
-wf_cache_dir = Tools.getCacheDir()
-Tools.log(f"Cache Dir: {wf_cache_dir}")
+# Get ignored Domains settings
+d = Tools.getEnv("ignored_domains", None)
+ignored_domains = d.split(',') if d else None
 
 # Show favicon in results or default wf icon
 show_favicon = Tools.getEnvBool("show_favicon")
 
-# if set to true hiroty entries will be sorted
+# if set to true history entries will be sorted
 # based on recent visitied otherwise number of visits
 sort_recent = Tools.getEnvBool("sort_recent")
 
-# Limit SQL results for better performance
-# will only be applied to Firefox history
-SQL_FIRE_LIMIT = Tools.getEnv("sql_fire_limit", default=500)
+# Date format settings
 DATE_FMT = Tools.getEnv("date_format", default='%d. %B %Y')
-
-Tools.log("PYTHON VERSION:", sys.version)
-if sys.version_info < (3, 7):
-    print("Python version 3.7.0 or higher required!")
-    sys.exit(0)
 
 
 def history_paths() -> list:
@@ -69,37 +56,14 @@ def history_paths() -> list:
     user_dir = os.path.expanduser("~")
     hists = [f"{user_dir}{h}" for h in HISTORIES]
     valid_hists = list()
+    # write log if history db was found or not
     for h in hists:
-        if "Firefox" in h:
-            h = path_to_fire_history(h)
         if os.path.isfile(h):
             valid_hists.append(h)
             Tools.log(f"{h} → found")
         else:
             Tools.log(f"{h} → NOT found")
     return valid_hists
-
-
-def path_to_fire_history(f_home: str) -> str:
-    """
-    Get valid pathes to firefox history
-
-    Returns:
-        str: available paths of history file
-    """
-    valid_hist = ""
-    if os.path.isdir(f_home):
-        f_home_dirs = [f"{f_home}/{o}" for o in os.listdir(f_home)]
-        for f in f_home_dirs:
-            if os.path.isdir(f) and f.endswith("default-release"):
-                f_sub_dirs = [f"{f}/{o}" for o in os.listdir(f)]
-                for fs in f_sub_dirs:
-                    if os.path.isfile(fs) and os.path.basename(fs) == "places.sqlite":
-                        valid_hist = fs
-                        break
-    else:
-        Tools.log(f"{f_home} → NOT found")
-    return valid_hist
 
 
 def get_histories(dbs: list, query: str) -> list:
@@ -120,16 +84,48 @@ def get_histories(dbs: list, query: str) -> list:
     for r in results:
         matches = matches + r
     results = search_in_tuples(matches, query)
-    results = removeDuplicates(results)  # Remove duplicate Entries
-    results = results[:30]  # Search entered into Alfred
-    sort_by = 3 if sort_recent else 2  # 2=visited; 3=recent
+    # Remove duplicate Entries
+    results = removeDuplicates(results)
+    # evmove ignored domains
+    if ignored_domains:
+        results = remove_ignored_domains(results, ignored_domains)
+    # Reduce search results to 30
+    results = results[:30]
+    # Sort by element. Element 2=visited, 3=recent
+    sort_by = 3 if sort_recent else 2
     results = Tools.sortListTuple(results, sort_by)  # Sort based on visits
     return results
 
 
+def remove_ignored_domains(results: list, ignored_domains: list) -> list:
+    """
+    removes results based on domain ignore list
+
+    Args:
+        results (list): History results list with tubles
+        ignored_domains (list): list of domains to ignore
+
+    Returns:
+        list: _description_
+    """
+    new_results = list()
+    if len(ignored_domains) > 0:
+        for r in results:
+            for i in ignored_domains:
+                inner_result = r
+                if i in r[0]:
+                    inner_result = None
+                    break
+            if inner_result:
+                new_results.append(inner_result)
+    else:
+        new_results = results
+    return new_results
+
+
 def sql(db: str) -> list:
     """
-    Executes SQL for Firefox and Chrome depending on History path
+    Executes SQL depending on History path
     provided in db: str
 
     Args:
@@ -144,18 +140,12 @@ def sql(db: str) -> list:
         shutil.copy2(db, history_db)
         with sqlite3.connect(history_db) as c:
             cursor = c.cursor()
-            if "Firefox" in db:  # SQL for Firefox Browser
-                select_statement = f"""
-                select DISTINCT url, title, visit_count, last_visit_date/1000000
-                FROM moz_places JOIN moz_historyvisits
-                WHERE title != '' order by last_visit_date DESC LIMIT {SQL_FIRE_LIMIT}; """
-            else:  # SQL for Chromium Browsers
-                select_statement = f"""
-                SELECT DISTINCT urls.url, urls.title, urls.visit_count, (urls.last_visit_time/1000000 + (strftime('%s', '1601-01-01')))
-                FROM urls, visits
-                WHERE urls.id = visits.url AND
-                urls.title IS NOT NULL AND
-                urls.title != '' order by last_visit_time DESC; """
+            select_statement = f"""
+            SELECT DISTINCT urls.url, urls.title, urls.visit_count, (urls.last_visit_time/1000000 + (strftime('%s', '1601-01-01')))
+            FROM urls, visits
+            WHERE urls.id = visits.url AND
+            urls.title IS NOT NULL AND
+            urls.title != '' order by last_visit_time DESC; """
             Tools.log(select_statement)
             cursor.execute(select_statement)
             r = cursor.fetchall()
@@ -258,17 +248,39 @@ def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
 
 
 def main():
+    # Get wf cached directory for writing into log
+    wf_cache_dir = Tools.getCacheDir()
+    # Check and write python version
+    Tools.log(f"Cache Dir: {wf_cache_dir}")
+    Tools.log("PYTHON VERSION:", sys.version)
+    if sys.version_info < (3, 7):
+        print("Python version 3.7.0 or higher required!")
+        sys.exit(0)
+
+    # Create Workflow items object
     wf = Items()
     search_term = Tools.getArgv(1)
     locked_history_dbs = history_paths()
+    # if selected browser(s) in config was not found stop here
+    if len(locked_history_dbs) == 0:
+        wf.setItem(
+            title="Browser History not found!",
+            subtitle="Ensure Browser is installed or choose available browser(s) in CONFIGURE WORKFLOW",
+            valid=False
+        )
+        wf.addItem()
+        wf.write()
+        sys.exit(0)
+    # get search results exit if Nothing was entered in search
     results = list()
     if search_term is not None:
         results = get_histories(locked_history_dbs, search_term)
     else:
         sys.exit(0)
+    # if result the write alfred response
     if len(results) > 0:
         # Cache Favicons
-        ico = Icon(results)
+        ico = Icons(results)
         for i in results:
             url = i[0]
             domain = Tools.strJoin(urlparse(url).scheme, "://", urlparse(url).netloc)

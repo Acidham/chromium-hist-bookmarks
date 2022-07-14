@@ -255,7 +255,9 @@ class Tools(object):
     @staticmethod
     def getEnvBool(var: str, default: bool = False) -> bool:
         """
-        Reads boolean env variable provided as text
+        Reads boolean env variable provided as text.
+        0 will be treated as False
+        >1 will be treated as True
 
         Args:
 
@@ -266,6 +268,11 @@ class Tools(object):
 
             bool: True or False as bool
         """
+        if os.getenv(var).isdigit():
+            if os.getenv(var) == '0':
+                return False
+            else:
+                return True
         if os.getenv(var).lower() == "true":
             return True
         else:

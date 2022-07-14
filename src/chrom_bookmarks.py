@@ -3,16 +3,12 @@
 import codecs
 import json
 import os
-import shutil
-import sqlite3
 import sys
 from typing import Union
-from unicodedata import normalize
-from urllib.parse import urlparse
 
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
-from Favicon import Icon
+from Favicon import Icons
 
 # Bookmark file path relative to HOME
 
@@ -21,7 +17,6 @@ BOOKMARS_MAP = {
     "brave_dev": '/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/Bookmarks',
     "chrome": '/Library/Application Support/Google/Chrome/Default/Bookmarks',
     "chromium": '/Library/Application Support/Chromium/Default/Bookmarks',
-    "firefox": '/Library/Application Support/Firefox/Profiles',
     "opera": '/Library/Application Support/com.operasoftware.Opera/Bookmarks',
     "sidekick": '/Library/Application Support/Sidekick/Default/Bookmarks',
     "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks'
@@ -30,14 +25,11 @@ BOOKMARS_MAP = {
 # Show favicon in results or default wf icon
 show_favicon = Tools.getEnvBool("show_favicon")
 
-FIRE_BOOKMARKS = str()
 BOOKMARKS = list()
-# Get Browser Histories to load per env
+# Get Browser Histories to load baed on user configuration
 for k in BOOKMARS_MAP.keys():
     is_set = Tools.getEnvBool(k)
-    if k == "firefox" and is_set:
-        FIRE_BOOKMARKS = BOOKMARS_MAP.get(k)
-    elif is_set:
+    if is_set:
         BOOKMARKS.append(BOOKMARS_MAP.get(k))
 
 
@@ -112,60 +104,6 @@ def paths_to_bookmarks() -> list:
     return valid_bms
 
 
-def path_to_fire_bookmarks() -> str:
-    """
-    Get valid pathes to firefox history from BOOKMARKS variable
-
-    Returns:
-        list: available paths of history files
-    """
-    user_dir = os.path.expanduser('~')
-    f_home = f"{user_dir}{FIRE_BOOKMARKS}"
-    if not os.path.isdir(f_home):
-        return None
-    f_home_dirs = [f'{f_home}/{o}' for o in os.listdir(f_home)]
-    valid_hist = None
-    for f in f_home_dirs:
-        if os.path.isdir(f) and f.endswith('default-release'):
-            f_sub_dirs = [f'{f}/{o}' for o in os.listdir(f)]
-            for fs in f_sub_dirs:
-                if os.path.isfile(fs) and os.path.basename(fs) == 'places.sqlite':
-                    valid_hist = fs
-    return valid_hist
-
-
-def load_fire_bookmarks(fire_locked_db: str) -> list:
-    """
-    Load Firefox History files into list
-
-    Args:
-        fire_locked_db (list): Contains valid history paths
-
-    Returns:
-        list: hitory entries unfiltered
-    """
-    fire_history_db = '/tmp/places.sqlite'
-    results = list()
-    r = list()
-    r.append([None])
-    try:
-        shutil.copy2(fire_locked_db, '/tmp')
-        with sqlite3.connect(fire_history_db) as c:
-            cursor = c.cursor()
-            select_statement = """
-            SELECT b.title, h.url
-            FROM moz_places h, moz_bookmarks b
-            WHERE h.id = b.fk
-            """
-            cursor.execute(select_statement)
-            r = cursor.fetchall()
-            results.extend(r)
-        os.remove(fire_history_db)
-    except sqlite3.Error:
-        pass
-    return [ret for ret in results if len(results) != 0] if len(results) > 0 else list()
-
-
 def get_json_from_file(file: str) -> json:
     """
     Get Bookmark JSON
@@ -208,54 +146,55 @@ def match(search_term: str, results: list) -> list:
     return result_lst
 
 
-Tools.log("PYTHON VERSION:", sys.version)
-if sys.version_info < (3, 7):
-    print('Python version 3.7.0 or higher required!')
-    sys.exit(0)
+def main():
+    # Log python version
+    Tools.log("PYTHON VERSION:", sys.version)
+    # check python > 3.7.0
+    if sys.version_info < (3, 7):
+        print('Python version 3.7.0 or higher required!')
+        sys.exit(0)
 
-wf = Items()
-query = Tools.getArgv(1) if Tools.getArgv(1) is not None else str()
-bms = paths_to_bookmarks()
-fire_path = path_to_fire_bookmarks()
+    # Workflow item object
+    wf = Items()
+    query = Tools.getArgv(1) if Tools.getArgv(1) is not None else str()
+    bms = paths_to_bookmarks()
 
-if fire_path:
-    fire_bms = load_fire_bookmarks(fire_path)
-    fire_bms = removeDuplicates(fire_bms)
-    matches = match(query, fire_bms) if query != str() else fire_bms
-    for ft, furl in matches:
-        wf.setItem(
-            title=ft,
-            subtitle=furl,
-            arg=furl,
-            quicklook=furl
-        )
-        wf.addItem()
-
-if len(bms) > 0:
-    for bookmarks_file in bms:
-        bm_json = get_json_from_file(bookmarks_file)
-        bookmarks = get_all_urls(bm_json)
-        matches = match(query, bookmarks)
-        #ico = Icon(matches)
+    if len(bms) > 0:
+        matches = list()
+        # Generate list of bookmars matches the search
+        for bookmarks_file in bms:
+            bm_json = get_json_from_file(bookmarks_file)
+            bookmarks = get_all_urls(bm_json)
+            matches.extend(match(query, bookmarks))
+        # generate list of matches for Favicon download
+        ico_matches = [(i2, i1) for i1, i2 in matches]
+        # Heat Favicon Cache
+        ico = Icons(ico_matches)
+        # generate script filter output
         for m in matches:
             name = m[0]
             url = m[1]
-            #favicon = ico.get_favion_path(url)
+            # get favicoon for url
+            favicon = ico.get_favion_path(url)
             wf.setItem(
                 title=name,
                 subtitle=url,
                 arg=url,
                 quicklookurl=url
             )
-           # if show_favicon and favicon:
-           #     wf.setIcon(favicon, "image")
+            if show_favicon and favicon:
+                wf.setIcon(favicon, "image")
             wf.addItem()
 
-if wf.getItemsLengths() == 0:
-    wf.setItem(
-        title='No Bookmark found!',
-        subtitle=f'Search "{query}" in Google...',
-        arg=f'https://www.google.com/search?q={query}'
-    )
-    wf.addItem()
-wf.write()
+    if wf.getItemsLengths() == 0:
+        wf.setItem(
+            title='No Bookmark found!',
+            subtitle=f'Search "{query}" in Google...',
+            arg=f'https://www.google.com/search?q={query}'
+        )
+        wf.addItem()
+    wf.write()
+
+
+if __name__ == "__main__":
+    main()

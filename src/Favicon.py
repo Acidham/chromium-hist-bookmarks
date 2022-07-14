@@ -1,14 +1,31 @@
 import multiprocessing
 import os
 import time
-import urllib
+import urllib.request
 from urllib.parse import urlparse
 
 from Alfred3 import Tools
 
 
-class Icon(object):
+class Icons(object):
+    """
+    Heat favicon cache and provide fiepath to cached png file
+
+    Args:
+
+        object (obj): -
+
+    """
+
     def __init__(self, histories: list) -> None:
+        """
+        Heat cache of favicon files
+
+        Args:
+
+            histories (list): Hiosty object with URL, NAME, addtional.
+
+        """
         self.wf_cache_dir = Tools.getCacheDir()
         self.histories = histories
         self._cache_controller()
@@ -29,6 +46,7 @@ class Icon(object):
             img = None
         if img and os.path.getsize(img) == 0:
             os.remove(img)
+            img = None
         return img
 
     def _cache_favicon(self, netloc: str) -> None:
