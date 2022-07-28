@@ -615,13 +615,13 @@ Search Bookmarks with keyword: `bm`</string>
 						<string>true</string>
 					</array>
 					<array>
-						<string>vistis</string>
+						<string>visits</string>
 						<string>false</string>
 					</array>
 				</array>
 			</dict>
 			<key>description</key>
-			<string>history entries will be sorted based on recent visitis OR number of visits</string>
+			<string>History entries will be sorted based on recent visits OR number of visits</string>
 			<key>label</key>
 			<string>Sort history search results</string>
 			<key>type</key>
