@@ -1,4 +1,4 @@
-# Search in Chromium& History and Bookmarks Search
+# Search in Chromium History and Bookmarks Search
 
 ## Requires 
 
@@ -13,6 +13,7 @@
 - Vivaldi
 - Opera
 - Sidekick
+- ~~Firefox~~ (discontinued)
 
 The Workflow uses the history and bookmarks files when browser is installed. 
 Please ensure to choose installed browser in configure workflow. 
