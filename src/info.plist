@@ -615,7 +615,7 @@ Search Bookmarks with keyword: `bm`</string>
 						<string>true</string>
 					</array>
 					<array>
-						<string>visits</string>
+						<string>vistis</string>
 						<string>false</string>
 					</array>
 				</array>
@@ -654,7 +654,7 @@ Search Bookmarks with keyword: `bm`</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>3.0.1</string>
+	<string>3.0.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-history</string>
 </dict>
