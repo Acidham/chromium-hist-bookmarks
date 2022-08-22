@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 #Set to 0 to use the first Python3 version found
 PREFER_LATEST=1
 
