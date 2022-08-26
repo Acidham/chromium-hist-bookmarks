@@ -16,7 +16,7 @@ from Favicon import Icons
 
 HISTORY_MAP = {
     "brave": "/Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
-    "brave_dev": "/Library/Application Support/BraveSoftware/Brave-Browser-Dev/Default/History",
+    "brave_beta": "/Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/History",
     "chromium": "/Library/Application Support/Chromium/Default/History",
     "chrome": "/Library/Application Support/Google/Chrome/Default/History",
     "opera": "/Library/Application Support/com.operasoftware.Opera/History",
