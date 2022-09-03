@@ -362,7 +362,7 @@ fi</string>
 
 - Chromium
 - Google Chrome
-- Brave and Brave Dev(Chromium)
+- Brave and Brave Beta (Chromium)
 - Vivaldi
 - Opera
 - Sidekick
@@ -497,7 +497,7 @@ Search Bookmarks with keyword: `bm`</string>
 				<key>required</key>
 				<false/>
 				<key>text</key>
-				<string>Brave Developer</string>
+				<string>Brave Beta</string>
 			</dict>
 			<key>description</key>
 			<string></string>
@@ -506,7 +506,7 @@ Search Bookmarks with keyword: `bm`</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
-			<string>brave_dev</string>
+			<string>brave_beta</string>
 		</dict>
 		<dict>
 			<key>config</key>

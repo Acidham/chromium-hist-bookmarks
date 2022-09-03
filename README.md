@@ -9,7 +9,7 @@
 
 - Chromium
 - Google Chrome
-- Brave and Brave Dev(Chromium)
+- Brave and Brave beta (Chromium)
 - Vivaldi
 - Opera
 - Sidekick
