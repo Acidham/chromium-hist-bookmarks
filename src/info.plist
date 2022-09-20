@@ -656,6 +656,6 @@ Search Bookmarks with keyword: `bm`</string>
 	<key>version</key>
 	<string>3.0.4</string>
 	<key>webaddress</key>
-	<string>https://github.com/Acidham/chromium-history</string>
+	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>
 </plist>
