@@ -21,7 +21,8 @@ HISTORY_MAP = {
     "chrome": "/Library/Application Support/Google/Chrome/Default/History",
     "opera": "/Library/Application Support/com.operasoftware.Opera/History",
     "sidekick": '/Library/Application Support/Sidekick/Default/History',
-    "vivaldi": "/Library/Application Support/Vivaldi/Default/History"
+    "vivaldi": "/Library/Application Support/Vivaldi/Default/History",
+    "edge": "/Library/Application Support/Microsoft Edge/Default/History"
 }
 
 # Get Browser Histories to load per env (true/false)

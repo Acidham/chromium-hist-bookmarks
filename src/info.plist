@@ -363,6 +363,7 @@ fi</string>
 - Chromium
 - Google Chrome
 - Brave and Brave beta (Chromium)
+- MS Edge
 - Vivaldi
 - Opera
 - Sidekick
@@ -557,13 +558,32 @@ Search Bookmarks with keyword: `bm`</string>
 				<string>Vivaldi</string>
 			</dict>
 			<key>description</key>
-			<string>Browsers to be included into history and bookmark search</string>
+			<string></string>
 			<key>label</key>
 			<string></string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
 			<string>vivaldi</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Edge</string>
+			</dict>
+			<key>description</key>
+			<string>Browsers to be included into history and bookmark search</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>edge</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -654,7 +674,7 @@ Search Bookmarks with keyword: `bm`</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>3.0.4</string>
+	<string>3.0.6</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>

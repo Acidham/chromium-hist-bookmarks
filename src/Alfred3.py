@@ -268,15 +268,18 @@ class Tools(object):
 
             bool: True or False as bool
         """
-        if os.getenv(var).isdigit():
-            if os.getenv(var) == '0':
-                return False
-            else:
+        try:
+            if os.getenv(var).isdigit():
+                if os.getenv(var) == '0':
+                    return False
+                else:
+                    return True
+            if os.getenv(var).lower() == "true":
                 return True
-        if os.getenv(var).lower() == "true":
-            return True
-        else:
-            return default
+            else:
+                return default
+        except AttributeError as e:
+            sys.exit(f'ERROR: Alfred Environment "{var}" Variable not found!')
 
     @staticmethod
     def getArgv(i: int, default=str()) -> str:
