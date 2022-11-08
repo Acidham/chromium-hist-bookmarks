@@ -4,9 +4,11 @@ import codecs
 import json
 import os
 import sys
+from plistlib import load
 from typing import Union
 
 from Alfred3 import Items as Items
+from Alfred3 import Plist
 from Alfred3 import Tools as Tools
 from Favicon import Icons
 
@@ -20,14 +22,15 @@ BOOKMARS_MAP = {
     "opera": '/Library/Application Support/com.operasoftware.Opera/Bookmarks',
     "sidekick": '/Library/Application Support/Sidekick/Default/Bookmarks',
     "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks',
-    "edge": '/Library/Application Support/Microsoft Edge/Default/Bookmarks'
+    "edge": '/Library/Application Support/Microsoft Edge/Default/Bookmarks',
+    "safari": '/Library/Safari/Bookmarks.plist'
 }
 
 # Show favicon in results or default wf icon
 show_favicon = Tools.getEnvBool("show_favicon")
 
 BOOKMARKS = list()
-# Get Browser Histories to load baed on user configuration
+# Get Browser Histories to load based on user configuration
 for k in BOOKMARS_MAP.keys():
     is_set = Tools.getEnvBool(k)
     if is_set:
@@ -118,6 +121,18 @@ def get_json_from_file(file: str) -> json:
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
+def get_safari_bookmarks_json(file: str) -> list:
+    with open(file, "rb") as fp:
+        plist = load(fp)
+    children = plist.get("Children")
+    ret_list = list()
+    for item in children:  # TODO: implement
+        name = item.get("URIDictionary").get("title")
+        url = item.get("URLString")
+        ret_list.append((name, url))
+    return ret_list
+
+
 def match(search_term: str, results: list) -> list:
     def is_in_tuple(tple: tuple, st: str) -> bool:
         match = False
@@ -164,8 +179,12 @@ def main():
         matches = list()
         # Generate list of bookmars matches the search
         for bookmarks_file in bms:
-            bm_json = get_json_from_file(bookmarks_file)
-            bookmarks = get_all_urls(bm_json)
+            if "Safari" in bookmarks_file:
+                #bookmarks = get_safari_bookmarks_json(bookmarks_file)
+                pass
+            else:
+                bm_json = get_json_from_file(bookmarks_file)
+                bookmarks = get_all_urls(bm_json)
             matches.extend(match(query, bookmarks))
         # generate list of matches for Favicon download
         ico_matches = [(i2, i1) for i1, i2 in matches]
@@ -179,12 +198,17 @@ def main():
             favicon = ico.get_favion_path(url)
             wf.setItem(
                 title=name,
-                subtitle=url,
+                subtitle=f"{url[:80]}",
                 arg=url,
                 quicklookurl=url
             )
             if show_favicon and favicon:
                 wf.setIcon(favicon, "image")
+            wf.addMod(
+                key='cmd',
+                subtitle="Other Actions...",
+                arg=url
+            )
             wf.addItem()
 
     if wf.getItemsLengths() == 0:

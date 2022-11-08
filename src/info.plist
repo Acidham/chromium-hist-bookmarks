@@ -8,6 +8,19 @@
 	<string>Internet</string>
 	<key>connections</key>
 	<dict>
+		<key>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<array>
 			<dict>
@@ -25,9 +38,19 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
+				<string>ED77BD38-D63C-42CD-BEB6-6E3F454781C9</string>
 				<key>modifiers</key>
 				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
@@ -43,18 +66,80 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+		</array>
+		<key>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</key>
+		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<string>D09358D1-C880-4E62-837E-6648A334152E</string>
 				<key>modifiers</key>
-				<integer>1048576</integer>
+				<integer>0</integer>
 				<key>modifiersubtext</key>
-				<string>Copy URL to Clipboard</string>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>C8B5C9B5-DF95-428D-A2CB-4DFFD4773165</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>D09358D1-C880-4E62-837E-6648A334152E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F00B5055-2A7B-4DF4-AFAA-1B57E89B61DB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
 		</array>
 		<key>E420908F-C5F5-44DD-AB95-0B375998DC6F</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>ED77BD38-D63C-42CD-BEB6-6E3F454781C9</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>ED77BD38-D63C-42CD-BEB6-6E3F454781C9</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -66,13 +151,30 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+		</array>
+		<key>F00B5055-2A7B-4DF4-AFAA-1B57E89B61DB</key>
+		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
+				<string>C8B5C9B5-DF95-428D-A2CB-4DFFD4773165</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>sourceoutputuid</key>
+				<string>F19E20E4-AFB0-4DA1-84CE-D9C51949AFAA</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>9BFE8906-36E9-49A3-A4B7-41AC1E1A60F5</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -80,9 +182,11 @@
 				<key>destinationuid</key>
 				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
 				<key>modifiers</key>
-				<integer>1048576</integer>
+				<integer>0</integer>
 				<key>modifiersubtext</key>
-				<string>Copy URL to Clipboard</string>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>0B447EDC-254F-4D46-B2EC-24820A8265CB</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -91,7 +195,7 @@
 	<key>createdby</key>
 	<string>Acidham</string>
 	<key>description</key>
-	<string>Search in Chromium Histories and Bookmarks</string>
+	<string>Search in Browser History and Bookmarks</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -110,11 +214,11 @@
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>bm</string>
+				<string>bh</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -122,19 +226,20 @@
 				<key>queuedelaymode</key>
 				<integer>1</integer>
 				<key>queuemode</key>
-				<integer>1</integer>
+				<integer>2</integer>
 				<key>runningsubtext</key>
 				<string>Searching, please wait...</string>
 				<key>script</key>
-				<string>./py3.sh chrom_bookmarks.py "$1"</string>
+				<string>./py3.sh chrom_history.py "$1"
+</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>chrom_bookmarks.py</string>
+				<string>chrom_history.py</string>
 				<key>subtext</key>
-				<string>Search in Chromium Bookmarks</string>
+				<string>Search in Chromium History</string>
 				<key>title</key>
-				<string>Chromium Bookmarks Search</string>
+				<string>Chromium History Search</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -143,7 +248,7 @@
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>E420908F-C5F5-44DD-AB95-0B375998DC6F</string>
+			<string>A1F782AE-40F5-47BE-BA57-F230607162D5</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
@@ -153,18 +258,225 @@
 				<key>browser</key>
 				<string></string>
 				<key>skipqueryencode</key>
-				<false/>
+				<true/>
 				<key>skipvarencode</key>
-				<false/>
+				<true/>
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
-				<string>{query}</string>
+				<string>{var:url}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
 			<key>uid</key>
 			<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>url</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>ED77BD38-D63C-42CD-BEB6-6E3F454781C9</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>./py3.sh domain.py $1</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>5</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C8B5C9B5-DF95-428D-A2CB-4DFFD4773165</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>url</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string></string>
+				<key>script</key>
+				<string>./py3.sh actions.py</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string></string>
+				<key>type</key>
+				<integer>5</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>D09358D1-C880-4E62-837E-6648A334152E</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string></string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>domain</string>
+						<key>outputlabel</key>
+						<string>domain</string>
+						<key>uid</key>
+						<string>F19E20E4-AFB0-4DA1-84CE-D9C51949AFAA</string>
+					</dict>
+					<dict>
+						<key>inputstring</key>
+						<string></string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>openin</string>
+						<key>outputlabel</key>
+						<string>openin</string>
+						<key>uid</key>
+						<string>9BFE8906-36E9-49A3-A4B7-41AC1E1A60F5</string>
+					</dict>
+					<dict>
+						<key>inputstring</key>
+						<string></string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>clipboard</string>
+						<key>outputlabel</key>
+						<string>clipboard</string>
+						<key>uid</key>
+						<string>0B447EDC-254F-4D46-B2EC-24820A8265CB</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>else</string>
+				<key>hideelse</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>F00B5055-2A7B-4DF4-AFAA-1B57E89B61DB</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>jumpto</key>
+				<string>alfred.action.url.openin</string>
+				<key>path</key>
+				<string>{var:url}</string>
+				<key>type</key>
+				<integer>2</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.actioninalfred</string>
+			<key>uid</key>
+			<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string></string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict>
+					<key>url</key>
+					<string>{query}</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -262,6 +574,25 @@ fi</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{var:url}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -292,11 +623,11 @@ fi</string>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>bh</string>
+				<string>bm</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -304,20 +635,19 @@ fi</string>
 				<key>queuedelaymode</key>
 				<integer>1</integer>
 				<key>queuemode</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>runningsubtext</key>
 				<string>Searching, please wait...</string>
 				<key>script</key>
-				<string>./py3.sh chrom_history.py "$1"
-</string>
+				<string>./py3.sh chrom_bookmarks.py "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
-				<string>chrom_history.py</string>
+				<string>chrom_bookmarks.py</string>
 				<key>subtext</key>
-				<string>Search in Chromium History</string>
+				<string>Search in Chromium Bookmarks</string>
 				<key>title</key>
-				<string>Chromium History Search</string>
+				<string>Chromium Bookmarks Search</string>
 				<key>type</key>
 				<integer>0</integer>
 				<key>withspace</key>
@@ -326,37 +656,13 @@ fi</string>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>A1F782AE-40F5-47BE-BA57-F230607162D5</string>
-			<key>version</key>
-			<integer>3</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string>{query}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+			<string>E420908F-C5F5-44DD-AB95-0B375998DC6F</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string># Search in Chromium&amp; History and Bookmarks Search
-
-## Requires 
-
-* Python 3
-* Preferably Alfred 5
+	<string># Browser History and Bookmarks Search
 
 ## Supported Browsers: 
 
@@ -367,11 +673,19 @@ fi</string>
 - Vivaldi
 - Opera
 - Sidekick
+- Safari (History search only!)
 
 The Workflow uses the history and bookmarks files when browser is installed. 
 Please ensure to choose installed browser in configure workflow. 
 
-## History
+## Requires 
+
+* Python 3
+* Preferably Alfred 5
+
+## Usage
+
+### History
 
 
 Search History with keyword: `bh`
@@ -379,17 +693,39 @@ Search History with keyword: `bh`
 Type `&amp;` in between of the search terms to search for multiple entries e.g.: 
  `Car&amp;Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
 
-## Bookmarks
+### Bookmarks
 
-Search Bookmarks with keyword: `bm`</string>
+Search Bookmarks with keyword: `bm`
+
+### Other Actions
+
+Pressing `CMD` to enter `Other Actions...`:
+
+* Copy to Clipboard: Copies the URL into the Clipboard
+* Domain: Opens the domain  (e.g. www.google.com) in default Browser
+* Open In: Opens the URL with the Alfred's build in Open in other Browser</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
 		<dict>
 			<key>xpos</key>
-			<real>450</real>
+			<real>1050</real>
 			<key>ypos</key>
 			<real>50</real>
+		</dict>
+		<key>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</key>
+		<dict>
+			<key>xpos</key>
+			<real>950</real>
+			<key>ypos</key>
+			<real>155</real>
+		</dict>
+		<key>27EF6551-081A-4BF3-AE2C-3279905CA7FA</key>
+		<dict>
+			<key>xpos</key>
+			<real>1055</real>
+			<key>ypos</key>
+			<real>195</real>
 		</dict>
 		<key>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</key>
 		<dict>
@@ -398,37 +734,72 @@ Search Bookmarks with keyword: `bm`</string>
 			<key>note</key>
 			<string>OneUpdater</string>
 			<key>xpos</key>
-			<real>650</real>
+			<real>380</real>
 			<key>ypos</key>
-			<real>170</real>
+			<real>350</real>
 		</dict>
 		<key>6B99D187-E195-432C-A079-D4A99D9A9B0D</key>
 		<dict>
 			<key>xpos</key>
-			<real>650</real>
+			<real>1210</real>
 			<key>ypos</key>
-			<real>315</real>
+			<real>355</real>
 		</dict>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<dict>
 			<key>xpos</key>
-			<real>455</real>
+			<real>1055</real>
 			<key>ypos</key>
-			<real>315</real>
+			<real>355</real>
 		</dict>
 		<key>A1F782AE-40F5-47BE-BA57-F230607162D5</key>
 		<dict>
 			<key>xpos</key>
-			<real>70</real>
+			<real>30</real>
 			<key>ypos</key>
-			<real>315</real>
+			<real>50</real>
+		</dict>
+		<key>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</key>
+		<dict>
+			<key>xpos</key>
+			<real>245</real>
+			<key>ypos</key>
+			<real>220</real>
+		</dict>
+		<key>C8B5C9B5-DF95-428D-A2CB-4DFFD4773165</key>
+		<dict>
+			<key>xpos</key>
+			<real>795</real>
+			<key>ypos</key>
+			<real>125</real>
+		</dict>
+		<key>D09358D1-C880-4E62-837E-6648A334152E</key>
+		<dict>
+			<key>xpos</key>
+			<real>380</real>
+			<key>ypos</key>
+			<real>190</real>
 		</dict>
 		<key>E420908F-C5F5-44DD-AB95-0B375998DC6F</key>
 		<dict>
 			<key>xpos</key>
-			<real>70</real>
+			<real>30</real>
 			<key>ypos</key>
-			<real>45</real>
+			<real>355</real>
+		</dict>
+		<key>ED77BD38-D63C-42CD-BEB6-6E3F454781C9</key>
+		<dict>
+			<key>xpos</key>
+			<real>420</real>
+			<key>ypos</key>
+			<real>80</real>
+		</dict>
+		<key>F00B5055-2A7B-4DF4-AFAA-1B57E89B61DB</key>
+		<dict>
+			<key>xpos</key>
+			<real>665</real>
+			<key>ypos</key>
+			<real>195</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -577,13 +948,32 @@ Search Bookmarks with keyword: `bm`</string>
 				<string>Edge</string>
 			</dict>
 			<key>description</key>
-			<string>Browsers to be included into history and bookmark search</string>
+			<string></string>
 			<key>label</key>
 			<string></string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
 			<string>edge</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Safari</string>
+			</dict>
+			<key>description</key>
+			<string>Browsers to be included into history and bookmark search</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>safari</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -628,6 +1018,8 @@ Search Bookmarks with keyword: `bm`</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>default</key>
+				<string>true</string>
 				<key>pairs</key>
 				<array>
 					<array>
@@ -674,7 +1066,7 @@ Search Bookmarks with keyword: `bm`</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>3.0.6</string>
+	<string>4.0.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>
