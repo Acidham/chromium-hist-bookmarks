@@ -1,6 +1,8 @@
 # Browser History and Bookmarks Search
 
-## Supported Browsers: 
+The Workflow searches History and Bookmarks of the configured Browsers simulatiously. 
+
+## Supported Browsers
 
 - Chromium
 - Google Chrome
@@ -10,9 +12,6 @@
 - Opera
 - Sidekick
 - Safari (History search only!)
-
-The Workflow uses the history and bookmarks files when browser is installed. 
-Please ensure to choose installed browser in configure workflow. 
 
 ## Requires 
 
@@ -37,6 +36,6 @@ Search Bookmarks with keyword: `bm`
 
 Pressing `CMD` to enter `Other Actions...`:
 
-* Copy to Clipboard: Copies the URL into the Clipboard
-* Domain: Opens the domain  (e.g. www.google.com) in default Browser
-* Open In: Opens the URL with the Alfred's build in Open in other Browser
+* `Copy to Clipboard`: Copies the URL into the Clipboard
+* `Open Domain`: Opens the domain  (e.g. www.google.com) in default Browser
+* `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser
