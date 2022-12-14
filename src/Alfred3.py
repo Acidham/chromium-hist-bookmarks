@@ -4,12 +4,12 @@ import json
 import os
 import sys
 import time
-# from plistlib import readPlist, writePlist
 from plistlib import dump, load
+from urllib.parse import urlparse
 
 """
 Alfred Script Filter generator class
-Version: 3.3
+Version 4.2
 Python 3 required!
 """
 
@@ -29,6 +29,14 @@ class Items(object):
         self.mods = {}
 
     def getItemsLengths(self) -> int:
+        """
+        Get amount of items in object
+
+        Returns:
+
+            int: Number of items
+
+        """
         return len(self.items)
 
     def setKv(self, key: str, value: str) -> None:
@@ -424,6 +432,14 @@ class Tools(object):
 
     @staticmethod
     def getDataDir() -> str:
+        """
+        Get Alfred Data Directory
+
+        Returns:
+
+            str: Path to Alfred's data directory
+
+        """
         data_dir = os.getenv("alfred_workflow_data")
         if not (os.path.isdir(data_dir)):
             os.mkdir(data_dir)
@@ -431,10 +447,56 @@ class Tools(object):
 
     @staticmethod
     def getCacheDir() -> str:
+        """
+        Get Alfreds Cache Directory
+
+        Returns:
+
+            str: path to Alfred's cache directory
+
+        """
         cache_dir = os.getenv("alfred_workflow_cache")
-        if not(os.path.isdir(cache_dir)):
+        if not (os.path.isdir(cache_dir)):
             os.mkdir(cache_dir)
         return cache_dir
+
+    @staticmethod
+    def formatUrl(url: str) -> str:
+        """
+        Format a given string into URL format
+
+        Args:
+
+            url (str): string
+
+
+        Returns:
+
+            str: URL string
+
+        """
+        if not (url.startswith("http://")) and not (url.startswith("https://")):
+            url = f"https://{url}"
+        return url
+
+    @staticmethod
+    def getDomain(url: str) -> str:
+        """
+        Get Domain of an URL
+
+        Args:
+
+            url (str): string
+
+
+        Returns:
+
+            str: URL string
+
+        """
+        url = Tools.formatUrl(url)
+        p = urlparse(url=url)
+        return f"{p.scheme}://{p.netloc}"
 
 
 class Plist:
@@ -450,7 +512,6 @@ class Plist:
 
     def __init__(self):
         # Read info.plist into a standard Python dictionary
-        # self.info = readPlist("info.plist")
         with open("info.plist", "rb") as fp:
             self.info = load(fp)
 
@@ -508,7 +569,6 @@ class Plist:
         """
         Save changes to Plist
         """
-        # writePlist(self.info, "info.plist")
         with open("info.plist", "wb") as fp:
             dump(self.info, fp)
 
@@ -518,3 +578,51 @@ class Keys(object):
     SHIFT = u'\u21E7'
     ENTER = u'\u23CE'
     ARROW_RIGHT = u'\u2192'
+
+
+class AlfJson(object):
+
+    def __init__(self) -> None:
+        self.arg: dict = dict()
+        self.config: dict = dict()
+        self.variables: dict = dict()
+
+    def add_args(self, d) -> None:
+        """
+        Add arg dictionary
+
+        Args:
+
+            d (dict): Key-Value pairs of args
+
+        """
+        self.arg.update(d)
+
+    def add_configs(self, d) -> None:
+        """
+        Add config dictionary
+
+        Args:
+
+            d (dict): Key-Value pairs of configs
+
+        """
+        self.config.update(d)
+
+    def add_variables(self, d) -> None:
+        """
+        Add variables dictionary
+
+        Args:
+
+            d (dict): Key-Value pairs of variables
+
+        """
+        self.variables.update(d)
+
+    def write_json(self) -> None:
+        """
+        Write Alfred JSON config object to std out
+        """
+        out = {"alfredworkflow": {"arg": self.arg, "config": self.config, "variables": self.variables}}
+        sys.stdout.write(json.dumps(out))

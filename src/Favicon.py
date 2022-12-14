@@ -42,7 +42,7 @@ class Icons(object):
         """
         netloc = urlparse(url).netloc
         img = os.path.join(self.wf_cache_dir, f"{netloc}.png")
-        if not(os.path.exists(img)):
+        if not (os.path.exists(img)):
             img = None
         if img and os.path.getsize(img) == 0:
             os.remove(img)
@@ -60,7 +60,7 @@ class Icons(object):
             url = f"https://www.google.com/s2/favicons?domain={netloc}&sz=128"
             img = os.path.join(self.wf_cache_dir, f"{netloc}.png")
             os.path.exists(img) and self._cleanup_img_cache(60, img)
-            if not(os.path.exists(img)):
+            if not (os.path.exists(img)):
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                 with open(img, "wb") as f:
                     try:

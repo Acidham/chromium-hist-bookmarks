@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from Alfred3 import Items, Tools
 
 url = Tools.getEnv('url')
-domain = Tools.strJoin(urlparse(url).scheme, "://", urlparse(url).netloc)
+domain = Tools.getDomain(url)
 
 # Script Filter item [Title,Subtitle,arg/uid/icon]
 wf_items = [
@@ -23,6 +23,9 @@ for w in wf_items:
         arg=w[2]
     )
     icon_path = f'icons/{w[2]}.png'
-    wf.setIcon(icon_path, m_type='image')
+    wf.setIcon(
+        icon_path,
+        m_type='image'
+    )
     wf.addItem()
 wf.write()

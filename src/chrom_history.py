@@ -14,22 +14,21 @@ from Alfred3 import Tools as Tools
 from Favicon import Icons
 
 HISTORY_MAP = {
-    "brave": "/Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
-    "brave_beta": "/Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/History",
-    "chromium": "/Library/Application Support/Chromium/Default/History",
-    "chrome": "/Library/Application Support/Google/Chrome/Default/History",
-    "opera": "/Library/Application Support/com.operasoftware.Opera/History",
-    "sidekick": '/Library/Application Support/Sidekick/Default/History',
-    "vivaldi": "/Library/Application Support/Vivaldi/Default/History",
-    "edge": "/Library/Application Support/Microsoft Edge/Default/History",
-    "safari": "/Library/Safari/History.db"
+    "brave": "Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
+    "brave_beta": "Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/History",
+    "chromium": "Library/Application Support/Chromium/Default/History",
+    "chrome": "Library/Application Support/Google/Chrome/Default/History",
+    "opera": "Library/Application Support/com.operasoftware.Opera/History",
+    "sidekick": 'Library/Application Support/Sidekick/Default/History',
+    "vivaldi": "Library/Application Support/Vivaldi/Default/History",
+    "edge": "Library/Application Support/Microsoft Edge/Default/History",
+    "safari": "Library/Safari/History.db"
 }
 
 # Get Browser Histories to load per env (true/false)
 HISTORIES = list()
 for k in HISTORY_MAP.keys():
-    is_set = Tools.getEnvBool(k)
-    if is_set:
+    if Tools.getEnvBool(k):
         HISTORIES.append(HISTORY_MAP.get(k))
 
 # Get ignored Domains settings
@@ -55,7 +54,8 @@ def history_paths() -> list:
         list: available paths of history files
     """
     user_dir = os.path.expanduser("~")
-    hists = [f"{user_dir}{h}" for h in HISTORIES]
+    hists = [os.path.join(user_dir, h) for h in HISTORIES]
+
     valid_hists = list()
     # write log if history db was found or not
     for h in hists:
@@ -166,7 +166,7 @@ def sql(db: str) -> list:
             res.extend(r)
         os.remove(history_db)  # Delete History file in /tmp
     except sqlite3.Error as e:
-        Tools.log(f"SQL Error{e}")
+        Tools.log(f"SQL Error: {e}")
         sys.exit(1)
     return res
 
@@ -262,13 +262,16 @@ def formatTimeStamp(time_ms: int, fmt: str = '%d. %B %Y') -> str:
 
 
 def main():
-    # Get wf cached directory for writing into log
+    # Get wf cached directory for writing into debugger
     wf_cache_dir = Tools.getCacheDir()
+    # Get wf data directory for writing into debugger
+    wf_data_dir = Tools.getDataDir()
     # Check and write python version
     Tools.log(f"Cache Dir: {wf_cache_dir}")
+    Tools.log(f'Data Dir: {wf_data_dir}')
     Tools.log("PYTHON VERSION:", sys.version)
     if sys.version_info < (3, 7):
-        print("Python version 3.7.0 or higher required!")
+        Tools.log("Python version 3.7.0 or higher required!")
         sys.exit(0)
 
     # Create Workflow items object
@@ -308,10 +311,18 @@ def main():
                 quicklookurl=url
             )
             if show_favicon and favicon:
-                wf.setIcon(favicon, "image")
+                wf.setIcon(
+                    favicon,
+                    "image"
+                )
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
+                arg=url
+            )
+            wf.addMod(
+                key="alt",
+                subtitle=url,
                 arg=url
             )
             wf.addItem()

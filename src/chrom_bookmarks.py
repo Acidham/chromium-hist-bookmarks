@@ -15,15 +15,15 @@ from Favicon import Icons
 # Bookmark file path relative to HOME
 
 BOOKMARS_MAP = {
-    "brave": '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
-    "brave_beta": '/Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/Bookmarks',
-    "chrome": '/Library/Application Support/Google/Chrome/Default/Bookmarks',
-    "chromium": '/Library/Application Support/Chromium/Default/Bookmarks',
-    "opera": '/Library/Application Support/com.operasoftware.Opera/Bookmarks',
-    "sidekick": '/Library/Application Support/Sidekick/Default/Bookmarks',
-    "vivaldi": '/Library/Application Support/Vivaldi/Default/Bookmarks',
-    "edge": '/Library/Application Support/Microsoft Edge/Default/Bookmarks',
-    "safari": '/Library/Safari/Bookmarks.plist'
+    "brave": 'Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
+    "brave_beta": 'Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/Bookmarks',
+    "chrome": 'Library/Application Support/Google/Chrome/Default/Bookmarks',
+    "chromium": 'Library/Application Support/Chromium/Default/Bookmarks',
+    "opera": 'Library/Application Support/com.operasoftware.Opera/Bookmarks',
+    "sidekick": 'Library/Application Support/Sidekick/Default/Bookmarks',
+    "vivaldi": 'Library/Application Support/Vivaldi/Default/Bookmarks',
+    "edge": 'Library/Application Support/Microsoft Edge/Default/Bookmarks',
+    "safari": 'Library/Safari/Bookmarks.plist'
 }
 
 # Show favicon in results or default wf icon
@@ -32,8 +32,7 @@ show_favicon = Tools.getEnvBool("show_favicon")
 BOOKMARKS = list()
 # Get Browser Histories to load based on user configuration
 for k in BOOKMARS_MAP.keys():
-    is_set = Tools.getEnvBool(k)
-    if is_set:
+    if Tools.getEnvBool(k):
         BOOKMARKS.append(BOOKMARS_MAP.get(k))
 
 
@@ -96,7 +95,7 @@ def paths_to_bookmarks() -> list:
         list: valid bookmark paths
     """
     user_dir = os.path.expanduser('~')
-    bms = [f"{user_dir}{p}" for p in BOOKMARKS]
+    bms = [os.path.join(user_dir, b) for b in BOOKMARKS]
     valid_bms = list()
     for b in bms:
         if os.path.isfile(b):
@@ -167,7 +166,7 @@ def main():
     Tools.log("PYTHON VERSION:", sys.version)
     # check python > 3.7.0
     if sys.version_info < (3, 7):
-        print('Python version 3.7.0 or higher required!')
+        Tools.log("Python version 3.7.0 or higher required!")
         sys.exit(0)
 
     # Workflow item object
@@ -203,14 +202,21 @@ def main():
                 quicklookurl=url
             )
             if show_favicon and favicon:
-                wf.setIcon(favicon, "image")
+                wf.setIcon(
+                    favicon,
+                    "image"
+                )
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
                 arg=url
             )
+            wf.addMod(
+                key="alt",
+                subtitle=url,
+                arg=url
+            )
             wf.addItem()
-
     if wf.getItemsLengths() == 0:
         wf.setItem(
             title='No Bookmark found!',

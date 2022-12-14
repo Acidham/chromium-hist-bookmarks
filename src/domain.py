@@ -3,9 +3,11 @@
 from sys import stdout
 from urllib.parse import urlparse
 
-from Alfred3 import Tools
+from Alfred3 import AlfJson, Tools
 
 url = Tools.getEnv('url')
-domain = Tools.strJoin(urlparse(url).scheme, "://", urlparse(url).netloc)
+domain = Tools.getDomain(url)
 
-stdout.write(domain)
+aj = AlfJson()
+aj.add_variables({"url": domain})
+aj.write_json()

@@ -8,19 +8,6 @@
 	<string>Internet</string>
 	<key>connections</key>
 	<dict>
-		<key>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-		</array>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<array>
 			<dict>
@@ -56,16 +43,6 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
 		</array>
 		<key>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</key>
 		<array>
@@ -84,7 +61,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</string>
+				<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -123,16 +100,6 @@
 				<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
 				<key>modifiers</key>
 				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
-				<key>modifiers</key>
-				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
@@ -205,6 +172,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<true/>
+				<key>skipvarencode</key>
+				<true/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{var:url}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
@@ -255,27 +243,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>browser</key>
-				<string></string>
-				<key>skipqueryencode</key>
-				<true/>
-				<key>skipvarencode</key>
-				<true/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{var:url}</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>uid</key>
-			<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>argument</key>
 				<string></string>
 				<key>passthroughargument</key>
@@ -319,20 +286,17 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argument</key>
-				<string></string>
-				<key>passthroughargument</key>
-				<false/>
-				<key>variables</key>
-				<dict>
-					<key>url</key>
-					<string>{query}</string>
-				</dict>
+				<key>jumpto</key>
+				<string>alfred.action.url.openin</string>
+				<key>path</key>
+				<string>{var:url}</string>
+				<key>type</key>
+				<integer>2</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.utility.argument</string>
+			<string>alfred.workflow.action.actioninalfred</string>
 			<key>uid</key>
-			<string>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</string>
+			<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -446,23 +410,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>jumpto</key>
-				<string>alfred.action.url.openin</string>
-				<key>path</key>
-				<string>{var:url}</string>
-				<key>type</key>
-				<integer>2</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.actioninalfred</string>
-			<key>uid</key>
-			<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>argument</key>
 				<string></string>
 				<key>passthroughargument</key>
@@ -479,116 +426,6 @@
 			<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>script</key>
-				<string># THESE VARIABLES MUST BE SET. SEE THE ONEUPDATER README FOR AN EXPLANATION OF EACH.
-readonly remote_info_plist="https://raw.githubusercontent.com/Acidham/chromium-hist-bookmarks/master/src/info.plist"
-readonly workflow_url="Acidham/chromium-hist-bookmarks"
-readonly download_type='github_release'
-readonly frequency_check='4'
-
-# FROM HERE ON, CODE SHOULD BE LEFT UNTOUCHED!
-function abort {
-  echo "${1}" &gt;&amp;2
-  exit 1
-}
-
-function url_exists {
-  curl --silent --location --output /dev/null --fail --range 0-0 "${1}"
-}
-
-function notification {
-  readonly local notificator="$(find . -type d -name 'Notificator.app')"
-  if [[ -n "${notificator}" ]]; then
-    "${notificator}/Contents/Resources/Scripts/notificator" --message "${1}" --title "${alfred_workflow_name}" --subtitle 'A new version is available'
-    return
-  fi
-
-  readonly local terminal_notifier="$(find . -type f -name 'terminal-notifier')"
-  if [[ -n "${terminal_notifier}" ]]; then
-    "${terminal_notifier}" -title "${alfred_workflow_name}" -subtitle 'A new version is available' -message "${1}"
-    return
-  fi
-
-  osascript -e "display notification \"${1}\" with title \"${alfred_workflow_name}\" subtitle \"A new version is available\""
-}
-
-# Local sanity checks
-readonly local_info_plist='info.plist'
-readonly local_version="$(/usr/libexec/PlistBuddy -c 'print version' "${local_info_plist}")"
-
-[[ -n "${local_version}" ]] || abort 'You need to set a workflow version in the configuration sheet.'
-[[ "${download_type}" =~ ^(direct|page|github_release)$ ]] || abort "'download_type' (${download_type}) needs to be one of 'direct', 'page', or 'github_release'."
-[[ "${frequency_check}" =~ ^[0-9]+$ ]] || abort "'frequency_check' (${frequency_check}) needs to be a number."
-
-# Check for updates
-if [[ $(find "${local_info_plist}" -mtime +"${frequency_check}"d) ]]; then
-  if ! url_exists "${remote_info_plist}"; then abort "'remote_info_plist' (${remote_info_plist}) appears to not be reachable."; fi # Remote sanity check
-
-  readonly tmp_file="$(mktemp)"
-  curl --silent --location --output "${tmp_file}" "${remote_info_plist}"
-  readonly remote_version="$(/usr/libexec/PlistBuddy -c 'print version' "${tmp_file}")"
-
-  if [[ "${local_version}" == "${remote_version}" ]]; then
-    touch "${local_info_plist}" # Reset timer by touching local file
-    exit 0
-  fi
-
-  if [[ "${download_type}" == 'page' ]]; then
-    notification 'Opening download page…'
-    open "${workflow_url}"
-    exit 0
-  fi
-
-  download_url="$([[ "${download_type}" == 'github_release' ]] &amp;&amp; curl --silent "https://api.github.com/repos/${workflow_url}/releases/latest" | grep 'browser_download_url' | head -1 | sed -E 's/.*browser_download_url": "(.*)"/\1/' || echo "${workflow_url}")"
-
-  if url_exists "${download_url}"; then
-    notification 'Downloading and installing…'
-    curl --silent --location --output "${HOME}/Downloads/${alfred_workflow_name}.alfredworkflow" "${download_url}"
-    open "${HOME}/Downloads/${alfred_workflow_name}.alfredworkflow"
-  else
-    abort "'workflow_url' (${download_url}) appears to not be reachable."
-  fi
-fi</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string>{var:url}</string>
-				<key>ignoredynamicplaceholders</key>
-				<false/>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
-			<key>version</key>
-			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -660,11 +497,32 @@ fi</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{var:url}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string># Browser History and Bookmarks Search
 
-## Supported Browsers: 
+The Workflow searches History and Bookmarks of the configured Browsers simulatiously. 
+
+## Supported Browsers
 
 - Chromium
 - Google Chrome
@@ -674,9 +532,6 @@ fi</string>
 - Opera
 - Sidekick
 - Safari (History search only!)
-
-The Workflow uses the history and bookmarks files when browser is installed. 
-Please ensure to choose installed browser in configure workflow. 
 
 ## Requires 
 
@@ -701,54 +556,36 @@ Search Bookmarks with keyword: `bm`
 
 Pressing `CMD` to enter `Other Actions...`:
 
-* Copy to Clipboard: Copies the URL into the Clipboard
-* Domain: Opens the domain  (e.g. www.google.com) in default Browser
-* Open In: Opens the URL with the Alfred's build in Open in other Browser</string>
+* `Copy to Clipboard`: Copies the URL into the Clipboard
+* `Open Domain`: Opens the domain  (e.g. www.google.com) in default Browser
+* `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
 		<dict>
 			<key>xpos</key>
-			<real>1050</real>
+			<real>940</real>
 			<key>ypos</key>
 			<real>50</real>
-		</dict>
-		<key>1EFBEC43-0D64-4E15-B001-6B2C7BABEFB2</key>
-		<dict>
-			<key>xpos</key>
-			<real>950</real>
-			<key>ypos</key>
-			<real>155</real>
 		</dict>
 		<key>27EF6551-081A-4BF3-AE2C-3279905CA7FA</key>
 		<dict>
 			<key>xpos</key>
-			<real>1055</real>
+			<real>940</real>
 			<key>ypos</key>
-			<real>195</real>
-		</dict>
-		<key>49DCC431-DBD9-4007-AA87-6FB2C9D68C5D</key>
-		<dict>
-			<key>colorindex</key>
-			<integer>12</integer>
-			<key>note</key>
-			<string>OneUpdater</string>
-			<key>xpos</key>
-			<real>380</real>
-			<key>ypos</key>
-			<real>350</real>
+			<real>190</real>
 		</dict>
 		<key>6B99D187-E195-432C-A079-D4A99D9A9B0D</key>
 		<dict>
 			<key>xpos</key>
-			<real>1210</real>
+			<real>1090</real>
 			<key>ypos</key>
 			<real>355</real>
 		</dict>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<dict>
 			<key>xpos</key>
-			<real>1055</real>
+			<real>940</real>
 			<key>ypos</key>
 			<real>355</real>
 		</dict>
@@ -762,14 +599,14 @@ Pressing `CMD` to enter `Other Actions...`:
 		<key>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</key>
 		<dict>
 			<key>xpos</key>
-			<real>245</real>
+			<real>310</real>
 			<key>ypos</key>
 			<real>220</real>
 		</dict>
 		<key>C8B5C9B5-DF95-428D-A2CB-4DFFD4773165</key>
 		<dict>
 			<key>xpos</key>
-			<real>795</real>
+			<real>680</real>
 			<key>ypos</key>
 			<real>125</real>
 		</dict>
@@ -792,12 +629,12 @@ Pressing `CMD` to enter `Other Actions...`:
 			<key>xpos</key>
 			<real>420</real>
 			<key>ypos</key>
-			<real>80</real>
+			<real>85</real>
 		</dict>
 		<key>F00B5055-2A7B-4DF4-AFAA-1B57E89B61DB</key>
 		<dict>
 			<key>xpos</key>
-			<real>665</real>
+			<real>565</real>
 			<key>ypos</key>
 			<real>195</real>
 		</dict>
@@ -1066,7 +903,7 @@ Pressing `CMD` to enter `Other Actions...`:
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.0.0</string>
+	<string>4.1.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>
