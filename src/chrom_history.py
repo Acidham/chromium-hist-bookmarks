@@ -22,6 +22,7 @@ HISTORY_MAP = {
     "sidekick": 'Library/Application Support/Sidekick/Default/History',
     "vivaldi": "Library/Application Support/Vivaldi/Default/History",
     "edge": "Library/Application Support/Microsoft Edge/Default/History",
+    "arc": "Library/Application Support/Arc/User Data/Default/History",
     "safari": "Library/Safari/History.db"
 }
 
