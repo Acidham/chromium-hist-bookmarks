@@ -298,20 +298,22 @@ def main():
     # if result the write alfred response
     if len(results) > 0:
         # Cache Favicons
-        ico = Icons(results)
+        if show_favicon:
+            ico = Icons(results)
         for i in results:
             url = i[0]
             title = i[1]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
-            favicon = ico.get_favion_path(url)
             wf.setItem(
                 title=title,
                 subtitle=f"Last visit: {last_visit}(Visits: {visits})",
                 arg=url,
                 quicklookurl=url
             )
-            if show_favicon and favicon:
+            if show_favicon:
+                favicon = ico.get_favion_path(url)
+            if favicon:
                 wf.setIcon(
                     favicon,
                     "image"
