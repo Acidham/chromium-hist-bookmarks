@@ -960,7 +960,7 @@ Pressing `CMD` to enter `Other Actions...`:
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.1.2</string>
+	<string>4.1.3</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>
