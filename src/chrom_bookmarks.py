@@ -187,26 +187,29 @@ def main():
                 bookmarks = get_all_urls(bm_json)
             matches.extend(match(query, bookmarks))
         # generate list of matches for Favicon download
-        ico_matches = [(i2, i1) for i1, i2 in matches]
+        ico_matches = []
+        if show_favicon:
+            ico_matches = [(i2, i1) for i1, i2 in matches]
         # Heat Favicon Cache
         ico = Icons(ico_matches)
         # generate script filter output
         for m in matches:
             name = m[0]
             url = m[1]
-            # get favicoon for url
-            favicon = ico.get_favion_path(url)
             wf.setItem(
                 title=name,
                 subtitle=f"{url[:80]}",
                 arg=url,
                 quicklookurl=url
             )
-            if show_favicon and favicon:
-                wf.setIcon(
-                    favicon,
-                    "image"
-                )
+            if show_favicon:
+                # get favicoon for url
+                favicon = ico.get_favion_path(url)
+                if favicon:
+                    wf.setIcon(
+                        favicon,
+                        "image"
+                    )
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
