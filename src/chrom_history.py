@@ -313,7 +313,6 @@ def main():
             )
             if show_favicon:
                 favicon = ico.get_favion_path(url)
-            if favicon:
                 wf.setIcon(
                     favicon,
                     "image"
