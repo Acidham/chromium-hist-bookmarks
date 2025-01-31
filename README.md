@@ -1,6 +1,6 @@
 # Browser History and Bookmarks Search
 
-The Workflow searches History and Bookmarks of the configured Browsers simulatiously. 
+The Workflow searches History and Bookmarks of the configured Browsers simulatiously.
 
 ## Supported Browsers
 
@@ -12,12 +12,12 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Opera
 - Sidekick
 - Arc
-- Safari (History search only!)
+- Safari
 
-## Requires 
+## Requires
 
 * Python 3
-* Preferably Alfred 5
+* Alfred 5
 
 ## Usage
 
@@ -26,7 +26,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 
 Search History with keyword: `bh`
 
-Type `&` in between of the search terms to search for multiple entries e.g.: 
+Type `&` in between of the search terms to search for multiple entries e.g.:
  `Car&Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
 
 ### Bookmarks
