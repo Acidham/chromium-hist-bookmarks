@@ -14,7 +14,7 @@ from Favicon import Icons
 
 # Bookmark file path relative to HOME
 
-BOOKMARKS_MAP = {
+BOOKMARS_MAP = {
     "brave": 'Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
     "brave_beta": 'Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/Bookmarks',
     "chrome": 'Library/Application Support/Google/Chrome/Default/Bookmarks',
@@ -32,9 +32,9 @@ show_favicon = Tools.getEnvBool("show_favicon")
 
 BOOKMARKS = list()
 # Get Browser Histories to load based on user configuration
-for k in BOOKMARKS_MAP.keys():
+for k in BOOKMARS_MAP.keys():
     if Tools.getEnvBool(k):
-        BOOKMARKS.append(BOOKMARKS_MAP.get(k))
+        BOOKMARKS.append(BOOKMARS_MAP.get(k))
 
 
 def removeDuplicates(li: list) -> list:
@@ -177,7 +177,7 @@ def main():
 
     if len(bms) > 0:
         matches = list()
-        # Generate list of bookmarks matches the search
+        # Generate list of bookmars matches the search
         for bookmarks_file in bms:
             if "Safari" in bookmarks_file:
                 #bookmarks = get_safari_bookmarks_json(bookmarks_file)
