@@ -8,13 +8,12 @@ from plistlib import load
 from typing import Union
 
 from Alfred3 import Items as Items
-from Alfred3 import Plist
 from Alfred3 import Tools as Tools
 from Favicon import Icons
 
 # Bookmark file path relative to HOME
 
-BOOKMARS_MAP = {
+BOOKMARKS_MAP = {
     "brave": 'Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
     "brave_beta": 'Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/Bookmarks',
     "chrome": 'Library/Application Support/Google/Chrome/Default/Bookmarks',
@@ -32,9 +31,9 @@ show_favicon = Tools.getEnvBool("show_favicon")
 
 BOOKMARKS = list()
 # Get Browser Histories to load based on user configuration
-for k in BOOKMARS_MAP.keys():
+for k in BOOKMARKS_MAP.keys():
     if Tools.getEnvBool(k):
-        BOOKMARKS.append(BOOKMARS_MAP.get(k))
+        BOOKMARKS.append(BOOKMARKS_MAP.get(k))
 
 
 def removeDuplicates(li: list) -> list:
@@ -121,19 +120,59 @@ def get_json_from_file(file: str) -> json:
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
+def extract_bookmarks(bookmark_data, bookmarks_list) -> None:
+    """
+    Recursively extract bookmarks (title and URL) from Safari bookmarks data.
+    Args:
+        bookmark_data (list or dict): The Safari bookmarks data, which can be a list or a dictionary.
+        bookmarks_list (list): The list to which extracted bookmarks (title and URL) will be appended.
+    Returns:
+        None
+    """
+    if isinstance(bookmark_data, list):
+        for item in bookmark_data:
+            extract_bookmarks(item, bookmarks_list)
+    elif isinstance(bookmark_data, dict):
+        if "Children" in bookmark_data:
+            extract_bookmarks(bookmark_data["Children"], bookmarks_list)
+        elif "URLString" in bookmark_data and "URIDictionary" in bookmark_data:
+            title = bookmark_data["URIDictionary"].get("title", "Untitled")
+            url = bookmark_data["URLString"]
+            bookmarks_list.append((title, url))
+
+
 def get_safari_bookmarks_json(file: str) -> list:
+    """
+    Get all bookmarks from Safari Bookmark file
+
+    Args:
+        file (str): Path to Safari Bookmark file
+
+    Returns:
+        list: List of bookmarks (title and URL)
+
+    """
     with open(file, "rb") as fp:
         plist = load(fp)
-    children = plist.get("Children")
-    ret_list = list()
-    for item in children:  # TODO: implement
-        name = item.get("URIDictionary").get("title")
-        url = item.get("URLString")
-        ret_list.append((name, url))
-    return ret_list
+    bookmarks = []
+    extract_bookmarks(plist, bookmarks)
+    return bookmarks
 
 
 def match(search_term: str, results: list) -> list:
+    """
+    Filters a list of tuples based on a search term.
+    Args:
+        search_term (str): The term to search for. Can include '&' or '|' to specify AND or OR logic.
+        results (list): A list of tuples to search within.
+    Returns:
+        list: A list of tuples that match the search term based on the specified logic.
+    The function supports the following search operators:
+        - '&': All search terms must be present in a tuple for it to be included in the result.
+        - '|': At least one of the search terms must be present in a tuple for it to be included in the result.
+        - No operator: The search term must be present in a tuple for it to be included in the result.
+    """
+
     def is_in_tuple(tple: tuple, st: str) -> bool:
         match = False
         for e in tple:
@@ -177,11 +216,12 @@ def main():
 
     if len(bms) > 0:
         matches = list()
-        # Generate list of bookmars matches the search
+        # Generate list of bookmarks matches the search
+        bookmarks = []
         for bookmarks_file in bms:
             if "Safari" in bookmarks_file:
-                #bookmarks = get_safari_bookmarks_json(bookmarks_file)
-                pass
+                bookmarks = get_safari_bookmarks_json(bookmarks_file)
+               # pass
             else:
                 bm_json = get_json_from_file(bookmarks_file)
                 bookmarks = get_all_urls(bm_json)
