@@ -226,6 +226,8 @@ def main():
                 bm_json = get_json_from_file(bookmarks_file)
                 bookmarks = get_all_urls(bm_json)
             matches.extend(match(query, bookmarks))
+        # finally remove duplicates from all browser bookmarks
+        matches = removeDuplicates(matches)
         # generate list of matches for Favicon download
         ico_matches = []
         if show_favicon:
