@@ -26,8 +26,13 @@ BOOKMARKS_MAP = {
     "safari": 'Library/Safari/Bookmarks.plist'
 }
 
+
 # Show favicon in results or default wf icon
 show_favicon = Tools.getEnvBool("show_favicon")
+
+# Determine default search operator (AND/OR)
+search_operator_default = Tools.getEnv(
+    "search_operator_default", "AND").upper() != "OR"
 
 BOOKMARKS = list()
 # Get Browser Histories to load based on user configuration
@@ -46,13 +51,7 @@ def removeDuplicates(li: list) -> list:
     Returns:
         list: filtered bookmark entries
     """
-    visited = set()
-    output = []
-    for a, b in li:
-        if a not in visited:
-            visited.add(a)
-            output.append((a, b))
-    return output
+    return list(dict.fromkeys(li))
 
 
 def get_all_urls(the_json: str) -> list:
@@ -120,7 +119,7 @@ def get_json_from_file(file: str) -> json:
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
-def extract_bookmarks(bookmark_data, bookmarks_list) -> None:
+def extract_safari_bookmarks(bookmark_data, bookmarks_list) -> None:
     """
     Recursively extract bookmarks (title and URL) from Safari bookmarks data.
     Args:
@@ -131,10 +130,10 @@ def extract_bookmarks(bookmark_data, bookmarks_list) -> None:
     """
     if isinstance(bookmark_data, list):
         for item in bookmark_data:
-            extract_bookmarks(item, bookmarks_list)
+            extract_safari_bookmarks(item, bookmarks_list)
     elif isinstance(bookmark_data, dict):
         if "Children" in bookmark_data:
-            extract_bookmarks(bookmark_data["Children"], bookmarks_list)
+            extract_safari_bookmarks(bookmark_data["Children"], bookmarks_list)
         elif "URLString" in bookmark_data and "URIDictionary" in bookmark_data:
             title = bookmark_data["URIDictionary"].get("title", "Untitled")
             url = bookmark_data["URLString"]
@@ -155,7 +154,7 @@ def get_safari_bookmarks_json(file: str) -> list:
     with open(file, "rb") as fp:
         plist = load(fp)
     bookmarks = []
-    extract_bookmarks(plist, bookmarks)
+    extract_safari_bookmarks(plist, bookmarks)
     return bookmarks
 
 
@@ -167,12 +166,7 @@ def match(search_term: str, results: list) -> list:
         results (list): A list of tuples to search within.
     Returns:
         list: A list of tuples that match the search term based on the specified logic.
-    The function supports the following search operators:
-        - '&': All search terms must be present in a tuple for it to be included in the result.
-        - '|': At least one of the search terms must be present in a tuple for it to be included in the result.
-        - No operator: The search term must be present in a tuple for it to be included in the result.
     """
-
     def is_in_tuple(tple: tuple, st: str) -> bool:
         match = False
         for e in tple:
@@ -188,16 +182,17 @@ def match(search_term: str, results: list) -> list:
         search_terms = search_term.split('|')
         search_operator = "|"
     else:
-        search_terms = [search_term, ]
-        search_operator = ""
+        search_terms = search_term.split()
+        search_operator = "AND" if search_operator_default else "OR"
 
     for r in results:
-        if search_operator == "&" and all([is_in_tuple(r, ts) for ts in search_terms]):
-            result_lst.append(r)
-        if search_operator == "|" and any([is_in_tuple(r, ts) for ts in search_terms]):
-            result_lst.append(r)
-        if search_operator != "|" and search_operator != "&" and any([is_in_tuple(r, ts) for ts in search_terms]):
-            result_lst.append(r)
+        if search_operator == "&" or search_operator == "AND":
+            if all([is_in_tuple(r, ts) for ts in search_terms]):
+                result_lst.append(r)
+        elif search_operator == "|" or search_operator == "OR":
+            if any([is_in_tuple(r, ts) for ts in search_terms]):
+                result_lst.append(r)
+
     return result_lst
 
 
@@ -236,8 +231,8 @@ def main():
         ico = Icons(ico_matches)
         # generate script filter output
         for m in matches:
-            name = m[0]
             url = m[1]
+            name = m[0] if m[0] else url.split('/')[2]
             wf.setItem(
                 title=name,
                 subtitle=f"{url[:80]}",

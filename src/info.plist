@@ -546,6 +546,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 Search History and Bookmarks:    
 Type `&amp;` in between of the search terms to search for multiple entries e.g.: 
  `Car&amp;Bike` match entries with `Car or Bike rental` but NOT `Car driving school`
+You can setup search operator default to change behaviour
 
 
 ### Other Actions
@@ -956,11 +957,40 @@ Pressing `CMD` to enter `Other Actions...`:
 			<key>variable</key>
 			<string>date_format</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>AND</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>AND</string>
+						<string>AND</string>
+					</array>
+					<array>
+						<string>OR</string>
+						<string>OR</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>Sets how multiple words are combined:
+AND = all terms must match (default)
+OR = any term can match
+(You can still use &amp; or | in queries to override)</string>
+			<key>label</key>
+			<string>Default Search Operator</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>search_operator_default</string>
+		</dict>
 	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.2.1</string>
+	<string>4.3.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>

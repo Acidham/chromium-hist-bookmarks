@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import difflib
 import os
 import shutil
 import sqlite3
@@ -38,6 +39,10 @@ ignored_domains = d.split(',') if d else None
 
 # Show favicon in results or default wf icon
 show_favicon = Tools.getEnvBool("show_favicon")
+
+# Determine default search operator (AND/OR)
+search_operator_default = Tools.getEnv(
+    "search_operator_default", "AND").upper() != "OR"
 
 # if set to true history entries will be sorted
 # based on recent visitied otherwise number of visits
@@ -174,20 +179,23 @@ def sql(db: str) -> list:
 
 def get_search_terms(search: str) -> tuple:
     """
-    Explode search term string
+    Explode search term string - now defaults to AND for multiple words
 
     Args:
-        search(str): search term(s), can contain & or |
+        search(str): search term(s), can contain & or | for explicit operators
 
     Returns:
         tuple: Tuple with search terms
     """
+    # Check for explicit operators first
     if "&" in search:
         search_terms = tuple(search.split("&"))
     elif "|" in search:
         search_terms = tuple(search.split("|"))
     else:
-        search_terms = (search,)
+        # Default behavior: split by spaces and treat as AND
+        search_terms = tuple(search.split())
+
     search_terms = [normalize("NFC", s) for s in search_terms]
     return search_terms
 
@@ -202,25 +210,20 @@ def removeDuplicates(li: list) -> list:
     Returns:
         list: filtered history entries
     """
-    visited = set()
-    output = []
-    for a, b, c, d in li:
-        if b not in visited:
-            visited.add(b)
-            output.append((a, b, c, d))
-    return output
+    unique_entries = {b: (a, b, c, d) for a, b, c, d in li}
+    return list(unique_entries.values())
 
 
 def search_in_tuples(tuples: list, search: str) -> list:
     """
-    Search for serach term in list of tuples
+    Search for search term in list of tuples
 
     Args:
         tuples(list): List contains tuple to search
-        search(str): Search contains & or & or none
+        search(str): Search string (multiple words default to AND)
 
     Returns:
-        list: tuple list with result of query srting
+        list: tuple list with result of query string
     """
 
     def is_in_tuple(tple: tuple, st: str) -> bool:
@@ -232,16 +235,26 @@ def search_in_tuples(tuples: list, search: str) -> list:
 
     search_terms = get_search_terms(search)
     result = list()
+
     for t in tuples:
-        # Search AND
-        if "&" in search and all([is_in_tuple(t, ts) for ts in search_terms]):
-            result.append(t)
-        # Search OR
-        if "|" in search and any([is_in_tuple(t, ts) for ts in search_terms]):
-            result.append(t)
-        # Search Single term
-        if "|" not in search and "&" not in search and any([is_in_tuple(t, ts) for ts in search_terms]):
-            result.append(t)
+        # Check for explicit OR operator
+        if "|" in search:
+            # OR search: any term can match
+            if any([is_in_tuple(t, ts) for ts in search_terms]):
+                result.append(t)
+        elif "&" in search:
+            # AND search via &
+            if all([is_in_tuple(t, ts) for ts in search_terms]):
+                result.append(t)
+        else:
+            # Default behavior based on setting
+            if search_operator_default:
+                if all([is_in_tuple(t, ts) for ts in search_terms]):
+                    result.append(t)
+            else:
+                if any([is_in_tuple(t, ts) for ts in search_terms]):
+                    result.append(t)
+
     return result
 
 
@@ -302,7 +315,7 @@ def main():
             ico = Icons(results)
         for i in results:
             url = i[0]
-            title = i[1]
+            title = i[1] if i[1] else url.split('/')[2]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
             wf.setItem(
@@ -313,10 +326,11 @@ def main():
             )
             if show_favicon:
                 favicon = ico.get_favion_path(url)
-                wf.setIcon(
-                    favicon,
-                    "image"
-                )
+                if favicon:
+                    wf.setIcon(
+                        favicon,
+                        "image"
+                    )
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
