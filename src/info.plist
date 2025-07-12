@@ -532,6 +532,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Opera
 - Sidekick
 - Arc
+- Dia
 - Safari
 
 ## Requires 
@@ -859,6 +860,25 @@ Pressing `CMD` to enter `Other Actions...`:
 				<key>required</key>
 				<false/>
 				<key>text</key>
+				<string>Dia</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>dia</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
 				<string>Safari</string>
 			</dict>
 			<key>description</key>
@@ -990,7 +1010,7 @@ OR = any term can match
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.3.0</string>
+	<string>4.3.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>

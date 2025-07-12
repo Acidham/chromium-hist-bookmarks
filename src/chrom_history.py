@@ -24,6 +24,7 @@ HISTORY_MAP = {
     "vivaldi": "Library/Application Support/Vivaldi/Default/History",
     "edge": "Library/Application Support/Microsoft Edge/Default/History",
     "arc": "Library/Application Support/Arc/User Data/Default/History",
+    "dia": "Library/Application Support/Dia/User Data/Default/History",
     "safari": "Library/Safari/History.db"
 }
 

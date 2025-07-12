@@ -23,6 +23,7 @@ BOOKMARKS_MAP = {
     "vivaldi": 'Library/Application Support/Vivaldi/Default/Bookmarks',
     "edge": 'Library/Application Support/Microsoft Edge/Default/Bookmarks',
     "arc": "Library/Application Support/Arc/User Data/Default/Bookmarks",
+    "dia": "Library/Application Support/Dia/User Data/Default/Bookmarks",
     "safari": 'Library/Safari/Bookmarks.plist'
 }
 
