@@ -533,6 +533,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Sidekick
 - Arc
 - Dia
+- Comet (Perplexity AI)
 - Safari
 
 ## Requires 
@@ -870,6 +871,25 @@ Pressing `CMD` to enter `Other Actions...`:
 			<string>checkbox</string>
 			<key>variable</key>
 			<string>dia</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Comet</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>comet</string>
 		</dict>
 		<dict>
 			<key>config</key>
