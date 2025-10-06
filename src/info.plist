@@ -43,6 +43,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<key>modifiers</key>
+				<integer>131072</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</key>
 		<array>
@@ -100,6 +110,16 @@
 				<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
 				<key>modifiers</key>
 				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<key>modifiers</key>
+				<integer>131072</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
@@ -557,7 +577,11 @@ Pressing `CMD` to enter `Other Actions...`:
 
 * `Copy to Clipboard`: Copies the URL into the Clipboard
 * `Open Domain`: Opens the domain  (e.g. www.google.com) in default Browser
-* `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser</string>
+* `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser
+
+### Bookmark Location
+
+When viewing bookmarks, press `SHIFT` to see the bookmark's location in your browser's folder structure. The subtitle will show the path like `Location: Bookmarks Bar &gt; Folder &gt; Subfolder`. Press `SHIFT + ENTER` to copy the location path to clipboard.</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -665,7 +689,7 @@ Pressing `CMD` to enter `Other Actions...`:
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>bm</string>
+				<string>bb</string>
 				<key>placeholder</key>
 				<string></string>
 				<key>required</key>
