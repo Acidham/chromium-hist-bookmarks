@@ -43,6 +43,16 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<key>modifiers</key>
+				<integer>131072</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</key>
 		<array>
@@ -100,6 +110,16 @@
 				<string>AB2E1AB4-C5C4-4FBD-BE75-E0A8F8405D39</string>
 				<key>modifiers</key>
 				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<key>modifiers</key>
+				<integer>131072</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>vitoclose</key>
@@ -533,7 +553,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Sidekick
 - Arc
 - Dia
-- Thorium
+- Comet (Perplexity AI)
 - Safari
 
 ## Requires 
@@ -557,7 +577,11 @@ Pressing `CMD` to enter `Other Actions...`:
 
 * `Copy to Clipboard`: Copies the URL into the Clipboard
 * `Open Domain`: Opens the domain  (e.g. www.google.com) in default Browser
-* `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser</string>
+* `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser
+
+### Bookmark Location
+
+When viewing bookmarks, press `SHIFT` to see the bookmark's location in your browser's folder structure. The subtitle will show the path like `Location: Bookmarks Bar &gt; Folder &gt; Subfolder`. Press `SHIFT + ENTER` to copy the location path to clipboard.</string>
 	<key>uidata</key>
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
@@ -880,7 +904,7 @@ Pressing `CMD` to enter `Other Actions...`:
 				<key>required</key>
 				<false/>
 				<key>text</key>
-				<string>Thorium</string>
+				<string>Comet</string>
 			</dict>
 			<key>description</key>
 			<string></string>
@@ -889,7 +913,7 @@ Pressing `CMD` to enter `Other Actions...`:
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
-			<string>thorium</string>
+			<string>comet</string>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -1030,7 +1054,7 @@ OR = any term can match
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.3.2</string>
+	<string>4.3.1</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>

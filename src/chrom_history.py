@@ -26,6 +26,7 @@ HISTORY_MAP = {
     "arc": "Library/Application Support/Arc/User Data/Default/History",
     "dia": "Library/Application Support/Dia/User Data/Default/History",
     "thorium": 'Library/Application Support/Thorium/Default/History',
+    "comet": "Library/Application Support/Comet/Default/History",
     "safari": "Library/Safari/History.db"
 }
 
