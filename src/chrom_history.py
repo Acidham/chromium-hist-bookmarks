@@ -25,6 +25,7 @@ HISTORY_MAP = {
     "edge": "Library/Application Support/Microsoft Edge/Default/History",
     "arc": "Library/Application Support/Arc/User Data/Default/History",
     "dia": "Library/Application Support/Dia/User Data/Default/History",
+    "thorium": 'Library/Application Support/Thorium/Default/History',
     "comet": "Library/Application Support/Comet/Default/History",
     "safari": "Library/Safari/History.db"
 }

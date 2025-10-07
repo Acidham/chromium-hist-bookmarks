@@ -689,7 +689,7 @@ When viewing bookmarks, press `SHIFT` to see the bookmark's location in your bro
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>bb</string>
+				<string>bm</string>
 				<key>placeholder</key>
 				<string></string>
 				<key>required</key>
