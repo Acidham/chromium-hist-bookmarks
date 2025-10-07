@@ -20,7 +20,7 @@ SCRIPT_DIR="$(dirname $SCRPATH)"
 PYALIAS="$WF_DATA_DIR/py3"
 
 CONFIG_PREFIX="Config"
-DEBUG=1
+DEBUG=0
 
 pyrun() {
   $py3 "${SCR}" "${QUERY}"

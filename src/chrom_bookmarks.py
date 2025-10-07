@@ -71,7 +71,7 @@ def get_all_urls(the_json: str) -> list:
         if isinstance(data, dict) and data.get('type') == 'url':
             folder_path = ' > '.join(path) if path else 'Root'
             urls.append({
-                'name': data.get('name'), 
+                'name': data.get('name'),
                 'url': data.get('url'),
                 'path': folder_path
             })
@@ -88,16 +88,19 @@ def get_all_urls(the_json: str) -> list:
         if isinstance(o, dict):
             for k, i in o.items():
                 # Use the key as folder name for root-level containers
-                container_name = k.replace('_', ' ').title() if k not in ['children'] else ''
+                container_name = k.replace('_', ' ').title() if k not in [
+                    'children'] else ''
                 if container_name and isinstance(i, dict) and i.get('type') == 'folder':
-                    extract_data(i, [container_name] if container_name else path)
+                    extract_data(i, [container_name]
+                                 if container_name else path)
                 else:
                     extract_data(i, path)
 
     urls = list()
     get_container(the_json)
     s_list_dict = sorted(urls, key=lambda k: k['name'], reverse=False)
-    ret_list = [(l.get('name'), l.get('url'), l.get('path')) for l in s_list_dict]
+    ret_list = [(l.get('name'), l.get('url'), l.get('path'))
+                for l in s_list_dict]
     return ret_list
 
 
@@ -151,7 +154,8 @@ def extract_safari_bookmarks(bookmark_data, bookmarks_list, path=[]) -> None:
         if "Children" in bookmark_data:
             folder_name = bookmark_data.get("Title", "")
             new_path = path + [folder_name] if folder_name else path
-            extract_safari_bookmarks(bookmark_data["Children"], bookmarks_list, new_path)
+            extract_safari_bookmarks(
+                bookmark_data["Children"], bookmarks_list, new_path)
         elif "URLString" in bookmark_data and "URIDictionary" in bookmark_data:
             title = bookmark_data["URIDictionary"].get("title", "Untitled")
             url = bookmark_data["URLString"]
@@ -243,7 +247,8 @@ def main():
             else:
                 bm_json = get_json_from_file(bookmarks_file)
                 bookmarks = get_all_urls(bm_json)
-                Tools.log(f"Loaded {len(bookmarks)} bookmarks from {bookmarks_file}")
+                Tools.log(
+                    f"Loaded {len(bookmarks)} bookmarks from {bookmarks_file}")
             matches.extend(match(query, bookmarks))
         # finally remove duplicates from all browser bookmarks
         matches = removeDuplicates(matches)
