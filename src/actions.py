@@ -1,18 +1,51 @@
 #!/usr/bin/python3
 
+import os
 from urllib.parse import urlparse
 
 from Alfred3 import Items, Tools
 
-url = Tools.getEnv('url')
+# Map browser names to their application paths
+BROWSER_APPS = {
+    "brave": "/Applications/Brave Browser.app",
+    "brave_beta": "/Applications/Brave Browser Beta.app",
+    "chromium": "/Applications/Chromium.app",
+    "chrome": "/Applications/Google Chrome.app",
+    "opera": "/Applications/Opera.app",
+    "sidekick": "/Applications/Sidekick.app",
+    "vivaldi": "/Applications/Vivaldi.app",
+    "edge": "/Applications/Microsoft Edge.app",
+    "arc": "/Applications/Arc.app",
+    "dia": "/Applications/Dia.app",
+    "thorium": "/Applications/Thorium.app",
+    "comet": "/Applications/Comet.app",
+    "safari": "/Applications/Safari.app"
+}
+
+url_with_browser = Tools.getEnv('url')
+# Parse URL and browser from pipe-separated string
+if '|' in url_with_browser:
+    url, browser = url_with_browser.split('|', 1)
+else:
+    url = url_with_browser
+    browser = None
+
 domain = Tools.getDomain(url)
 
-# Script Filter item [Title,Subtitle,arg/uid/icon]
+# Script Filter item [Title, Subtitle, arg]
 wf_items = [
     ['Copy to Clipboard', 'Copy URL to Clipboard', 'clipboard'],
     ['Open Domain', f'Open {domain}', 'domain'],
     ['Open URL in...', 'Open URL in another Browser', 'openin'],
 ]
+
+# Add "Open in Source Browser" option if browser info is available
+if browser and browser in BROWSER_APPS:
+    app_path = BROWSER_APPS[browser]
+    # Check if the app exists
+    if os.path.exists(app_path):
+        browser_display_name = browser.replace('_', ' ').title()
+        wf_items.append(['Open in Source Browser', f'Open in {browser_display_name}', 'sourcebrowser'])
 
 # Create WF script filter output object and emit
 wf = Items()

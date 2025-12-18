@@ -55,6 +55,22 @@ sort_recent = Tools.getEnvBool("sort_recent")
 DATE_FMT = Tools.getEnv("date_format", default='%d. %B %Y')
 
 
+def get_browser_name(db_path: str) -> str:
+    """
+    Get browser name from database path
+
+    Args:
+        db_path (str): Path to history database
+
+    Returns:
+        str: Browser name (e.g., 'chrome', 'brave', 'safari')
+    """
+    for browser_name, path in HISTORY_MAP.items():
+        if path in db_path:
+            return browser_name
+    return "unknown"
+
+
 def history_paths() -> list:
     """
     Get valid pathes to history from HISTORIES variable
@@ -89,7 +105,9 @@ def get_histories(dbs: list, query: str) -> list:
 
     results = list()
     with Pool(len(dbs)) as p:  # Exec in ThreadPool
-        results = p.map(sql, [db for db in dbs])
+        # Pass both db path and browser name to sql function
+        db_browser_pairs = [(db, get_browser_name(db)) for db in dbs]
+        results = p.starmap(sql, db_browser_pairs)
     matches = []
     for r in results:
         matches = matches + r
@@ -133,16 +151,17 @@ def remove_ignored_domains(results: list, ignored_domains: list) -> list:
     return new_results
 
 
-def sql(db: str) -> list:
+def sql(db: str, browser: str) -> list:
     """
     Executes SQL depending on History path
     provided in db: str
 
     Args:
         db (str): Path to History file
+        browser (str): Browser name
 
     Returns:
-        list: result list of dictionaries (Url, Title, VisiCount)
+        list: result list of tuples (Url, Title, VisiCount, Timestamp, Browser)
     """
     res = []
     history_db = f"/tmp/{uuid.uuid1()}"
@@ -172,7 +191,8 @@ def sql(db: str) -> list:
             Tools.log(select_statement)
             cursor.execute(select_statement)
             r = cursor.fetchall()
-            res.extend(r)
+            # Add browser name to each tuple
+            res.extend([(*row, browser) for row in r])
         os.remove(history_db)  # Delete History file in /tmp
     except sqlite3.Error as e:
         Tools.log(f"SQL Error: {e}")
@@ -213,7 +233,7 @@ def removeDuplicates(li: list) -> list:
     Returns:
         list: filtered history entries
     """
-    unique_entries = {b: (a, b, c, d) for a, b, c, d in li}
+    unique_entries = {b: (a, b, c, d, e) for a, b, c, d, e in li}
     return list(unique_entries.values())
 
 
@@ -321,10 +341,13 @@ def main():
             title = i[1] if i[1] else url.split('/')[2]
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
+            browser = i[4]
+            # Combine url and browser with pipe separator
+            url_with_browser = f"{url}|{browser}"
             wf.setItem(
                 title=title,
                 subtitle=f"Last visit: {last_visit}(Visits: {visits})",
-                arg=url,
+                arg=url_with_browser,
                 quicklookurl=url
             )
             if show_favicon:
@@ -337,12 +360,12 @@ def main():
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
-                arg=url
+                arg=url_with_browser
             )
             wf.addMod(
                 key="alt",
                 subtitle=url,
-                arg=url
+                arg=url_with_browser
             )
             wf.addItem()
     if wf.getItemsLengths() == 0:

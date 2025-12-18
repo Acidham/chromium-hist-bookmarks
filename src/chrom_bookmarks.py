@@ -44,6 +44,22 @@ for k in BOOKMARKS_MAP.keys():
         BOOKMARKS.append(BOOKMARKS_MAP.get(k))
 
 
+def get_browser_name(bookmark_path: str) -> str:
+    """
+    Get browser name from bookmark path
+
+    Args:
+        bookmark_path (str): Path to bookmark file
+
+    Returns:
+        str: Browser name (e.g., 'chrome', 'brave', 'safari')
+    """
+    for browser_name, path in BOOKMARKS_MAP.items():
+        if path in bookmark_path:
+            return browser_name
+    return "unknown"
+
+
 def removeDuplicates(li: list) -> list:
     """
     Removes Duplicates from bookmark file
@@ -57,15 +73,16 @@ def removeDuplicates(li: list) -> list:
     return list(dict.fromkeys(li))
 
 
-def get_all_urls(the_json: str) -> list:
+def get_all_urls(the_json: str, browser: str) -> list:
     """
     Extract all URLs, title, and folder path from Bookmark files
 
     Args:
         the_json (str): All Bookmarks read from file
+        browser (str): Browser name
 
     Returns:
-        list(tuple): List of tuple with Bookmarks (name, url, path)
+        list(tuple): List of tuple with Bookmarks (name, url, path, browser)
     """
     def extract_data(data: dict, path: list):
         if isinstance(data, dict) and data.get('type') == 'url':
@@ -99,7 +116,7 @@ def get_all_urls(the_json: str) -> list:
     urls = list()
     get_container(the_json)
     s_list_dict = sorted(urls, key=lambda k: k['name'], reverse=False)
-    ret_list = [(l.get('name'), l.get('url'), l.get('path'))
+    ret_list = [(l.get('name'), l.get('url'), l.get('path'), browser)
                 for l in s_list_dict]
     return ret_list
 
@@ -137,47 +154,49 @@ def get_json_from_file(file: str) -> json:
     return json.load(codecs.open(file, 'r', 'utf-8-sig'))['roots']
 
 
-def extract_safari_bookmarks(bookmark_data, bookmarks_list, path=[]) -> None:
+def extract_safari_bookmarks(bookmark_data, bookmarks_list, path=[], browser="safari") -> None:
     """
-    Recursively extract bookmarks (title, URL, and path) from Safari bookmarks data.
+    Recursively extract bookmarks (title, URL, path, and browser) from Safari bookmarks data.
     Args:
         bookmark_data (list or dict): The Safari bookmarks data, which can be a list or a dictionary.
-        bookmarks_list (list): The list to which extracted bookmarks (title, URL, path) will be appended.
+        bookmarks_list (list): The list to which extracted bookmarks (title, URL, path, browser) will be appended.
         path (list): Current folder path as a list of folder names.
+        browser (str): Browser name (default: "safari")
     Returns:
         None
     """
     if isinstance(bookmark_data, list):
         for item in bookmark_data:
-            extract_safari_bookmarks(item, bookmarks_list, path)
+            extract_safari_bookmarks(item, bookmarks_list, path, browser)
     elif isinstance(bookmark_data, dict):
         if "Children" in bookmark_data:
             folder_name = bookmark_data.get("Title", "")
             new_path = path + [folder_name] if folder_name else path
             extract_safari_bookmarks(
-                bookmark_data["Children"], bookmarks_list, new_path)
+                bookmark_data["Children"], bookmarks_list, new_path, browser)
         elif "URLString" in bookmark_data and "URIDictionary" in bookmark_data:
             title = bookmark_data["URIDictionary"].get("title", "Untitled")
             url = bookmark_data["URLString"]
             folder_path = ' > '.join(path) if path else 'Root'
-            bookmarks_list.append((title, url, folder_path))
+            bookmarks_list.append((title, url, folder_path, browser))
 
 
-def get_safari_bookmarks_json(file: str) -> list:
+def get_safari_bookmarks_json(file: str, browser: str = "safari") -> list:
     """
     Get all bookmarks from Safari Bookmark file
 
     Args:
         file (str): Path to Safari Bookmark file
+        browser (str): Browser name (default: "safari")
 
     Returns:
-        list: List of bookmarks (title, URL, and path)
+        list: List of bookmarks (title, URL, path, and browser)
 
     """
     with open(file, "rb") as fp:
         plist = load(fp)
     bookmarks = []
-    extract_safari_bookmarks(plist, bookmarks, [])
+    extract_safari_bookmarks(plist, bookmarks, [], browser)
     return bookmarks
 
 
@@ -186,14 +205,14 @@ def match(search_term: str, results: list) -> list:
     Filters a list of tuples based on a search term.
     Args:
         search_term (str): The term to search for. Can include '&' or '|' to specify AND or OR logic.
-        results (list): A list of tuples (name, url, path) to search within.
+        results (list): A list of tuples (name, url, path, browser) to search within.
     Returns:
         list: A list of tuples that match the search term based on the specified logic.
     """
     def is_in_tuple(tple: tuple, st: str) -> bool:
         match = False
-        # Search in name, url, and path
-        for e in tple:
+        # Search in name, url, path (but not browser)
+        for e in tple[:3]:  # Only search first 3 elements
             if st.lower() in str(e).lower():
                 match = True
         return match
@@ -240,13 +259,14 @@ def main():
         # Generate list of bookmarks matches the search
         bookmarks = []
         for bookmarks_file in bms:
+            browser = get_browser_name(bookmarks_file)
             if "Safari" in bookmarks_file:
-                bookmarks = get_safari_bookmarks_json(bookmarks_file)
+                bookmarks = get_safari_bookmarks_json(bookmarks_file, browser)
                 Tools.log(f"Loaded {len(bookmarks)} Safari bookmarks")
                # pass
             else:
                 bm_json = get_json_from_file(bookmarks_file)
-                bookmarks = get_all_urls(bm_json)
+                bookmarks = get_all_urls(bm_json, browser)
                 Tools.log(
                     f"Loaded {len(bookmarks)} bookmarks from {bookmarks_file}")
             matches.extend(match(query, bookmarks))
@@ -256,7 +276,7 @@ def main():
         # generate list of matches for Favicon download
         ico_matches = []
         if show_favicon:
-            ico_matches = [(i2, i1) for i1, i2, i3 in matches]
+            ico_matches = [(i2, i1) for i1, i2, i3, i4 in matches]
         # Heat Favicon Cache
         ico = Icons(ico_matches)
         # generate script filter output
@@ -264,11 +284,14 @@ def main():
             url = m[1]
             name = m[0] if m[0] else url.split('/')[2]
             path = m[2] if len(m) > 2 else 'Unknown'
-            Tools.log(f"Bookmark: '{name}' | Path: '{path}'")
+            browser = m[3] if len(m) > 3 else 'unknown'
+            # Combine url and browser with pipe separator
+            url_with_browser = f"{url}|{browser}"
+            Tools.log(f"Bookmark: '{name}' | Path: '{path}' | Browser: '{browser}'")
             wf.setItem(
                 title=name,
                 subtitle=f"{url[:80]}",
-                arg=url,
+                arg=url_with_browser,
                 quicklookurl=url
             )
             if show_favicon:
@@ -282,12 +305,12 @@ def main():
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
-                arg=url
+                arg=url_with_browser
             )
             wf.addMod(
                 key="alt",
                 subtitle=url,
-                arg=url
+                arg=url_with_browser
             )
             wf.addMod(
                 key="shift",
