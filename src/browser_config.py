@@ -19,6 +19,7 @@ BROWSER_APPS = {
     "dia": "/Applications/Dia.app",
     "thorium": "/Applications/Thorium.app",
     "comet": "/Applications/Comet.app",
+    "helium": "/Applications/Helium.app",
     "safari": "/Applications/Safari.app"
 }
 
@@ -36,6 +37,7 @@ HISTORY_MAP = {
     "dia": "Library/Application Support/Dia/User Data/Default/History",
     "thorium": "Library/Application Support/Thorium/Default/History",
     "comet": "Library/Application Support/Comet/Default/History",
+    "helium": "Library/Application Support/net.imput.helium/Default",
     "safari": "Library/Safari/History.db"
 }
 
@@ -53,6 +55,7 @@ BOOKMARKS_MAP = {
     "dia": "Library/Application Support/Dia/User Data/Default/Bookmarks",
     "thorium": "Library/Application Support/Thorium/Default/Bookmarks",
     "comet": "Library/Application Support/Comet/Default/Bookmarks",
+    "helium": "Library/Application Support/net.imput.helium/Default/Bookmarks",
     "safari": "Library/Safari/Bookmarks.plist"
 }
 
