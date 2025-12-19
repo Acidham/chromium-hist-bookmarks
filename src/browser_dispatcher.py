@@ -5,23 +5,7 @@ import subprocess
 import sys
 
 from Alfred3 import Tools
-
-# Map browser names to their application paths
-BROWSER_APPS = {
-    "brave": "/Applications/Brave Browser.app",
-    "brave_beta": "/Applications/Brave Browser Beta.app",
-    "chromium": "/Applications/Chromium.app",
-    "chrome": "/Applications/Google Chrome.app",
-    "opera": "/Applications/Opera.app",
-    "sidekick": "/Applications/Sidekick.app",
-    "vivaldi": "/Applications/Vivaldi.app",
-    "edge": "/Applications/Microsoft Edge.app",
-    "arc": "/Applications/Arc.app",
-    "dia": "/Applications/Dia.app",
-    "thorium": "/Applications/Thorium.app",
-    "comet": "/Applications/Comet.app",
-    "safari": "/Applications/Safari.app"
-}
+from browser_config import BROWSER_APPS
 
 
 def open_url_in_browser(app_path: str, url: str) -> bool:

@@ -13,22 +13,7 @@ from unicodedata import normalize
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
 from Favicon import Icons
-
-HISTORY_MAP = {
-    "brave": "Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
-    "brave_beta": "Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/History",
-    "chromium": "Library/Application Support/Chromium/Default/History",
-    "chrome": "Library/Application Support/Google/Chrome/Default/History",
-    "opera": "Library/Application Support/com.operasoftware.Opera/History",
-    "sidekick": 'Library/Application Support/Sidekick/Default/History',
-    "vivaldi": "Library/Application Support/Vivaldi/Default/History",
-    "edge": "Library/Application Support/Microsoft Edge/Default/History",
-    "arc": "Library/Application Support/Arc/User Data/Default/History",
-    "dia": "Library/Application Support/Dia/User Data/Default/History",
-    "thorium": 'Library/Application Support/Thorium/Default/History',
-    "comet": "Library/Application Support/Comet/Default/History",
-    "safari": "Library/Safari/History.db"
-}
+from browser_config import HISTORY_MAP, get_browser_name_from_path
 
 # Get Browser Histories to load per env (true/false)
 HISTORIES = list()
@@ -53,22 +38,6 @@ sort_recent = Tools.getEnvBool("sort_recent")
 
 # Date format settings
 DATE_FMT = Tools.getEnv("date_format", default='%d. %B %Y')
-
-
-def get_browser_name(db_path: str) -> str:
-    """
-    Get browser name from database path
-
-    Args:
-        db_path (str): Path to history database
-
-    Returns:
-        str: Browser name (e.g., 'chrome', 'brave', 'safari')
-    """
-    for browser_name, path in HISTORY_MAP.items():
-        if path in db_path:
-            return browser_name
-    return "unknown"
 
 
 def history_paths() -> list:
@@ -106,7 +75,7 @@ def get_histories(dbs: list, query: str) -> list:
     results = list()
     with Pool(len(dbs)) as p:  # Exec in ThreadPool
         # Pass both db path and browser name to sql function
-        db_browser_pairs = [(db, get_browser_name(db)) for db in dbs]
+        db_browser_pairs = [(db, get_browser_name_from_path(db, "history")) for db in dbs]
         results = p.starmap(sql, db_browser_pairs)
     matches = []
     for r in results:

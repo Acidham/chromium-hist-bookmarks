@@ -574,6 +574,12 @@ class Plist:
 
 
 class Keys(object):
+    """
+    Unicode symbols for keyboard keys.
+    
+    Provides Unicode characters for common keyboard keys used in Alfred workflow
+    displays and keyboard shortcut representations.
+    """
     CMD = u'\u2318'
     SHIFT = u'\u21E7'
     ENTER = u'\u23CE'
@@ -581,6 +587,22 @@ class Keys(object):
 
 
 class AlfJson(object):
+    """
+    Alfred JSON configuration object builder.
+    
+    This class creates and manages Alfred workflow JSON configuration objects
+    that can be passed between workflow elements. It handles args, config settings,
+    and variables that need to be communicated through the Alfred workflow.
+    
+    The output format follows Alfred's JSON structure:
+    {
+        "alfredworkflow": {
+            "arg": {...},
+            "config": {...},
+            "variables": {...}
+        }
+    }
+    """
 
     def __init__(self) -> None:
         self.arg: dict = dict()

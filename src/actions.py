@@ -4,23 +4,7 @@ import os
 from urllib.parse import urlparse
 
 from Alfred3 import Items, Tools
-
-# Map browser names to their application paths
-BROWSER_APPS = {
-    "brave": "/Applications/Brave Browser.app",
-    "brave_beta": "/Applications/Brave Browser Beta.app",
-    "chromium": "/Applications/Chromium.app",
-    "chrome": "/Applications/Google Chrome.app",
-    "opera": "/Applications/Opera.app",
-    "sidekick": "/Applications/Sidekick.app",
-    "vivaldi": "/Applications/Vivaldi.app",
-    "edge": "/Applications/Microsoft Edge.app",
-    "arc": "/Applications/Arc.app",
-    "dia": "/Applications/Dia.app",
-    "thorium": "/Applications/Thorium.app",
-    "comet": "/Applications/Comet.app",
-    "safari": "/Applications/Safari.app"
-}
+from browser_config import BROWSER_APPS, get_browser_display_name
 
 url_with_browser = Tools.getEnv('url')
 # Parse URL and browser from pipe-separated string
@@ -44,8 +28,8 @@ if browser and browser in BROWSER_APPS:
     app_path = BROWSER_APPS[browser]
     # Check if the app exists
     if os.path.exists(app_path):
-        browser_display_name = browser.replace('_', ' ').title()
-        wf_items.append(['Open in Source Browser', f'Open in {browser_display_name}', 'sourcebrowser'])
+        browser_display_name = get_browser_display_name(browser)
+        wf_items.append(['Open in Source Browser', f'Open URL in {browser_display_name}', 'sourcebrowser'])
 
 # Create WF script filter output object and emit
 wf = Items()

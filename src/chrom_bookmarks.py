@@ -10,24 +10,7 @@ from typing import Union
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
 from Favicon import Icons
-
-# Bookmark file path relative to HOME
-
-BOOKMARKS_MAP = {
-    "brave": 'Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
-    "brave_beta": 'Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/Bookmarks',
-    "chrome": 'Library/Application Support/Google/Chrome/Default/Bookmarks',
-    "chromium": 'Library/Application Support/Chromium/Default/Bookmarks',
-    "opera": 'Library/Application Support/com.operasoftware.Opera/Bookmarks',
-    "sidekick": 'Library/Application Support/Sidekick/Default/Bookmarks',
-    "vivaldi": 'Library/Application Support/Vivaldi/Default/Bookmarks',
-    "edge": 'Library/Application Support/Microsoft Edge/Default/Bookmarks',
-    "arc": "Library/Application Support/Arc/User Data/Default/Bookmarks",
-    "dia": "Library/Application Support/Dia/User Data/Default/Bookmarks",
-    "thorium": 'Library/Application Support/Thorium/Default/Bookmarks',
-    "comet": "Library/Application Support/Comet/Default/Bookmarks",
-    "safari": 'Library/Safari/Bookmarks.plist'
-}
+from browser_config import BOOKMARKS_MAP, get_browser_name_from_path
 
 
 # Show favicon in results or default wf icon
@@ -42,22 +25,6 @@ BOOKMARKS = list()
 for k in BOOKMARKS_MAP.keys():
     if Tools.getEnvBool(k):
         BOOKMARKS.append(BOOKMARKS_MAP.get(k))
-
-
-def get_browser_name(bookmark_path: str) -> str:
-    """
-    Get browser name from bookmark path
-
-    Args:
-        bookmark_path (str): Path to bookmark file
-
-    Returns:
-        str: Browser name (e.g., 'chrome', 'brave', 'safari')
-    """
-    for browser_name, path in BOOKMARKS_MAP.items():
-        if path in bookmark_path:
-            return browser_name
-    return "unknown"
 
 
 def removeDuplicates(li: list) -> list:
@@ -259,7 +226,7 @@ def main():
         # Generate list of bookmarks matches the search
         bookmarks = []
         for bookmarks_file in bms:
-            browser = get_browser_name(bookmarks_file)
+            browser = get_browser_name_from_path(bookmarks_file, "bookmarks")
             if "Safari" in bookmarks_file:
                 bookmarks = get_safari_bookmarks_json(bookmarks_file, browser)
                 Tools.log(f"Loaded {len(bookmarks)} Safari bookmarks")
