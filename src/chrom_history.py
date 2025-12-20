@@ -60,12 +60,13 @@ def history_paths() -> list:
     return valid_hists
 
 
-def get_histories(dbs: list, query: str) -> list:
+def get_histories(dbs: list, query: str = "") -> list:
     """
     Load History files into list
 
     Args:
         dbs(list): list with valid history paths
+        query(str): search query (optional, returns top 30 if empty)
 
     Returns:
         list: filters history entries
@@ -78,7 +79,13 @@ def get_histories(dbs: list, query: str) -> list:
         results = p.starmap(sql, db_browser_pairs)
     # Flatten results using list comprehension for better performance
     matches = [item for r in results for item in r]
-    results = search_in_tuples(matches, query)
+    
+    # Only filter by search terms if query is provided
+    if query:
+        results = search_in_tuples(matches, query)
+    else:
+        results = matches
+    
     # Remove duplicate Entries
     results = removeDuplicates(results)
     # Remove ignored domains
@@ -291,12 +298,9 @@ def main():
         wf.addItem()
         wf.write()
         sys.exit(0)
-    # get search results exit if Nothing was entered in search
-    results = list()
-    if search_term is not None:
-        results = get_histories(locked_history_dbs, search_term)
-    else:
-        sys.exit(0)
+    # get search results - if no search term, return top 30 items
+    search_term = search_term if search_term else ""
+    results = get_histories(locked_history_dbs, search_term)
     # if result the write alfred response
     if len(results) > 0:
         # Cache Favicons
@@ -304,7 +308,15 @@ def main():
             ico = Icons(results)
         for i in results:
             url = i[0]
-            title = i[1] if i[1] else url.split('/')[2]
+            # Safely extract title or domain from URL
+            if i[1]:
+                title = i[1]
+            else:
+                # Try to extract domain, fallback to full URL if it fails
+                try:
+                    title = url.split('/')[2]
+                except IndexError:
+                    title = url
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
             browser = i[4]
