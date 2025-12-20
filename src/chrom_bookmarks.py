@@ -29,15 +29,23 @@ for k in BOOKMARKS_MAP.keys():
 
 def removeDuplicates(li: list) -> list:
     """
-    Removes Duplicates from bookmark file
+    Removes Duplicates from bookmark file based on URL.
+    When same URL exists in multiple browsers, keeps first occurrence.
 
     Args:
-        li(list): list of bookmark entries
+        li(list): list of bookmark entries (name, url, path, browser)
 
     Returns:
-        list: filtered bookmark entries
+        list: filtered bookmark entries with duplicate URLs removed
     """
-    return list(dict.fromkeys(li))
+    seen_urls = {}
+    result = []
+    for entry in li:
+        url = entry[1]  # URL is at index 1
+        if url not in seen_urls:
+            seen_urls[url] = True
+            result.append(entry)
+    return result
 
 
 def get_all_urls(the_json: str, browser: str) -> list:
@@ -177,31 +185,32 @@ def match(search_term: str, results: list) -> list:
         list: A list of tuples that match the search term based on the specified logic.
     """
     def is_in_tuple(tple: tuple, st: str) -> bool:
-        match = False
         # Search in name, url, path (but not browser)
-        for e in tple[:3]:  # Only search first 3 elements
+        # Only search first 3 elements for better performance
+        for e in tple[:3]:
             if st.lower() in str(e).lower():
-                match = True
-        return match
+                return True  # Early exit on first match
+        return False
 
     result_lst = []
+    
+    # Parse search terms once
     if '&' in search_term:
         search_terms = search_term.split('&')
-        search_operator = "&"
+        use_and_logic = True
     elif '|' in search_term:
         search_terms = search_term.split('|')
-        search_operator = "|"
+        use_and_logic = False
     else:
         search_terms = search_term.split()
-        search_operator = "AND" if search_operator_default else "OR"
+        use_and_logic = search_operator_default
+    
+    # Determine check function once before loop
+    check_func = all if use_and_logic else any
 
     for r in results:
-        if search_operator == "&" or search_operator == "AND":
-            if all([is_in_tuple(r, ts) for ts in search_terms]):
-                result_lst.append(r)
-        elif search_operator == "|" or search_operator == "OR":
-            if any([is_in_tuple(r, ts) for ts in search_terms]):
-                result_lst.append(r)
+        if check_func(is_in_tuple(r, ts) for ts in search_terms):
+            result_lst.append(r)
 
     return result_lst
 
