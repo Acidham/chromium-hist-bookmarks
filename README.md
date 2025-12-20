@@ -13,6 +13,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Sidekick
 - Arc
 - Comet (Perplexity AI)
+- Helium
 - Safari
 
 ## Requires
