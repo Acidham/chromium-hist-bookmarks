@@ -8,11 +8,63 @@
 	<string>Internet</string>
 	<key>connections</key>
 	<dict>
+		<key>20266025-BA24-493E-A5CB-90D3DAAC42E0</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8EBD9F2B-01E6-4453-A979-81AA40D816FF</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>337055FD-7EB1-46CF-8102-F589CD1725BC</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>74B0287D-C73E-494F-8AC7-976DE3A851DE</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
 				<string>6B99D187-E195-432C-A079-D4A99D9A9B0D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>74B0287D-C73E-494F-8AC7-976DE3A851DE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>8EBD9F2B-01E6-4453-A979-81AA40D816FF</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -155,7 +207,7 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
+				<string>337055FD-7EB1-46CF-8102-F589CD1725BC</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -167,7 +219,7 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</string>
+				<string>20266025-BA24-493E-A5CB-90D3DAAC42E0</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -321,7 +373,7 @@
 				<key>jumpto</key>
 				<string>alfred.action.url.openin</string>
 				<key>path</key>
-				<string>{var:url}</string>
+				<string>{var:clip1}</string>
 				<key>type</key>
 				<integer>2</integer>
 			</dict>
@@ -329,6 +381,44 @@
 			<string>alfred.workflow.action.actioninalfred</string>
 			<key>uid</key>
 			<string>27EF6551-081A-4BF3-AE2C-3279905CA7FA</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>delimiter</key>
+				<string>|</string>
+				<key>discardemptyarguments</key>
+				<false/>
+				<key>outputas</key>
+				<integer>0</integer>
+				<key>trimarguments</key>
+				<true/>
+				<key>variableprefix</key>
+				<string>clip</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.split</string>
+			<key>uid</key>
+			<string>74B0287D-C73E-494F-8AC7-976DE3A851DE</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{var:url}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>337055FD-7EB1-46CF-8102-F589CD1725BC</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -476,10 +566,27 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argument</key>
+				<string>{var:url}</string>
+				<key>passthroughargument</key>
+				<false/>
+				<key>variables</key>
+				<dict/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>20266025-BA24-493E-A5CB-90D3DAAC42E0</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>autopaste</key>
 				<false/>
 				<key>clipboardtext</key>
-				<string>{var:url}</string>
+				<string>{var:clip1}</string>
 				<key>ignoredynamicplaceholders</key>
 				<false/>
 				<key>transient</key>
@@ -510,6 +617,27 @@
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>6B99D187-E195-432C-A079-D4A99D9A9B0D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>delimiter</key>
+				<string>|</string>
+				<key>discardemptyarguments</key>
+				<false/>
+				<key>outputas</key>
+				<integer>0</integer>
+				<key>trimarguments</key>
+				<true/>
+				<key>variableprefix</key>
+				<string>clip</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.split</string>
+			<key>uid</key>
+			<string>8EBD9F2B-01E6-4453-A979-81AA40D816FF</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -638,30 +766,58 @@ When viewing bookmarks, press `SHIFT` to see the bookmark's location in your bro
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
 		<dict>
 			<key>xpos</key>
-			<real>1010</real>
+			<real>1100</real>
 			<key>ypos</key>
 			<real>45</real>
+		</dict>
+		<key>20266025-BA24-493E-A5CB-90D3DAAC42E0</key>
+		<dict>
+			<key>xpos</key>
+			<real>715</real>
+			<key>ypos</key>
+			<real>350</real>
 		</dict>
 		<key>27EF6551-081A-4BF3-AE2C-3279905CA7FA</key>
 		<dict>
 			<key>xpos</key>
-			<real>1010</real>
+			<real>1100</real>
 			<key>ypos</key>
 			<real>235</real>
+		</dict>
+		<key>337055FD-7EB1-46CF-8102-F589CD1725BC</key>
+		<dict>
+			<key>xpos</key>
+			<real>930</real>
+			<key>ypos</key>
+			<real>265</real>
 		</dict>
 		<key>6B99D187-E195-432C-A079-D4A99D9A9B0D</key>
 		<dict>
 			<key>xpos</key>
-			<real>1160</real>
+			<real>1250</real>
 			<key>ypos</key>
 			<real>370</real>
 		</dict>
 		<key>6F7CBD9B-C876-48E2-B00E-92F71C1609A5</key>
 		<dict>
 			<key>xpos</key>
-			<real>1010</real>
+			<real>1100</real>
 			<key>ypos</key>
 			<real>370</real>
+		</dict>
+		<key>74B0287D-C73E-494F-8AC7-976DE3A851DE</key>
+		<dict>
+			<key>xpos</key>
+			<real>1005</real>
+			<key>ypos</key>
+			<real>265</real>
+		</dict>
+		<key>8EBD9F2B-01E6-4453-A979-81AA40D816FF</key>
+		<dict>
+			<key>xpos</key>
+			<real>835</real>
+			<key>ypos</key>
+			<real>390</real>
 		</dict>
 		<key>A1F782AE-40F5-47BE-BA57-F230607162D5</key>
 		<dict>
@@ -711,7 +867,7 @@ When viewing bookmarks, press `SHIFT` to see the bookmark's location in your bro
 			<key>note</key>
 			<string>Dispatch to source browser (browser_dispatcher.py)</string>
 			<key>xpos</key>
-			<real>1010</real>
+			<real>1100</real>
 			<key>ypos</key>
 			<real>520</real>
 		</dict>
@@ -1160,7 +1316,7 @@ OR = any term can match
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.5.1</string>
+	<string>4.5.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>

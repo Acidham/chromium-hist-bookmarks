@@ -180,10 +180,15 @@ def match(search_term: str, results: list) -> list:
     Filters a list of tuples based on a search term.
     Args:
         search_term (str): The term to search for. Can include '&' or '|' to specify AND or OR logic.
+                          If empty, returns all results.
         results (list): A list of tuples (name, url, path, browser) to search within.
     Returns:
         list: A list of tuples that match the search term based on the specified logic.
     """
+    # If no search term, return all results
+    if not search_term:
+        return results
+    
     def is_in_tuple(tple: tuple, st: str) -> bool:
         # Search in name, url, path (but not browser)
         # Only search first 3 elements for better performance
@@ -249,6 +254,8 @@ def main():
         # finally remove duplicates from all browser bookmarks
         matches = removeDuplicates(matches)
         Tools.log(f"Total matches after deduplication: {len(matches)}")
+        # Limit to top 30 results
+        matches = matches[:30]
         # generate list of matches for Favicon download
         ico_matches = []
         if show_favicon:
@@ -258,7 +265,15 @@ def main():
         # generate script filter output
         for m in matches:
             url = m[1]
-            name = m[0] if m[0] else url.split('/')[2]
+            # Safely extract name or domain from URL
+            if m[0]:
+                name = m[0]
+            else:
+                # Try to extract domain, fallback to full URL if it fails
+                try:
+                    name = url.split('/')[2]
+                except IndexError:
+                    name = url
             path = m[2] if len(m) > 2 else 'Unknown'
             browser = m[3] if len(m) > 3 else 'unknown'
             # Combine url and browser with pipe separator
