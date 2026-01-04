@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from Alfred3 import Items, Tools
 from browser_config import BROWSER_APPS, get_browser_display_name
 
+"""
 url_with_browser = Tools.getEnv('url')
 # Parse URL and browser from pipe-separated string
 if '|' in url_with_browser:
@@ -14,6 +15,10 @@ else:
     url = url_with_browser
     browser = None
 
+"""
+
+url = Tools.getEnv('url')
+browser = Tools.getEnv('browser')
 domain = Tools.getDomain(url)
 
 # Script Filter item [Title, Subtitle, arg]
@@ -29,7 +34,8 @@ if browser and browser in BROWSER_APPS:
     # Check if the app exists
     if os.path.exists(app_path):
         browser_display_name = get_browser_display_name(browser)
-        wf_items.append(['Open in Source Browser', f'Open URL in {browser_display_name}', 'sourcebrowser'])
+        wf_items.append(['Open in Source Browser',
+                        f'Open URL in {browser_display_name}', 'sourcebrowser'])
 
 # Create WF script filter output object and emit
 wf = Items()

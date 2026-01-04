@@ -9,10 +9,11 @@ import uuid
 from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
 
+from Alfred3 import AlfJson as AlfJson
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
-from Favicon import Icons
 from browser_config import HISTORY_MAP, get_browser_name_from_path
+from Favicon import Icons
 
 # Get Browser Histories to load per env (true/false)
 HISTORIES = list()
@@ -75,17 +76,18 @@ def get_histories(dbs: list, query: str = "") -> list:
     results = list()
     with Pool(len(dbs)) as p:  # Exec in ThreadPool
         # Pass both db path and browser name to sql function
-        db_browser_pairs = [(db, get_browser_name_from_path(db, "history")) for db in dbs]
+        db_browser_pairs = [
+            (db, get_browser_name_from_path(db, "history")) for db in dbs]
         results = p.starmap(sql, db_browser_pairs)
     # Flatten results using list comprehension for better performance
     matches = [item for r in results for item in r]
-    
+
     # Only filter by search terms if query is provided
     if query:
         results = search_in_tuples(matches, query)
     else:
         results = matches
-    
+
     # Remove duplicate Entries
     results = removeDuplicates(results)
     # Remove ignored domains
@@ -93,7 +95,8 @@ def get_histories(dbs: list, query: str = "") -> list:
         results = remove_ignored_domains(results, ignored_domains)
     # Sort by element. Element 2=visits, 3=timestamp (recent)
     sort_by = 3 if sort_recent else 2
-    results = Tools.sortListTuple(results, sort_by)  # Sort based on visits or recency
+    # Sort based on visits or recency
+    results = Tools.sortListTuple(results, sort_by)
     # Reduce search results to 30 AFTER sorting
     results = results[:30]
     return results
@@ -242,9 +245,10 @@ def search_in_tuples(tuples: list, search: str) -> list:
 
     search_terms = get_search_terms(search)
     result = list()
-    
+
     # Determine search logic once before loop for better performance
-    use_and_logic = ("&" in search) or ("|" not in search and search_operator_default)
+    use_and_logic = ("&" in search) or (
+        "|" not in search and search_operator_default)
     check_func = all if use_and_logic else any
 
     for t in tuples:
