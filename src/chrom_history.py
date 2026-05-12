@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import difflib
+import glob
 import os
 import shutil
 import sqlite3
@@ -13,6 +14,11 @@ from unicodedata import normalize
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
 from Favicon import Icons
+
+# History file path relative to HOME.
+# Values may contain shell-style wildcards (e.g. "*"). They will be expanded
+# with glob.glob in history_paths() to support browsers (like ChatGPT Atlas)
+# that store data under multiple per-user profile directories.
 
 HISTORY_MAP = {
     "brave": "Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
@@ -27,6 +33,7 @@ HISTORY_MAP = {
     "dia": "Library/Application Support/Dia/User Data/Default/History",
     "thorium": 'Library/Application Support/Thorium/Default/History',
     "comet": "Library/Application Support/Comet/Default/History",
+    "atlas": "Library/Application Support/com.openai.atlas/browser-data/host/*/History",
     "safari": "Library/Safari/History.db"
 }
 
@@ -63,16 +70,25 @@ def history_paths() -> list:
         list: available paths of history files
     """
     user_dir = os.path.expanduser("~")
-    hists = [os.path.join(user_dir, h) for h in HISTORIES]
-
     valid_hists = list()
     # write log if history db was found or not
-    for h in hists:
-        if os.path.isfile(h):
-            valid_hists.append(h)
-            Tools.log(f"{h} → found")
+    for h in HISTORIES:
+        full = os.path.join(user_dir, h)
+        # Expand shell-style wildcards (e.g. for browsers with multiple
+        # per-user profile directories such as ChatGPT Atlas).
+        if any(ch in h for ch in ('*', '?', '[')):
+            candidates = glob.glob(full)
         else:
-            Tools.log(f"{h} → NOT found")
+            candidates = [full]
+        if not candidates:
+            Tools.log(f"{full} → NOT found (no glob matches)")
+            continue
+        for c in candidates:
+            if os.path.isfile(c):
+                valid_hists.append(c)
+                Tools.log(f"{c} → found")
+            else:
+                Tools.log(f"{c} → NOT found")
     return valid_hists
 
 

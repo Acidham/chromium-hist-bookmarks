@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import codecs
+import glob
 import json
 import os
 import sys
@@ -12,6 +13,9 @@ from Alfred3 import Tools as Tools
 from Favicon import Icons
 
 # Bookmark file path relative to HOME
+# Values may contain shell-style wildcards (e.g. "*"). They will be expanded
+# with glob.glob in paths_to_bookmarks() to support browsers (like ChatGPT
+# Atlas) that store data under multiple per-user profile directories.
 
 BOOKMARKS_MAP = {
     "brave": 'Library/Application Support/BraveSoftware/Brave-Browser/Default/Bookmarks',
@@ -26,6 +30,7 @@ BOOKMARKS_MAP = {
     "dia": "Library/Application Support/Dia/User Data/Default/Bookmarks",
     "thorium": 'Library/Application Support/Thorium/Default/Bookmarks',
     "comet": "Library/Application Support/Comet/Default/Bookmarks",
+    "atlas": "Library/Application Support/com.openai.atlas/browser-data/host/*/Bookmarks",
     "safari": 'Library/Safari/Bookmarks.plist'
 }
 
@@ -112,14 +117,27 @@ def paths_to_bookmarks() -> list:
         list: valid bookmark paths
     """
     user_dir = os.path.expanduser('~')
-    bms = [os.path.join(user_dir, b) for b in BOOKMARKS]
     valid_bms = list()
-    for b in bms:
-        if os.path.isfile(b):
-            valid_bms.append(b)
-            Tools.log(f"{b} → found")
+    for b in BOOKMARKS:
+        full = os.path.join(user_dir, b)
+        # Expand shell-style wildcards (e.g. for browsers with multiple
+        # per-user profile directories such as ChatGPT Atlas). Non-glob
+        # paths are returned as a single-element match by glob.glob iff
+        # the file exists; fall back to the literal path otherwise so the
+        # existing "NOT found" log still fires for misconfigured browsers.
+        if any(ch in b for ch in ('*', '?', '[')):
+            candidates = glob.glob(full)
         else:
-            Tools.log(f"{b} → NOT found")
+            candidates = [full]
+        if not candidates:
+            Tools.log(f"{full} → NOT found (no glob matches)")
+            continue
+        for c in candidates:
+            if os.path.isfile(c):
+                valid_bms.append(c)
+                Tools.log(f"{c} → found")
+            else:
+                Tools.log(f"{c} → NOT found")
 
     return valid_bms
 
