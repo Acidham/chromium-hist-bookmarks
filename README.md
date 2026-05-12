@@ -13,6 +13,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Sidekick
 - Arc
 - Comet (Perplexity AI)
+- Helium
 - ChatGPT Atlas
 - Safari
 
@@ -42,6 +43,7 @@ Pressing `CMD` to enter `Other Actions...`:
 * `Copy to Clipboard`: Copies the URL into the Clipboard
 * `Open Domain`: Opens the domain  (e.g. www.google.com) in default Browser
 * `Open In...`: Opens the URL with the Alfred's build in Open-In other Browser
+* `Open in Source Browser`: Opens the URL in the Browser of origin
 
 ### Bookmark Location
 

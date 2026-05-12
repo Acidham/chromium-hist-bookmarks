@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import difflib
 import glob
 import os
 import shutil
@@ -11,31 +10,11 @@ import uuid
 from multiprocessing.pool import ThreadPool as Pool
 from unicodedata import normalize
 
+from Alfred3 import AlfJson as AlfJson
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
+from browser_config import HISTORY_MAP, get_browser_name_from_path
 from Favicon import Icons
-
-# History file path relative to HOME.
-# Values may contain shell-style wildcards (e.g. "*"). They will be expanded
-# with glob.glob in history_paths() to support browsers (like ChatGPT Atlas)
-# that store data under multiple per-user profile directories.
-
-HISTORY_MAP = {
-    "brave": "Library/Application Support/BraveSoftware/Brave-Browser/Default/History",
-    "brave_beta": "Library/Application Support/BraveSoftware/Brave-Browser-Beta/Default/History",
-    "chromium": "Library/Application Support/Chromium/Default/History",
-    "chrome": "Library/Application Support/Google/Chrome/Default/History",
-    "opera": "Library/Application Support/com.operasoftware.Opera/History",
-    "sidekick": 'Library/Application Support/Sidekick/Default/History',
-    "vivaldi": "Library/Application Support/Vivaldi/Default/History",
-    "edge": "Library/Application Support/Microsoft Edge/Default/History",
-    "arc": "Library/Application Support/Arc/User Data/Default/History",
-    "dia": "Library/Application Support/Dia/User Data/Default/History",
-    "thorium": 'Library/Application Support/Thorium/Default/History',
-    "comet": "Library/Application Support/Comet/Default/History",
-    "atlas": "Library/Application Support/com.openai.atlas/browser-data/host/*/History",
-    "safari": "Library/Safari/History.db"
-}
 
 # Get Browser Histories to load per env (true/false)
 HISTORIES = list()
@@ -92,12 +71,13 @@ def history_paths() -> list:
     return valid_hists
 
 
-def get_histories(dbs: list, query: str) -> list:
+def get_histories(dbs: list, query: str = "") -> list:
     """
     Load History files into list
 
     Args:
         dbs(list): list with valid history paths
+        query(str): search query (optional, returns top 30 if empty)
 
     Returns:
         list: filters history entries
@@ -105,21 +85,30 @@ def get_histories(dbs: list, query: str) -> list:
 
     results = list()
     with Pool(len(dbs)) as p:  # Exec in ThreadPool
-        results = p.map(sql, [db for db in dbs])
-    matches = []
-    for r in results:
-        matches = matches + r
-    results = search_in_tuples(matches, query)
+        # Pass both db path and browser name to sql function
+        db_browser_pairs = [
+            (db, get_browser_name_from_path(db, "history")) for db in dbs]
+        results = p.starmap(sql, db_browser_pairs)
+    # Flatten results using list comprehension for better performance
+    matches = [item for r in results for item in r]
+
+    # Only filter by search terms if query is provided
+    if query:
+        results = search_in_tuples(matches, query)
+    else:
+        results = matches
+
     # Remove duplicate Entries
     results = removeDuplicates(results)
-    # evmove ignored domains
+    # Remove ignored domains
     if ignored_domains:
         results = remove_ignored_domains(results, ignored_domains)
-    # Reduce search results to 30
-    results = results[:30]
-    # Sort by element. Element 2=visited, 3=recent
+    # Sort by element. Element 2=visits, 3=timestamp (recent)
     sort_by = 3 if sort_recent else 2
-    results = Tools.sortListTuple(results, sort_by)  # Sort based on visits
+    # Sort based on visits or recency
+    results = Tools.sortListTuple(results, sort_by)
+    # Reduce search results to 30 AFTER sorting
+    results = results[:30]
     return results
 
 
@@ -149,16 +138,17 @@ def remove_ignored_domains(results: list, ignored_domains: list) -> list:
     return new_results
 
 
-def sql(db: str) -> list:
+def sql(db: str, browser: str) -> list:
     """
     Executes SQL depending on History path
     provided in db: str
 
     Args:
         db (str): Path to History file
+        browser (str): Browser name
 
     Returns:
-        list: result list of dictionaries (Url, Title, VisiCount)
+        list: result list of tuples (Url, Title, VisiCount, Timestamp, Browser)
     """
     res = []
     history_db = f"/tmp/{uuid.uuid1()}"
@@ -188,7 +178,8 @@ def sql(db: str) -> list:
             Tools.log(select_statement)
             cursor.execute(select_statement)
             r = cursor.fetchall()
-            res.extend(r)
+            # Add browser name to each tuple
+            res.extend([(*row, browser) for row in r])
         os.remove(history_db)  # Delete History file in /tmp
     except sqlite3.Error as e:
         Tools.log(f"SQL Error: {e}")
@@ -221,15 +212,24 @@ def get_search_terms(search: str) -> tuple:
 
 def removeDuplicates(li: list) -> list:
     """
-    Removes Duplicates from history file
+    Removes Duplicates from history file, keeping entry with most visits.
+    If visits are equal, keeps the most recent entry.
 
     Args:
-        li(list): list of history entries
+        li(list): list of history entries (url, title, visits, timestamp, browser)
 
     Returns:
-        list: filtered history entries
+        list: filtered history entries with duplicates removed
     """
-    unique_entries = {b: (a, b, c, d) for a, b, c, d in li}
+    unique_entries = {}
+    for url, title, visits, timestamp, browser in li:
+        if url not in unique_entries:
+            unique_entries[url] = (url, title, visits, timestamp, browser)
+        else:
+            # Keep entry with more visits, or more recent if visits are equal
+            existing = unique_entries[url]
+            if visits > existing[2] or (visits == existing[2] and timestamp > existing[3]):
+                unique_entries[url] = (url, title, visits, timestamp, browser)
     return list(unique_entries.values())
 
 
@@ -246,33 +246,24 @@ def search_in_tuples(tuples: list, search: str) -> list:
     """
 
     def is_in_tuple(tple: tuple, st: str) -> bool:
-        match = False
-        for e in tple:
+        # Search only first 4 elements (url, title, visits, timestamp)
+        # Skip browser name at index 4 for better performance
+        for e in tple[:4]:
             if st.lower() in str(e).lower():
-                match = True
-        return match
+                return True  # Early exit on first match
+        return False
 
     search_terms = get_search_terms(search)
     result = list()
 
+    # Determine search logic once before loop for better performance
+    use_and_logic = ("&" in search) or (
+        "|" not in search and search_operator_default)
+    check_func = all if use_and_logic else any
+
     for t in tuples:
-        # Check for explicit OR operator
-        if "|" in search:
-            # OR search: any term can match
-            if any([is_in_tuple(t, ts) for ts in search_terms]):
-                result.append(t)
-        elif "&" in search:
-            # AND search via &
-            if all([is_in_tuple(t, ts) for ts in search_terms]):
-                result.append(t)
-        else:
-            # Default behavior based on setting
-            if search_operator_default:
-                if all([is_in_tuple(t, ts) for ts in search_terms]):
-                    result.append(t)
-            else:
-                if any([is_in_tuple(t, ts) for ts in search_terms]):
-                    result.append(t)
+        if check_func(is_in_tuple(t, ts) for ts in search_terms):
+            result.append(t)
 
     return result
 
@@ -321,12 +312,9 @@ def main():
         wf.addItem()
         wf.write()
         sys.exit(0)
-    # get search results exit if Nothing was entered in search
-    results = list()
-    if search_term is not None:
-        results = get_histories(locked_history_dbs, search_term)
-    else:
-        sys.exit(0)
+    # get search results - if no search term, return top 30 items
+    search_term = search_term if search_term else ""
+    results = get_histories(locked_history_dbs, search_term)
     # if result the write alfred response
     if len(results) > 0:
         # Cache Favicons
@@ -334,13 +322,24 @@ def main():
             ico = Icons(results)
         for i in results:
             url = i[0]
-            title = i[1] if i[1] else url.split('/')[2]
+            # Safely extract title or domain from URL
+            if i[1]:
+                title = i[1]
+            else:
+                # Try to extract domain, fallback to full URL if it fails
+                try:
+                    title = url.split('/')[2]
+                except IndexError:
+                    title = url
             visits = i[2]
             last_visit = formatTimeStamp(i[3], fmt=DATE_FMT)
+            browser = i[4]
+            # Combine url and browser with pipe separator
+            url_with_browser = f"{url}|{browser}"
             wf.setItem(
                 title=title,
                 subtitle=f"Last visit: {last_visit}(Visits: {visits})",
-                arg=url,
+                arg=url_with_browser,
                 quicklookurl=url
             )
             if show_favicon:
@@ -353,12 +352,12 @@ def main():
             wf.addMod(
                 key='cmd',
                 subtitle="Other Actions...",
-                arg=url
+                arg=url_with_browser
             )
             wf.addMod(
                 key="alt",
                 subtitle=url,
-                arg=url
+                arg=url_with_browser
             )
             wf.addItem()
     if wf.getItemsLengths() == 0:
