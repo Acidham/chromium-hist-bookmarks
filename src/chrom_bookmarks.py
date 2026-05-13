@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import codecs
+import glob
 import json
 import os
 import sys
@@ -9,8 +10,8 @@ from typing import Union
 
 from Alfred3 import Items as Items
 from Alfred3 import Tools as Tools
-from Favicon import Icons
 from browser_config import BOOKMARKS_MAP, get_browser_name_from_path
+from Favicon import Icons
 
 
 # Show favicon in results or default wf icon
@@ -104,14 +105,27 @@ def paths_to_bookmarks() -> list:
         list: valid bookmark paths
     """
     user_dir = os.path.expanduser('~')
-    bms = [os.path.join(user_dir, b) for b in BOOKMARKS]
     valid_bms = list()
-    for b in bms:
-        if os.path.isfile(b):
-            valid_bms.append(b)
-            Tools.log(f"{b} → found")
+    for b in BOOKMARKS:
+        full = os.path.join(user_dir, b)
+        # Expand shell-style wildcards (e.g. for browsers with multiple
+        # per-user profile directories such as ChatGPT Atlas). Non-glob
+        # paths are returned as a single-element match by glob.glob iff
+        # the file exists; fall back to the literal path otherwise so the
+        # existing "NOT found" log still fires for misconfigured browsers.
+        if any(ch in b for ch in ('*', '?', '[')):
+            candidates = glob.glob(full)
         else:
-            Tools.log(f"{b} → NOT found")
+            candidates = [full]
+        if not candidates:
+            Tools.log(f"{full} → NOT found (no glob matches)")
+            continue
+        for c in candidates:
+            if os.path.isfile(c):
+                valid_bms.append(c)
+                Tools.log(f"{c} → found")
+            else:
+                Tools.log(f"{c} → NOT found")
 
     return valid_bms
 

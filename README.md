@@ -14,6 +14,7 @@ The Workflow searches History and Bookmarks of the configured Browsers simulatio
 - Arc
 - Comet (Perplexity AI)
 - Helium
+- ChatGPT Atlas
 - Safari
 
 ## Requires

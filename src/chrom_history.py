@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import glob
 import os
 import shutil
 import sqlite3
@@ -48,16 +49,25 @@ def history_paths() -> list:
         list: available paths of history files
     """
     user_dir = os.path.expanduser("~")
-    hists = [os.path.join(user_dir, h) for h in HISTORIES]
-
     valid_hists = list()
     # write log if history db was found or not
-    for h in hists:
-        if os.path.isfile(h):
-            valid_hists.append(h)
-            Tools.log(f"{h} → found")
+    for h in HISTORIES:
+        full = os.path.join(user_dir, h)
+        # Expand shell-style wildcards (e.g. for browsers with multiple
+        # per-user profile directories such as ChatGPT Atlas).
+        if any(ch in h for ch in ('*', '?', '[')):
+            candidates = glob.glob(full)
         else:
-            Tools.log(f"{h} → NOT found")
+            candidates = [full]
+        if not candidates:
+            Tools.log(f"{full} → NOT found (no glob matches)")
+            continue
+        for c in candidates:
+            if os.path.isfile(c):
+                valid_hists.append(c)
+                Tools.log(f"{c} → found")
+            else:
+                Tools.log(f"{c} → NOT found")
     return valid_hists
 
 

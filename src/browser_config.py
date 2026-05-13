@@ -20,6 +20,7 @@ BROWSER_APPS = {
     "thorium": "/Applications/Thorium.app",
     "comet": "/Applications/Comet.app",
     "helium": "/Applications/Helium.app",
+    "atlas": "/Applications/ChatGPT Atlas.app",
     "safari": "/Applications/Safari.app"
 }
 
@@ -38,6 +39,7 @@ HISTORY_MAP = {
     "thorium": "Library/Application Support/Thorium/Default/History",
     "comet": "Library/Application Support/Comet/Default/History",
     "helium": "Library/Application Support/net.imput.helium/Default",
+    "atlas": "Library/Application Support/com.openai.atlas/browser-data/host/*/History",
     "safari": "Library/Safari/History.db"
 }
 
@@ -56,6 +58,10 @@ BOOKMARKS_MAP = {
     "thorium": "Library/Application Support/Thorium/Default/Bookmarks",
     "comet": "Library/Application Support/Comet/Default/Bookmarks",
     "helium": "Library/Application Support/net.imput.helium/Default/Bookmarks",
+    # Atlas stores per-profile data under a "user-<UUID>__<UUID>" directory
+    # rather than the conventional "Default/" — use a glob; chrom_bookmarks.py
+    # and chrom_history.py expand wildcards in BOOKMARKS_MAP/HISTORY_MAP entries.
+    "atlas": "Library/Application Support/com.openai.atlas/browser-data/host/*/Bookmarks",
     "safari": "Library/Safari/Bookmarks.plist"
 }
 

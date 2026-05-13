@@ -1198,6 +1198,25 @@ When viewing bookmarks, press `SHIFT` to see the bookmark's location in your bro
 				<key>required</key>
 				<false/>
 				<key>text</key>
+				<string>ChatGPT Atlas</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>atlas</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
 				<string>Safari</string>
 			</dict>
 			<key>description</key>
