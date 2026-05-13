@@ -302,7 +302,7 @@
 				<key>runningsubtext</key>
 				<string>Searching, please wait...</string>
 				<key>script</key>
-				<string>./py3.sh chrom_history.py "$1"
+				<string>python3 chrom_history.py "$1"
 </string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -375,7 +375,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>./py3.sh domain.py $1</string>
+				<string>python3 domain.py $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -507,7 +507,7 @@
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string>./py3.sh actions.py</string>
+				<string>python3 actions.py</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -639,7 +639,7 @@
 				<key>runningsubtext</key>
 				<string>Searching, please wait...</string>
 				<key>script</key>
-				<string>./py3.sh chrom_bookmarks.py "$1"</string>
+				<string>python3 chrom_bookmarks.py "$1"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -711,7 +711,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>./py3.sh browser_dispatcher.py $1</string>
+				<string>python3 browser_dispatcher.py $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1349,7 +1349,7 @@ OR = any term can match
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.5.4</string>
+	<string>4.5.5</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>
