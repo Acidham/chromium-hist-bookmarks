@@ -38,7 +38,7 @@ HISTORY_MAP = {
     "dia": "Library/Application Support/Dia/User Data/Default/History",
     "thorium": "Library/Application Support/Thorium/Default/History",
     "comet": "Library/Application Support/Comet/Default/History",
-    "helium": "Library/Application Support/net.imput.helium/Default",
+    "helium": "Library/Application Support/net.imput.helium/Default/History",
     "atlas": "Library/Application Support/com.openai.atlas/browser-data/host/*/History",
     "safari": "Library/Safari/History.db"
 }
