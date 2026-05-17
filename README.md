@@ -53,3 +53,11 @@ When viewing bookmarks, press `SHIFT` to see the bookmark's location in your bro
 * Press `SHIFT + ENTER` to copy the location path to clipboard
 
 This helps you quickly find where a bookmark is organized in your browser.
+
+## Changelog
+
+### v4.5.6
+- Fix Helium browser history path (missing `/History` filename)
+
+### v4.5.5
+- Remove `py3.sh` — call `python3` directly; fixes Code 126 permission error on fresh installs
