@@ -256,23 +256,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>browser</key>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>python3 open_url.py</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
 				<string></string>
-				<key>skipqueryencode</key>
-				<true/>
-				<key>skipvarencode</key>
-				<true/>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{var:url}</string>
+				<key>type</key>
+				<integer>5</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
+			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
 			<string>0899A9C0-908D-4A32-9061-8DC000FAC6E2</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -780,6 +782,8 @@ When viewing bookmarks, press `SHIFT` to see the bookmark's location in your bro
 	<dict>
 		<key>0899A9C0-908D-4A32-9061-8DC000FAC6E2</key>
 		<dict>
+			<key>note</key>
+			<string>Open URL in default browser (open_url.py)</string>
 			<key>xpos</key>
 			<real>1100</real>
 			<key>ypos</key>
@@ -1350,7 +1354,7 @@ OR = any term can match
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>4.5.6</string>
+	<string>4.5.7</string>
 	<key>webaddress</key>
 	<string>https://github.com/Acidham/chromium-hist-bookmarks</string>
 </dict>

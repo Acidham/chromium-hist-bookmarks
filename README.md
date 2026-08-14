@@ -56,6 +56,9 @@ This helps you quickly find where a bookmark is organized in your browser.
 
 ## Changelog
 
+### v4.5.7
+- Fix URLs with a fragment being re-encoded when opened (e.g. draw.io/diagrams.net links, where `#...%2F...#%7B` became `#...%252F...%23%257B` and the page failed to load)
+
 ### v4.5.6
 - Fix Helium browser history path (missing `/History` filename)
 

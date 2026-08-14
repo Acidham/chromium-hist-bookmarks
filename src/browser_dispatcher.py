@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import os
-import subprocess
 import sys
 
 from Alfred3 import Tools
 from browser_config import BROWSER_APPS
+from url_opener import open_url
 
 
 def open_url_in_browser(app_path: str, url: str) -> bool:
@@ -19,22 +18,7 @@ def open_url_in_browser(app_path: str, url: str) -> bool:
     Returns:
         bool: True if successful, False otherwise
     """
-    # Check if the app exists
-    if not os.path.exists(app_path):
-        Tools.log(f"Browser app not found: {app_path}")
-        return False
-
-    try:
-        # Use 'open' command with -a flag to specify the application
-        subprocess.run(['open', '-a', app_path, url], check=True)
-        Tools.log(f"Successfully opened {url} in {app_path}")
-        return True
-    except subprocess.CalledProcessError as e:
-        Tools.log(f"Error opening URL in browser: {e}")
-        return False
-    except Exception as e:
-        Tools.log(f"Unexpected error: {e}")
-        return False
+    return open_url(url, app_path)
 
 
 def main():
